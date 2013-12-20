@@ -12,3 +12,7 @@ main.map
 # Exclude Mac OS X temporary
 ._*
 .DS_Store
+
+# Exclude configuration file
+*.xml
+*.properties
