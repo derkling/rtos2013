@@ -8,6 +8,11 @@
 #ifndef NRF24L01P_H
 #define	NRF24L01P_H
 
+class nRF24L01P{
+ 
+public:
+    nRF24L01P();
+};
 
 
 #endif	/* NRF24L01P_H */

@@ -18,7 +18,7 @@ typedef Gpio<GPIOD_BASE,12> greenLed;
 
 
 
-void init(){
+nRF24L01P::nRF24L01P(){
     
     RCC->APB1ENR |= RCC_APB1ENR_SPI2EN; /*attivo il clock*/
     
@@ -29,6 +29,8 @@ void init(){
     
     IRQ::mode(Mode::INPUT);
    
+    greenLed::mode(Mode::OUTPUT);
+    greenLed::high(); /*test*/
     
     
     
