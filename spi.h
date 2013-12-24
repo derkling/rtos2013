@@ -18,7 +18,7 @@
 
 /* DEFINIZIONE DATI PARTICOLARI */
 #define ACTIVATE_BYTE 0x73
-
+ 
 /* 
  * enable the spi and various gpio for comunicating with the wireless module
  */

@@ -67,18 +67,19 @@ void configureSpi(){
 	NVIC_SetPriority(EXTI1_IRQn,15);//linea che non so bene cosa faccia(copiata dal prof)
 
 	//imposto il control register 1
-	SPI2->CR1 |= SPI_CR1_BR;//imposta a 1 i 3 bit del baudrate(se li si vuole selezionare singolarmente tipo SPI_CR1_BR_[012]
-	SPI2->CR1 |= SPI_CR1_CPHA;//impostato così ad 1 campiona sul secondo fronte di clock
-	SPI2->CR1 |= SPI_CR1_CPOL;//impostato così ad 1 idle del clock alto(quindi ad esempio se CPHA alto campiona sul fronte di salita
-	SPI2->CR1 |= SPI_CR1_DFF;//impostato così a 1 frame da 16 bit
+	SPI2->CR1 |= SPI_CR1_BR_0 | SPI_CR1_BR_2 ;//imposta a velocità di trasmissione a 2 MHz
+	SPI2->CR1 &= !SPI_CR1_CPHA;//impostato campionamento sul primo fronte di clock
+	SPI2->CR1 &= !SPI_CR1_CPOL;//impostato clock idle basso
+	SPI2->CR1 &= !SPI_CR1_DFF;//impostato frame da 8 bit
 	SPI2->CR1 &= !SPI_CR1_LSBFIRST;//impostato così a 0 manda prima msb
-	SPI2->CR1 &= !SPI_CR1_SSM;//il management del SS è lasciato all'hardware
-	SPI2->CR1 |= SPI_CR1_MSTR;//1 imposto come master, 0 slave
+	SPI2->CR1 |= SPI_CR1_SSM;//il management del SS è software
+	SPI2->CR1 |= SPI_CR1_SSI;//impostato SS alto
+	SPI2->CR1 |= SPI_CR1_MSTR;//imposto come master
 	SPI2->CR1 |= SPI_CR1_SPE;//enable della spi
 
 	//imposto il control register 2(DA CONTROLLARE)
 	//INOLTRE DA CONTROLLARE SE USARE CONNESSIONE FULL-DUPLEX O HALF-DUPLEX
-	SPI2->CR2 |= SPI_CR2_SSOE;//abilito l'uscita SS gestita dall'hardware
+	SPI2->CR2 |= SPI_CR2_SSOE;//abilito l'uscita SS 
 
 	return;
 
