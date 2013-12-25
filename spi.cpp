@@ -99,6 +99,18 @@ void chipDisable(){
 	cen::low();
 }
 
+/*! @brief abbassa l'uscita di slave select(cioè seleziona lo slave)
+ */
+void slaveSelectOn(){
+	SPI2->CR1 &= !SPI_CR1_SSI;
+}
+
+/*! @brief alza l'uscita di slave select(cioè non seleziona lo slave)
+ */
+void slaveSelectOff(){
+	SPI2->CR1 |= SPI_CR1_SSI;
+}
+
 int spiSendCommand(uint8_t command, uint8_t addr){
 
 }
