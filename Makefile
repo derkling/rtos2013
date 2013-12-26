@@ -14,7 +14,9 @@ SUBDIRS := miosix
 ## List here your source files (both .s, .c and .cpp)
 ##
 SRC :=                                  \
-main.cpp
+progetto/main.cpp progetto/player.cpp progetto/adpcm.c
+
+
 
 ##
 ## List here additional static libraries with relative path
