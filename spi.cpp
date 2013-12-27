@@ -111,7 +111,27 @@ void slaveSelectOff(){
 	SPI2->CR1 |= SPI_CR1_SSI;
 }
 
+/*! @brief manda via spi il comando command al modulo wireless. Primitiva bloccante, non torna finchè errore o invio completo
+ *  @param command comando da inviare
+ *  @param addr indirizzo del modulo wireless
+ *  @return -1 se spi transmission buffer not empty, 1 se inviato
+ */
 int spiSendCommand(uint8_t command, uint8_t addr){
+	
+	int i=0;
+
+	while( SPI2->SR & SPI_SR_TXE == 0 ){
+		i++;
+		if(i>100){
+			return -1;
+		}
+	}
+	
+	SPI2->DR = command | addr;//da controllare per il tipo uint16 di SPI2->DR e uint8 di command e addr
+
+	while( SPI2->SR & SPI_SR_TXE == 0 ){}
+	
+	return 1;
 
 }
 

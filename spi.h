@@ -17,6 +17,7 @@
 #define W_TX_PAYLOAD_NO_ACK 			((uint8_t)0xB0)		/*!<Used in TX mode. Disable autoack */
 
 /********************  DEFINIZIONE DI INDIRIZZI DEI REGISTRI MODULO NRF24L  ********************/ 
+#define COMMAND_WITHOUT_ADDRESS			((uint8_t)0x00)		/*!<Indirizzo vuoto(se il comando non usa il campo indirizzo */
 #define CONFIG					((uint8_t)0x00)		/*!<Configuration register */
 #define EN_AA 					((uint8_t)0x01)		/*!<Enable auto acknowledgment in ShockBurst */
 #define EN_RXADDR 				((uint8_t)0x02)		/*!<Enable RX addresses */
@@ -55,6 +56,17 @@
 #define CONFIG_CRCO				((uint8_t)0x04)		/*!<CRC encoding scheme */
 #define CONFIG_PWR_UP				((uint8_t)0x02)		/*!<1: POWER UP, 0: POWER DOWN */
 #define CONFIG_PRIM_RX				((uint8_t)0x01)		/*!<RX/TX control. 1: PRX, 0: PTX */
+
+/********************  bit definition for EN_AA register  ********************/
+#define EN_AA_ENAA_P5				((uint8_t)0x20)		/*!<Enable auto acknowledgement data pipe 5 */
+#define EN_AA_ENAA_P4				((uint8_t)0x10)		/*!<Enable auto acknowledgement data pipe 4 */
+#define EN_AA_ENAA_P3				((uint8_t)0x08)		/*!<Enable auto acknowledgement data pipe 3 */
+#define EN_AA_ENAA_P2				((uint8_t)0x04)		/*!<Enable auto acknowledgement data pipe 2 */
+#define EN_AA_ENAA_P1				((uint8_t)0x02)		/*!<Enable auto acknowledgement data pipe 1 */
+#define EN_AA_ENAA_P0				((uint8_t)0x01)		/*!<Enable auto acknowledgement data pipe 0 */
+
+/********************  bit definition for EN_RXADDR register  ********************/
+
 
 /********************  DEFINIZIONE DATI PARTICOLARI  ********************/
 #define ACTIVATE_BYTE 				((uint8_t)0x73)		/*!<Dato da inviare dopo ACTIVATE per usare altre features */
