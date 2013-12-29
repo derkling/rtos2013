@@ -72,8 +72,7 @@ void configureSpi(){
 	SPI2->CR1 &= !SPI_CR1_CPOL;//impostato clock idle basso
 	SPI2->CR1 &= !SPI_CR1_DFF;//impostato frame da 8 bit
 	SPI2->CR1 &= !SPI_CR1_LSBFIRST;//impostato così a 0 manda prima msb
-	SPI2->CR1 |= SPI_CR1_SSM;//il management del SS è software
-	SPI2->CR1 |= SPI_CR1_SSI;//impostato SS alto
+	SPI2->CR1 &= !SPI_CR1_SSM;//il management del SS è hardware
 	SPI2->CR1 |= SPI_CR1_MSTR;//imposto come master
 	SPI2->CR1 |= SPI_CR1_SPE;//enable della spi
 
@@ -99,39 +98,6 @@ void chipDisable(){
 	cen::low();
 }
 
-/*! @brief abbassa l'uscita di slave select(cioè seleziona lo slave)
- */
-void slaveSelectOn(){
-	SPI2->CR1 &= !SPI_CR1_SSI;
-}
-
-/*! @brief alza l'uscita di slave select(cioè non seleziona lo slave)
- */
-void slaveSelectOff(){
-	SPI2->CR1 |= SPI_CR1_SSI;
-}
-
-/*! @brief manda via spi il byte passato e torna il byte letto 
- *  @param data byte da inviare via spi
- *  @return dato ricevuto via spi
- */
-uint8_t spiSendByte(uint8_t data){
-
-	SPI2->DR = (uint16_t)data;
-	
-	while( SPI2->SR & SPI_SR_TXE == 0 ){}
-
-	if( SPI2->SR & SPI_SR_RXNE != 0 ){
-		temp = (uint8_t)SPI->DR;
-	}
-	else {
-		temp = 0;
-	}
-
-	return temp;
-
-}
-
 /*! @brief manda via spi il comando command al modulo wireless. Primitiva bloccante, non torna finchè errore o invio completo
  *  @param command comando da inviare
  *  @param addr indirizzo del modulo wireless
@@ -143,25 +109,20 @@ int spiSendCommand(uint8_t command, uint8_t addr,uint8_t* sr){
 	int i=0;
 	uint8_t temp;
 
-	while( SPI2->SR & SPI_SR_TXE == 0 ){
+	while( SPI2->SR & SPI_SR_BSY != 0 ){
 		i++;
 		if(i>100){
 			return -1;
 		}
 	}
 	
-	temp = spiSendByte( command | addr );//da controllare per il tipo uint16 di SPI2->DR e uint8 di command e addr
+	while( SPI2->SR & SPI_SR_TXE == 0 ){}
+
+	SPI2->DR = (uint16_t)command | (uint16_t)addr;
 
 	if ( sr != NULL ){
 			*sr = temp;
 	}
-
-	return 1;
-
-}
-
-
-int spiSendData(uint8_t* buffer, int len){
 
 	return 1;
 
