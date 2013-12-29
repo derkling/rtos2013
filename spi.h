@@ -1,6 +1,7 @@
 #ifndef SPI_H
 #define SPI_H
 
+#include<stdint.h>
 /********************  DEFINIZIONE COMANDI DA PASSARE AL MODULO WIRELESS  ********************/
 #define R_REGISTER 				((uint8_t)0x00)		/*!<Read command and status register */
 #define W_REGISTER 				((uint8_t)0x20)		/*!<Write command and status register */
@@ -85,5 +86,11 @@ void slaveSelectOff(void);
 
 //abbassa il bit di SS
 void slaveSelectOn(void);
+
+//manda un byte via spi e ritorna il byte ricevuto
+uint8_t spiSendByte(uint8_t);
+
+//manda via spi il comando command e l'indirizzo addr(se il comando non prevede indirizzo mandare COMMAND_WITHOUT_ADDRESS
+int spiSendCommand(uint8_t,uint8_t,uint8_t*);
 
 #endif //SPI_H

@@ -111,14 +111,37 @@ void slaveSelectOff(){
 	SPI2->CR1 |= SPI_CR1_SSI;
 }
 
+/*! @brief manda via spi il byte passato e torna il byte letto 
+ *  @param data byte da inviare via spi
+ *  @return dato ricevuto via spi
+ */
+uint8_t spiSendByte(uint8_t data){
+
+	SPI2->DR = (uint16_t)data;
+	
+	while( SPI2->SR & SPI_SR_TXE == 0 ){}
+
+	if( SPI2->SR & SPI_SR_RXNE != 0 ){
+		temp = (uint8_t)SPI->DR;
+	}
+	else {
+		temp = 0;
+	}
+
+	return temp;
+
+}
+
 /*! @brief manda via spi il comando command al modulo wireless. Primitiva bloccante, non torna finchè errore o invio completo
  *  @param command comando da inviare
  *  @param addr indirizzo del modulo wireless
+ *  @param sr è un puntatore a uint8_t dove verrà scritto lo status register ricevuto dal modulo wireless
  *  @return -1 se spi transmission buffer not empty, 1 se inviato
  */
-int spiSendCommand(uint8_t command, uint8_t addr){
+int spiSendCommand(uint8_t command, uint8_t addr,uint8_t* sr){
 	
 	int i=0;
+	uint8_t temp;
 
 	while( SPI2->SR & SPI_SR_TXE == 0 ){
 		i++;
@@ -127,10 +150,12 @@ int spiSendCommand(uint8_t command, uint8_t addr){
 		}
 	}
 	
-	SPI2->DR = command | addr;//da controllare per il tipo uint16 di SPI2->DR e uint8 di command e addr
+	temp = spiSendByte( command | addr );//da controllare per il tipo uint16 di SPI2->DR e uint8 di command e addr
 
-	while( SPI2->SR & SPI_SR_TXE == 0 ){}
-	
+	if ( sr != NULL ){
+			*sr = temp;
+	}
+
 	return 1;
 
 }
@@ -138,5 +163,6 @@ int spiSendCommand(uint8_t command, uint8_t addr){
 
 int spiSendData(uint8_t* buffer, int len){
 
+	return 1;
 
 }
