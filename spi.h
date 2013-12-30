@@ -12,7 +12,7 @@ void chipEnable(void);
 //abbassa il bit CE
 void chipDisable(void);
 
-//manda via spi il comando command e l'indirizzo addr(se il comando non prevede indirizzo mandare COMMAND_WITHOUT_ADDRESS
-int spiSendCommand(uint8_t,uint8_t,uint8_t*);
+//manda via spi un comando e eventuali dati
+int spiSendCommandWriteData(uint8_t,uint8_t,uint8_t*,uint8_t*,int);
 
 #endif //SPI_H
