@@ -100,7 +100,7 @@ void chipDisable(){
 
 /*! @brief manda via spi comando e dati al modulo wireless. Primitiva bloccante, non torna finchè errore o invio completo
  *  @param command comando da inviare
- *  @param addr indirizzo del modulo wireless(se comando senza indirizzo usare COMMAND_WITHOUT_ADDRESS
+ *  @param addr indirizzo del registro del modulo wireless(se comando senza indirizzo usare COMMAND_WITHOUT_ADDRESS)
  *  @param sr puntatore a uint8_t dove verrà scritto lo status register ricevuto dal modulo wireless
  *  @param data puntatore ai dati da inviare(se ci sono) dopo il comando. Verranno inviati da data[0] a data[lenght-1].
  *  	   ATTENZIONE i dati sono LSByte
@@ -168,6 +168,85 @@ int spiSendCommandWriteData(uint8_t command, uint8_t addr,uint8_t* sr, uint8_t* 
 	while( ( SPI2->SR & SPI_SR_RXNE ) != 0 ){}//aspetto la trasmissione dell'ultimo dato
 
 	temp = SPI2->DR;
+
+	return 1;
+
+}
+
+/*! @brief manda via spi comando e legge dati forniti dal modulo wireless. Primitiva bloccante, non torna finchè errore o invio completo
+ *  @param command comando da inviare
+ *  @param addr indirizzo del registro nel modulo wireless(se comando senza indirizzo usare COMMAND_WITHOUT_ADDRESS)
+ *  @param sr puntatore a uint8_t dove verrà scritto lo status register ricevuto dal modulo wireless
+ *  @param data puntatore ai dati ricevuti dopo il comando. Verranno riempiti da data[0] a data[lenght-1] in ordine di ricezione.
+ *  	   ATTENZIONE la funzione non controllerà se la zona di memoria non è stata allocata correttamente per contenere 
+ *  	   tutti i dati attesi e si ricorda che come per la primitiva spiSendCommandWriteData i dati sono LSByte
+ *  @param lenght numero di byte(di dati) da ricevere dopo aver inviato il comando
+ *  @return -1 se errore, 1 se inviato
+ */
+int spiSendCommandReadData(uint8_t command, uint8_t addr,uint8_t* sr, uint8_t* data, int lenght){
+	
+	int i=0;
+	uint16_t temp;
+
+	if ( lenght > 0 && data == NULL ){//errore nell'uso dei parametri
+		return -1;
+	}
+
+	temp = (uint16_t)command | (uint16_t)addr;
+
+	while( ( SPI2->SR & SPI_SR_BSY ) != 0 ){//controllo che non sia occupata spi, se si ritorno errore
+		i++;//i usato come timeout
+		if(i>100){
+			return -1;
+		}
+	}
+
+	i=0;//i usato per tenere traccia del numero di dati ricevuti
+
+	while( ( SPI2->SR & SPI_SR_TXE ) == 0 ){}//aspetto che registro trasmissione sia vuoto(probabilmente istruzione inutile)
+
+	SPI2->DR = temp;//inserisco comando nel data register
+	
+	while( ( SPI2->SR & SPI_SR_TXE ) == 0 ){}//aspetto che sia copiato nel registro di invio
+
+	if( lenght > 0 ){//siccome devo ricevere dati invio dati senza senso via spi
+		temp = 0x0000;
+		i++;
+		SPI2->DR = temp;
+	}
+
+	while( ( SPI2->SR & SPI_SR_RXNE ) != 0 ){}//aspetto che arrivi lo status register
+
+	temp = SPI2->DR;//leggo lo status register
+
+	if ( sr != NULL ){//se sr punta a un indirizzo di memoria valido passo lo status register
+			*sr = (uint8_t)temp;
+	}
+
+	if( lenght == 0 ){//se non c'erano dati da inviare finito
+		return 1;
+	}
+
+	while( i < lenght ){//c'è ancora da leggere
+
+		while( ( SPI2->SR & SPI_SR_TXE ) == 0 ){}//attendo che sia copiato il dato precedente dal DR allo shift register
+
+		temp = 0x0000;
+		i++;
+		SPI2->DR = temp;//inserisco prossimo dato nel DR
+
+		while( ( SPI2->SR & SPI_SR_RXNE ) != 0 ){}//aspetto che arrivi la risposta precedente
+
+		temp = SPI2->DR;//leggo la risposta precedente
+
+		data[i-2] = (uint8_t)temp;
+	}
+
+	while( ( SPI2->SR & SPI_SR_RXNE ) != 0 ){}//aspetto la ricezione dell'ultimo dato
+
+	temp = SPI2->DR;
+
+	data[i-1] = (uint8_t)temp;
 
 	return 1;
 

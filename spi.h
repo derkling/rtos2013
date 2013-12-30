@@ -15,4 +15,7 @@ void chipDisable(void);
 //manda via spi un comando e eventuali dati
 int spiSendCommandWriteData(uint8_t,uint8_t,uint8_t*,uint8_t*,int);
 
+//manda via spi un comando e riceve dati
+int spiSendCommandReadData(uint8_t,uint8_t,uint8_t*,uint8_t*,int);
+
 #endif //SPI_H
