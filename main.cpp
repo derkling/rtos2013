@@ -1,17 +1,17 @@
 
 #include <cstdio>
 #include "miosix.h"
-#include "nRF24L01P.h"
+#include "wifi_module.h"
+
 
 using namespace std;
 using namespace miosix;
 
 
+
 int main()
 {
-    nRF24L01P* wifi;
-    wifi = new nRF24L01P();
-   
-    printf("Hello world, write your application here\n");
+    pthread_t wifi_thread;
+    pthread_create(&wifi_thread,NULL,&wifi_start,NULL);
     
 }

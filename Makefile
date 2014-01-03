@@ -15,7 +15,9 @@ SUBDIRS := miosix
 ##
 SRC :=                                  \
 main.cpp				\
-nRF24L01P.cpp
+spi_driver.cpp				\
+nRF24L01P.cpp				\
+wifi_module.cpp			    
 
 ##
 ## List here additional static libraries with relative path
