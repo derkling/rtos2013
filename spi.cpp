@@ -74,7 +74,7 @@ void configureSpi(){
 	//imposto il control register 1
 	SPI2->CR1 |= SPI_CR1_BR_0 | SPI_CR1_BR_2 ;//imposta a velocità di trasmissione a 2 MHz
 	SPI2->CR1 &= ~SPI_CR1_CPHA;//impostato campionamento sul primo fronte di clock
-	SPI2->CR1 |= SPI_CR1_CPOL;//impostato clock idle basso
+	SPI2->CR1 &= ~SPI_CR1_CPOL;//impostato clock idle basso
 	SPI2->CR1 &= ~SPI_CR1_DFF;//impostato frame da 8 bit
 	SPI2->CR1 &= ~SPI_CR1_LSBFIRST;//impostato così a 0 manda prima msb
 	SPI2->CR1 &= ~SPI_CR1_SSM;//il management del SS è hardware
