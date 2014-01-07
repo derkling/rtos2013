@@ -60,9 +60,10 @@ void configureSpi(){
 	
 	//impostazione interrupt(DA CONTROLLARE!!!!!!)
 	//essendo pa1 interrupt non devo impostare bit in siscfg_exticr1(va messo 0 nel registro e già ci dovrebbe essere)
-	interruptLine::mode(Mode::INPUT_PULL_DOWN);
+	interruptLine::mode(Mode::INPUT_PULL_UP);
 	EXTI->IMR |= EXTI_IMR_MR1;
-	EXTI->RTSR |= EXTI_RTSR_TR1;
+	EXTI->RTSR &= !EXTI_RTSR_TR1;
+	EXTI->FTSR |= EXTI_FTSR_TR1;
 	NVIC_EnableIRQ(EXTI1_IRQn);
 	NVIC_SetPriority(EXTI1_IRQn,15);//linea che non so bene cosa faccia(copiata dal prof)
 
