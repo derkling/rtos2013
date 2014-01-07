@@ -61,11 +61,15 @@ void configureSpi(){
 	//impostazione interrupt(DA CONTROLLARE!!!!!!)
 	//essendo pa1 interrupt non devo impostare bit in siscfg_exticr1(va messo 0 nel registro e già ci dovrebbe essere)
 	interruptLine::mode(Mode::INPUT_PULL_UP);
-	EXTI->IMR |= EXTI_IMR_MR1;
-	EXTI->RTSR &= !EXTI_RTSR_TR1;
-	EXTI->FTSR |= EXTI_FTSR_TR1;
-	NVIC_EnableIRQ(EXTI1_IRQn);
-	NVIC_SetPriority(EXTI1_IRQn,15);//linea che non so bene cosa faccia(copiata dal prof)
+//	EXTI->IMR |= EXTI_IMR_MR1;
+//	EXTI->RTSR &= !EXTI_RTSR_TR1;
+//	EXTI->FTSR |= EXTI_FTSR_TR1;
+//	NVIC_EnableIRQ(EXTI1_IRQn);
+//	NVIC_SetPriority(EXTI1_IRQn,15);//linea che non so bene cosa faccia(copiata dal prof)
+
+	//imposto il control register 2(DA CONTROLLARE)
+	//INOLTRE DA CONTROLLARE SE USARE CONNESSIONE FULL-DUPLEX O HALF-DUPLEX
+	SPI2->CR2 |= SPI_CR2_SSOE;//abilito l'uscita SS
 
 	//imposto il control register 1
 	SPI2->CR1 |= SPI_CR1_BR_0 | SPI_CR1_BR_2 ;//imposta a velocità di trasmissione a 2 MHz
@@ -76,10 +80,6 @@ void configureSpi(){
 	SPI2->CR1 &= !SPI_CR1_SSM;//il management del SS è hardware
 	SPI2->CR1 |= SPI_CR1_MSTR;//imposto come master
 	SPI2->CR1 |= SPI_CR1_SPE;//enable della spi
-
-	//imposto il control register 2(DA CONTROLLARE)
-	//INOLTRE DA CONTROLLARE SE USARE CONNESSIONE FULL-DUPLEX O HALF-DUPLEX
-	SPI2->CR2 |= SPI_CR2_SSOE;//abilito l'uscita SS 
 
 	return;
 
@@ -140,7 +140,7 @@ int spiSendCommandWriteData(uint8_t command, uint8_t addr,uint8_t* sr, uint8_t* 
 		SPI2->DR = temp;
 	}
 
-	while( ( SPI2->SR & SPI_SR_RXNE ) != 0 ){}//aspetto che arrivi lo status register
+	while( ( SPI2->SR & SPI_SR_RXNE ) == 0 ){}//aspetto che arrivi lo status register
 
 	temp = SPI2->DR;//leggo lo status register
 
@@ -160,13 +160,13 @@ int spiSendCommandWriteData(uint8_t command, uint8_t addr,uint8_t* sr, uint8_t* 
 		i++;
 		SPI2->DR = temp;//inserisco prossimo dato nel DR
 
-		while( ( SPI2->SR & SPI_SR_RXNE ) != 0 ){}//aspetto che arrivi la risposta al vecchio dato(sensa significato)
+		while( ( SPI2->SR & SPI_SR_RXNE ) == 0 ){}//aspetto che arrivi la risposta al vecchio dato(sensa significato)
 
 		temp = SPI2->DR;//leggo la risposta solo per non far andare in overrun(lettura non usata)
 
 	}
 
-	while( ( SPI2->SR & SPI_SR_RXNE ) != 0 ){}//aspetto la trasmissione dell'ultimo dato
+	while( ( SPI2->SR & SPI_SR_RXNE ) == 0 ){}//aspetto la trasmissione dell'ultimo dato
 
 	temp = SPI2->DR;
 
@@ -216,7 +216,7 @@ int spiSendCommandReadData(uint8_t command, uint8_t addr,uint8_t* sr, uint8_t* d
 		SPI2->DR = temp;
 	}
 
-	while( ( SPI2->SR & SPI_SR_RXNE ) != 0 ){}//aspetto che arrivi lo status register
+	while( ( SPI2->SR & SPI_SR_RXNE ) == 0 ){}//aspetto che arrivi lo status register
 
 	temp = SPI2->DR;//leggo lo status register
 
@@ -236,14 +236,14 @@ int spiSendCommandReadData(uint8_t command, uint8_t addr,uint8_t* sr, uint8_t* d
 		i++;
 		SPI2->DR = temp;//inserisco prossimo dato nel DR
 
-		while( ( SPI2->SR & SPI_SR_RXNE ) != 0 ){}//aspetto che arrivi la risposta precedente
+		while( ( SPI2->SR & SPI_SR_RXNE ) == 0 ){}//aspetto che arrivi la risposta precedente
 
 		temp = SPI2->DR;//leggo la risposta precedente
 
 		data[i-2] = (uint8_t)temp;
 	}
 
-	while( ( SPI2->SR & SPI_SR_RXNE ) != 0 ){}//aspetto la ricezione dell'ultimo dato
+	while( ( SPI2->SR & SPI_SR_RXNE ) == 0 ){}//aspetto la ricezione dell'ultimo dato
 
 	temp = SPI2->DR;
 
