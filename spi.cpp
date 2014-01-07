@@ -62,7 +62,7 @@ void configureSpi(){
 	//essendo pa1 interrupt non devo impostare bit in siscfg_exticr1(va messo 0 nel registro e già ci dovrebbe essere)
 	interruptLine::mode(Mode::INPUT_PULL_UP);
 //	EXTI->IMR |= EXTI_IMR_MR1;
-//	EXTI->RTSR &= !EXTI_RTSR_TR1;
+//	EXTI->RTSR &= ~EXTI_RTSR_TR1;
 //	EXTI->FTSR |= EXTI_FTSR_TR1;
 //	NVIC_EnableIRQ(EXTI1_IRQn);
 //	NVIC_SetPriority(EXTI1_IRQn,15);//linea che non so bene cosa faccia(copiata dal prof)
@@ -73,11 +73,11 @@ void configureSpi(){
 
 	//imposto il control register 1
 	SPI2->CR1 |= SPI_CR1_BR_0 | SPI_CR1_BR_2 ;//imposta a velocità di trasmissione a 2 MHz
-	SPI2->CR1 &= !SPI_CR1_CPHA;//impostato campionamento sul primo fronte di clock
-	SPI2->CR1 &= !SPI_CR1_CPOL;//impostato clock idle basso
-	SPI2->CR1 &= !SPI_CR1_DFF;//impostato frame da 8 bit
-	SPI2->CR1 &= !SPI_CR1_LSBFIRST;//impostato così a 0 manda prima msb
-	SPI2->CR1 &= !SPI_CR1_SSM;//il management del SS è hardware
+	SPI2->CR1 &= ~SPI_CR1_CPHA;//impostato campionamento sul primo fronte di clock
+	SPI2->CR1 |= SPI_CR1_CPOL;//impostato clock idle basso
+	SPI2->CR1 &= ~SPI_CR1_DFF;//impostato frame da 8 bit
+	SPI2->CR1 &= ~SPI_CR1_LSBFIRST;//impostato così a 0 manda prima msb
+	SPI2->CR1 &= ~SPI_CR1_SSM;//il management del SS è hardware
 	SPI2->CR1 |= SPI_CR1_MSTR;//imposto come master
 	SPI2->CR1 |= SPI_CR1_SPE;//enable della spi
 
