@@ -13,7 +13,7 @@ public:
     spi_driver();
     spi_driver(const spi_driver& orig);
     virtual ~spi_driver();
-    void spi_Send(unsigned char byte);
+    void spi_write(unsigned char byte);
     unsigned char spi_Receive();
 private:
 
