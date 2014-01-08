@@ -8,6 +8,7 @@ using namespace miosix;
 
 //definisco i gpio che usiamo
 typedef Gpio<GPIOA_BASE,1> interruptLine;//linea interrupt del modulo wireless
+typedef Gpio<GPIOA_BASE,2> powerLine;//linea per alimentare il modulo wireless(da chiedere al prof se compatibile con altri moduli)
 typedef Gpio<GPIOB_BASE,11> cen;//linea enable del modulo wireless
 typedef Gpio<GPIOB_BASE,12> cs;//ss spi
 typedef Gpio<GPIOB_BASE,13> sck;//clock spi
@@ -53,6 +54,9 @@ void configureSpi(){
 	miso::alternateFunction(5);
 	mosi::alternateFunction(5);
 
+	//imposto gpioa 2 per l'alimentazione
+	powerLine::mode(Mode::OUTPUT);
+	powerLine::low();
 
 	//imposto gpio 11 in output digitale per chip enable
 	cen::mode(Mode::OUTPUT);
@@ -83,6 +87,18 @@ void configureSpi(){
 
 	return;
 
+}
+
+/*! @brief alza il pin per l'alimentazione del modulo wireless
+ */
+void powerLineUp(){
+	powerLine::high();
+}
+
+/*! @brief abbassa il pin di alimentazione del modulo wireless
+ */
+void powerLineDown(){
+	powerLine::low();
 }
 
 /*! @brief alza il bit di enable del modulo wireless

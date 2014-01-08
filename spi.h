@@ -6,6 +6,12 @@
 //enable the spi and various gpio for comunicating with the wireless module
 void configureSpi(void);
 
+//alza il pin di alimentazione del modulo wireless
+void powerLineUp(void);
+
+//abbassa il pin di alimentazione del modulo wireless
+void powerLineDown(void);
+
 //alza il bit CE
 void chipEnable(void);
 
