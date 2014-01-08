@@ -18,7 +18,7 @@ nRF24L01P::~nRF24L01P() {
 }
 
 void nRF24L01P::init() {
-
+    spi = new spi_driver();
 }
 void nRF24L01P::transmit(int num_passi){
 
