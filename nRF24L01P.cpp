@@ -15,7 +15,7 @@
 
 using namespace miosix;
 
-
+static Thread *waiting=0;
 
 /*Spi Gpio*/
 typedef Gpio<GPIOB_BASE,11> CE;
@@ -70,6 +70,27 @@ int  nRF24L01P::get_register(int registro){
     result = spi->spi_Receive();
     CS::high();
     return result;    
+}
+
+void nRF24L01P::waitForModule(){
+    FastInterruptDisableLock dLock; 
+    waiting=Thread::IRQgetCurrentThread();
+    while(waiting)
+    {
+        Thread::IRQwait(); 
+        FastInterruptEnableLock eLock(dLock); 
+        Thread::yield(); 
+    }
+}
+
+void __attribute__((naked)) EXTI1_IRQHandler(){
+    saveContext();
+    asm volatile("bl _Z16EXTI1HandlerImplv");
+    restoreContext();
+}
+
+void __attribute__((used)) EXTI0HandlerImpl(){
+    
 }
 
 

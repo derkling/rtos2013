@@ -18,6 +18,7 @@ public:
     void init();
     void transmit(int num_passi);
     int receive();
+    void waitForModule();
 private:
     int get_register(int registro);
     spi_driver *spi;
