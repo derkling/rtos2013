@@ -9,15 +9,17 @@
 #ifndef NRF24L01P_H
 #define	NRF24L01P_H
 
+
 class nRF24L01P {
 public:
     nRF24L01P();
     nRF24L01P(const nRF24L01P& orig);
-    virtual ~nRF24L01P();
+    virtual ~nRF24L01P();    
     void init();
     void transmit(int num_passi);
-    int recive();
+    int receive();
 private:
+    int get_register(int registro);
     spi_driver *spi;
 
 };
