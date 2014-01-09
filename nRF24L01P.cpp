@@ -64,7 +64,13 @@ nRF24L01P::nRF24L01P() {
     CS::high();
     greenLed::mode(Mode::OUTPUT);
     greenLed::high(); /*test*/
-    
+}
+
+nRF24L01P::nRF24L01P(const nRF24L01P& orig) {
+}
+
+nRF24L01P::~nRF24L01P() {
+     
 }
 
 nRF24L01P::nRF24L01P(const nRF24L01P& orig) {
