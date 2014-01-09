@@ -37,14 +37,14 @@ spi_driver::spi_driver(const spi_driver& orig) {
 spi_driver::~spi_driver() {
 }
 
-void spi_driver::spi_write(unsigned char byte){
-    SPI2->DR = byte;
+void spi_driver::spi_write(int command){
+    SPI2->DR = command;
     while((SPI2->SR & SPI_SR_RXNE)==0); 
-    byte=SPI2->DR;
+    command=SPI2->DR;
    
 }
 
-unsigned char spi_driver::spi_Receive(){
+int spi_driver::spi_Receive(){
      SPI2->DR = 0;
      while((SPI2->SR & SPI_SR_RXNE)==0);
      return SPI2->DR;  
