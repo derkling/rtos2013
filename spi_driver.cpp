@@ -11,32 +11,12 @@
 
 using namespace miosix;
 
-/*Spi Gpio*/
-typedef Gpio<GPIOB_BASE,11> CE;
-typedef Gpio<GPIOB_BASE,12> CS;
-typedef Gpio<GPIOB_BASE,13> SCK;
-typedef Gpio<GPIOB_BASE,14> MISO;
-typedef Gpio<GPIOB_BASE,15> MOSI;
-typedef Gpio<GPIOA_BASE,1> IRQ;
-
-/*Led Gpio*/
-typedef Gpio<GPIOD_BASE,12> greenLed;
-
 
 
 spi_driver::spi_driver() {
     RCC->APB1ENR |= RCC_APB1ENR_SPI2EN; /*attivo il clock*/
     
-    MISO::mode(Mode::ALTERNATE);
-    MISO::alternateFunction(5);
-    MOSI::mode(Mode::ALTERNATE); 
-    MOSI::alternateFunction(5);
-    IRQ::mode(Mode::INPUT);
-    SCK::mode(Mode::ALTERNATE);
-    SCK::alternateFunction(5);
-    CS::mode(Mode::OUTPUT);
-    CS::high();
-    
+ 
     //guida a pagina 861
     // SPI control register 1 
 
@@ -48,10 +28,7 @@ spi_driver::spi_driver() {
                         SPI_CR1_SSI |                                      //6)Internal slave select  DEVO settare anche SSOE non so...
                         SPI_CR1_MSTR  |                                  //7)Devo per forza settarlin 
                         SPI_CR1_SPE;
-    
-   
-    greenLed::mode(Mode::OUTPUT);
-    greenLed::high(); /*test*/
+ 
 }
 
 spi_driver::spi_driver(const spi_driver& orig) {
@@ -68,7 +45,8 @@ void spi_driver::spi_write(unsigned char byte){
 }
 
 unsigned char spi_driver::spi_Receive(){
-    
-  return 'a';  
+     SPI2->DR = 0;
+     while((SPI2->SR & SPI_SR_RXNE)==0);
+     return SPI2->DR;  
 }
 
