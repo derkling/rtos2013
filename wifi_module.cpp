@@ -25,7 +25,7 @@ void *wifi_start(void *arg)
             wifi->transmit(num_step);
         }
         else{
-            wifi->recive();
+            wifi->receive();
         }
     
     }

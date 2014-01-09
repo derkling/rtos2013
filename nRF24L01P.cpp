@@ -9,7 +9,13 @@
 #include <miosix.h>
 #include <miosix/kernel/scheduler/scheduler.h>
 
+//NRF24L01P Macro
+#define NRF24L01P_CMD_RD_REG 0x00
+#define NRF24LO1P_RG_BITMASK 0x1f
+
 using namespace miosix;
+
+
 
 /*Spi Gpio*/
 typedef Gpio<GPIOB_BASE,11> CE;
@@ -59,10 +65,10 @@ int nRF24L01P::receive(){
 int  nRF24L01P::get_register(int registro){
     int command = NRF24L01P_CMD_RD_REG | (registro & NRF24LO1P_RG_BITMASK);
     int result;
-    CS.low();
+    CS::low();
     spi->spi_write(command);   
     result = spi->spi_Receive();
-    CS.high();
+    CS::high();
     return result;
     
     
