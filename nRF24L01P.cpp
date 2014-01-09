@@ -73,13 +73,6 @@ nRF24L01P::~nRF24L01P() {
      
 }
 
-nRF24L01P::nRF24L01P(const nRF24L01P& orig) {
-}
-
-nRF24L01P::~nRF24L01P() {
-   
-}
-
 /**
  * power up the module
  */
@@ -108,8 +101,8 @@ void nRF24L01P::set_receive_mode(){
     int cur_config = get_register(NRF24L01P_REG_CONF);
     cur_config |= NRF24L01P_PRIM_RX;
     set_register(NRF24L01P_REG_CONF,cur_config);
-    if (CE.value()==0){
-        CE.high();
+    if (CE::value()==0){
+        CE::high();
     }
     usleep(NRF24L01P_TPECE2CSN);
     mode = NRF24L01P_RX_MODE;
@@ -123,8 +116,8 @@ void nRF24L01P::set_transmit_mode(){
     int cur_config = get_register(NRF24L01P_REG_CONF);
     cur_config &= ~NRF24L01P_PRIM_RX;
     set_register(NRF24L01P_REG_CONF,cur_config);
-    if (CE.value()==0){
-        CE.high();
+    if (CE::value()==0){
+        CE::high();
     }
     usleep(NRF24L01P_TPECE2CSN);
     mode = NRF24L01P_TX_MODE;
@@ -145,11 +138,11 @@ int nRF24L01P::receive(){
  * @param data_registro data to set the register
  */
 void nRF24L01P::set_register(int addr_registro,int data_registro){
-        int old_ce =CE.value()  //save the CE value    
-        CE.low();               //in order to change value of register the module has to be in StandBy1 mode
-        int status = spi.spi_write(NRF24L01P_CMD_WT_REG |(addr_registro & NRF24LO1P_REG_ADDR_BITMASK)); //command to write the at correct address of register
-        spi.spi_write(data_registro & 0xff);    //data used to set the register
-        CE.value()=old_ce;                      //restore old ce value
+        int old_ce =CE::value();  //save the CE value    
+        CE::low();               //in order to change value of register the module has to be in StandBy1 mode
+        spi->spi_write(NRF24L01P_CMD_WT_REG |(addr_registro & NRF24LO1P_REG_ADDR_BITMASK)); //command to write the at correct address of register
+        spi->spi_write(data_registro & 0xff);    //data used to set the register
+        old_ce ? CE::high():CE::low();                  //restore old ce value
         usleep(NRF24L01P_TPECE2CSN);            //sleep to apply ce value change
         
 
@@ -159,8 +152,8 @@ int  nRF24L01P::get_register(int registro){
     int command = NRF24L01P_CMD_RD_REG | (registro & NRF24LO1P_REG_ADDR_BITMASK);
     int result;
     CS::low();
-    spi.spi_write(command);   
-    result = spi.spi_Receive();
+    spi->spi_write(command);   
+    result = spi->spi_Receive();
     CS::high();
     return result;   
 }

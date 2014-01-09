@@ -25,7 +25,8 @@ public:
 private:
     void set_register(int addr_registro,int data_registro);
     int get_register(int registro);
-    spi_driver spi;
+    spi_driver *spi;
+    int mode;
 
 };
 
