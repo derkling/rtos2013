@@ -18,7 +18,7 @@ void *wifi_start(void *arg)
     nRF24L01P *wifi;
     wifi = new nRF24L01P();
     
-    wifi->init();
+    wifi->power_up();
     
     for(;;){
         if (trasmission){
