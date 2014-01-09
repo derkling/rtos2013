@@ -44,12 +44,12 @@ void configureSpi(){
 	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN | RCC_AHB1ENR_GPIOBEN;//abilito il clock ai gpio a e b che usiamo
 
 	//imposto gpiob 12,13,14,15 per spi
-	cs::mode(Mode::ALTERNATE);
+	cs::mode(Mode::OUTPUT);
 	sck::mode(Mode::ALTERNATE);
 	miso::mode(Mode::ALTERNATE);
 	mosi::mode(Mode::ALTERNATE);
-
-	cs::alternateFunction(5);
+	cs::high();
+//	cs::alternateFunction(5);
 	sck::alternateFunction(5);
 	miso::alternateFunction(5);
 	mosi::alternateFunction(5);
@@ -145,7 +145,8 @@ int spiSendCommandWriteData(uint8_t command, uint8_t addr,uint8_t* sr, uint8_t* 
 	i=0;//i usato per tenere traccia del prossimo dato da inviare
 
 	while( ( SPI2->SR & SPI_SR_TXE ) == 0 ){}//aspetto che registro trasmissione sia vuoto(probabilmente istruzione inutile)
-
+	cs::low();
+	usleep(1);
 	SPI2->DR = temp;//inserisco comando nel data register
 	
 	while( ( SPI2->SR & SPI_SR_TXE ) == 0 ){}//aspetto che sia copiato nel registro di invio
@@ -165,6 +166,7 @@ int spiSendCommandWriteData(uint8_t command, uint8_t addr,uint8_t* sr, uint8_t* 
 	}
 
 	if( lenght == 0 ){//se non c'erano dati da inviare finito
+		cs::high();
 		return 1;
 	}
 
@@ -185,7 +187,7 @@ int spiSendCommandWriteData(uint8_t command, uint8_t addr,uint8_t* sr, uint8_t* 
 	while( ( SPI2->SR & SPI_SR_RXNE ) == 0 ){}//aspetto la trasmissione dell'ultimo dato
 
 	temp = SPI2->DR;
-
+	cs::high();
 	return 1;
 
 }
