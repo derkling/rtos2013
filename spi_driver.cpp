@@ -40,12 +40,12 @@ spi_driver::~spi_driver() {
 void spi_driver::spi_write(int command){
     SPI2->DR = command;
     while((SPI2->SR & SPI_SR_RXNE)==0); 
-    command=SPI2->DR;
+    command=SPI2->DR;         /*dummy read viene usato perazzerare il bit RXNE */
    
 }
 
 int spi_driver::spi_Receive(){
-     SPI2->DR = 0;
+     SPI2->DR = 0;             /*dummy write forza la ricezione di un byte*/
      while((SPI2->SR & SPI_SR_RXNE)==0);
      return SPI2->DR;  
 }

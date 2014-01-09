@@ -31,12 +31,6 @@ typedef Gpio<GPIOD_BASE,12> greenLed;
 
 
 nRF24L01P::nRF24L01P() {
-}
-
-nRF24L01P::nRF24L01P(const nRF24L01P& orig) {
-}
-
-nRF24L01P::~nRF24L01P() {
     MISO::mode(Mode::ALTERNATE);
     MISO::alternateFunction(5);
     MOSI::mode(Mode::ALTERNATE); 
@@ -48,7 +42,13 @@ nRF24L01P::~nRF24L01P() {
     CS::high();
     greenLed::mode(Mode::OUTPUT);
     greenLed::high(); /*test*/
-    
+}
+
+nRF24L01P::nRF24L01P(const nRF24L01P& orig) {
+}
+
+nRF24L01P::~nRF24L01P() {
+     
 }
 
 void nRF24L01P::init() {
@@ -69,10 +69,7 @@ int  nRF24L01P::get_register(int registro){
     spi->spi_write(command);   
     result = spi->spi_Receive();
     CS::high();
-    return result;
-    
-    
-    
+    return result;    
 }
 
 
