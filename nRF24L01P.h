@@ -15,13 +15,18 @@ public:
     nRF24L01P();
     nRF24L01P(const nRF24L01P& orig);
     virtual ~nRF24L01P();    
-    void init();
+    void power_up();
+    void power_down();
+    void set_transmit_mode();
+    void set_receive_mode();
     void transmit(int num_passi);
+
     int receive();
     void waitForModule();
 private:
+    void set_register(int addr_registro,int data_registro);
     int get_register(int registro);
-    spi_driver *spi;
+    spi_driver spi;
 
 };
 
