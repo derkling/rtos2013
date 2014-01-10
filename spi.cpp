@@ -76,7 +76,7 @@ void configureSpi(){
 	SPI2->CR2 |= SPI_CR2_SSOE;//abilito l'uscita SS
 
 	//imposto il control register 1
-	SPI2->CR1 |= SPI_CR1_BR_0 | SPI_CR1_BR_2 ;//imposta a velocità di trasmissione a 2 MHz
+	SPI2->CR1 |= SPI_CR1_BR_0 | SPI_CR1_BR_1 | SPI_CR1_BR_2 ;//imposta a velocità di trasmissione a 2 MHz
 	SPI2->CR1 &= ~SPI_CR1_CPHA;//impostato campionamento sul primo fronte di clock
 	SPI2->CR1 &= ~SPI_CR1_CPOL;//impostato clock idle basso
 	SPI2->CR1 &= ~SPI_CR1_DFF;//impostato frame da 8 bit
@@ -166,6 +166,7 @@ int spiSendCommandWriteData(uint8_t command, uint8_t addr,uint8_t* sr, uint8_t* 
 	}
 
 	if( lenght == 0 ){//se non c'erano dati da inviare finito
+		usleep(1);
 		cs::high();
 		return 1;
 	}
@@ -187,6 +188,7 @@ int spiSendCommandWriteData(uint8_t command, uint8_t addr,uint8_t* sr, uint8_t* 
 	while( ( SPI2->SR & SPI_SR_RXNE ) == 0 ){}//aspetto la trasmissione dell'ultimo dato
 
 	temp = SPI2->DR;
+	usleep(1);
 	cs::high();
 	return 1;
 
@@ -223,7 +225,8 @@ int spiSendCommandReadData(uint8_t command, uint8_t addr,uint8_t* sr, uint8_t* d
 	i=0;//i usato per tenere traccia del numero di dati ricevuti
 
 	while( ( SPI2->SR & SPI_SR_TXE ) == 0 ){}//aspetto che registro trasmissione sia vuoto(probabilmente istruzione inutile)
-
+	cs::low();
+	usleep(1);
 	SPI2->DR = temp;//inserisco comando nel data register
 	
 	while( ( SPI2->SR & SPI_SR_TXE ) == 0 ){}//aspetto che sia copiato nel registro di invio
@@ -243,6 +246,8 @@ int spiSendCommandReadData(uint8_t command, uint8_t addr,uint8_t* sr, uint8_t* d
 	}
 
 	if( lenght == 0 ){//se non c'erano dati da inviare finito
+		usleep(1);
+		cs::high();
 		return 1;
 	}
 
@@ -264,7 +269,8 @@ int spiSendCommandReadData(uint8_t command, uint8_t addr,uint8_t* sr, uint8_t* d
 	while( ( SPI2->SR & SPI_SR_RXNE ) == 0 ){}//aspetto la ricezione dell'ultimo dato
 
 	temp = SPI2->DR;
-
+	usleep(1);
+	cs::high();
 	data[i-1] = (uint8_t)temp;
 
 	return 1;
