@@ -129,6 +129,16 @@ void nRF24L01P::transmit(int num_passi){
 int nRF24L01P::receive(){
     return 0;
 }
+
+void nRF24L01P::CE_enable(){
+    CE::high();
+    usleep(NRF24L01P_TPECE2CSN);
+}
+
+void nRF24L01P::CE_disable(){
+    CE::low();
+}
+
 /**
  * function allowes to set a register to a particular value
  * @param addr_registro address of the register
