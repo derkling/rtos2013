@@ -6,13 +6,13 @@
  */
 
 #include "nRF24L01P.h"
-#include <miosix.h>
-
+#include <cstdio>
+#include "miosix.h"
 
 //NRF24L01P Macro 
 //Command
 #define NRF24L01P_CMD_RD_REG     0x00
-#define NRF24L01P_CMD_WT_REG     0x01
+#define NRF24L01P_CMD_WT_REG     0x20
 
 //bitmask and register address
 #define NRF24LO1P_REG_ADDR_BITMASK    0x1f
@@ -57,6 +57,7 @@ nRF24L01P::nRF24L01P() {
     SCK::alternateFunction(5);
     CS::mode(Mode::OUTPUT);
     CS::high();
+    CE::high();
 }
 
 nRF24L01P::nRF24L01P(const nRF24L01P& orig) {
@@ -72,10 +73,13 @@ nRF24L01P::~nRF24L01P() {
 void nRF24L01P::power_up() {
     //I get the current config and I add the power up bit then I write it back 
     int current_config = get_register(NRF24L01P_REG_CONF); 
+    printf("Prima di Acceso %d\n",current_config);
     current_config |= NRF24L01P_PWR_UP;
+    printf("Configurazione %d\n",current_config);
     set_register(NRF24L01P_REG_CONF,current_config);
     usleep(NRF24L01P_TPD2STBY);
     mode=NRF24L01P_STANDBY_MODE;
+    printf("Acceso %d\n",get_register(NRF24L01P_REG_CONF));
 }
 
 void nRF24L01P::power_down() {
@@ -132,9 +136,11 @@ int nRF24L01P::receive(){
  */
 void nRF24L01P::set_register(int addr_registro,int data_registro){
         int old_ce =CE::value();  //save the CE value    
-        CE::low();               //in order to change value of register the module has to be in StandBy1 mode
+        CE::low(); //in order to change value of register the module has to be in StandBy1 mode
+        CS::low();
         spi->spi_write(NRF24L01P_CMD_WT_REG |(addr_registro & NRF24LO1P_REG_ADDR_BITMASK)); //command to write the at correct address of register
-        spi->spi_write(data_registro & 0xff);    //data used to set the register
+        spi->spi_write(data_registro & 0xFF);    //data used to set the register
+        CS::high();
         old_ce ? CE::high():CE::low();                  //restore old ce value
         usleep(NRF24L01P_TPECE2CSN);            //sleep to apply ce value change
         
