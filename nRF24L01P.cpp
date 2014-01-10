@@ -7,7 +7,7 @@
 
 #include "nRF24L01P.h"
 #include <miosix.h>
-#include <miosix/kernel/scheduler/scheduler.h>
+
 
 //NRF24L01P Macro 
 //Command
@@ -36,7 +36,6 @@ typedef enum {
 
 using namespace miosix;
 
-static Thread *waiting=0;
 
 /*Spi Gpio*/
 typedef Gpio<GPIOB_BASE,11> CE;
@@ -45,10 +44,6 @@ typedef Gpio<GPIOB_BASE,13> SCK;
 typedef Gpio<GPIOB_BASE,14> MISO;
 typedef Gpio<GPIOB_BASE,15> MOSI;
 typedef Gpio<GPIOA_BASE,1> IRQ;
-
-/*Led Gpio*/
-typedef Gpio<GPIOD_BASE,12> greenLed;
-
 
 
 nRF24L01P::nRF24L01P() {
@@ -62,8 +57,6 @@ nRF24L01P::nRF24L01P() {
     SCK::alternateFunction(5);
     CS::mode(Mode::OUTPUT);
     CS::high();
-    greenLed::mode(Mode::OUTPUT);
-    greenLed::high(); /*test*/
 }
 
 nRF24L01P::nRF24L01P(const nRF24L01P& orig) {
@@ -126,7 +119,7 @@ void nRF24L01P::set_transmit_mode(){
 
 
 void nRF24L01P::transmit(int num_passi){
-
+    
 }
 
 int nRF24L01P::receive(){
@@ -158,25 +151,7 @@ int  nRF24L01P::get_register(int registro){
     return result;   
 }
 
-void nRF24L01P::waitForModule(){
-    FastInterruptDisableLock dLock; 
-    waiting=Thread::IRQgetCurrentThread();
-    while(waiting)
-    {
-        Thread::IRQwait(); 
-        FastInterruptEnableLock eLock(dLock); 
-        Thread::yield(); 
-    }
-}
 
-void __attribute__((naked)) EXTI1_IRQHandler(){
-    saveContext();
-    asm volatile("bl _Z16EXTI1HandlerImplv");
-    restoreContext();
-}
 
-void __attribute__((used)) EXTI0HandlerImpl(){
-    
-}
 
 
