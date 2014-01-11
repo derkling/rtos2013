@@ -21,12 +21,13 @@ public:
     void set_receive_mode();
     void transmit(int num_passi);
     
-    int receive();
+    int receive(int pipe,char *data,int count);
 private:
     void CE_enable();
     void CE_disable();
     void set_register(int addr_registro,int data_registro);
     int get_register(int registro);
+    bool packet_in_pipe(int pipe);
     spi_driver *spi;
     int mode;
 

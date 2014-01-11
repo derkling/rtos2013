@@ -10,17 +10,33 @@
 #include "miosix.h"
 
 //NRF24L01P Macro 
+//pipe number for multiceiver
+#define NRF24L01P_PIPE_NO_0     0
+#define NRF24L01P_PIPE_NO_1     1
+#define NRF24L01P_PIPE_NO_2     2
+#define NRF24L01P_PIPE_NO_3     3
+#define NRF24L01P_PIPE_NO_4     4
+#define NRF24L01P_PIPE_NO_5     5
+
+//size buffers
+#define NRF24L01P_RX_BUFFER_SIZE       32
+
+
 //Command
 #define NRF24L01P_CMD_RD_REG     0x00
 #define NRF24L01P_CMD_WT_REG     0x20
+#define NRF24L01P_CMD_NOP        0xff
 
 //bitmask and register address
 #define NRF24LO1P_REG_ADDR_BITMASK    0x1f
 #define NRF24L01P_REG_CONF       0x00
 
-//set data to register
-#define NRF24L01P_PRIM_RX        (1<<0)
-#define NRF24L01P_PWR_UP         (1<<1)
+//register config
+#define NRF24L01P_PRIM_RX        (1<<0)         //set to recive 
+#define NRF24L01P_PWR_UP         (1<<1)         //set to power up
+//register status
+#define NRF24L01P_STATUS_DR_RX   (1<<6)         //set if data register full
+#define NRF24L01P_STATUS_RX_P_NO (0x7<<1)       //set with number of pipe which is full      
 
 //time
 #define NRF24L01P_TPD2STBY       2000  //2mS
@@ -126,7 +142,17 @@ void nRF24L01P::transmit(int num_passi){
     
 }
 
-int nRF24L01P::receive(){
+int nRF24L01P::receive(int pipe,char *data,int count){
+    if (pipe<NRF24L01P_PIPE_NO_0 || pipe>NRF24L01P_PIPE_NO_5){
+        printf("Error number of pipe must be between 0 and 5 not %d\n",pipe);
+        return -1;
+    }
+    if (count<=0) {
+        return 0;
+    }
+    if (count>NRF24L01P_RX_BUFFER_SIZE){
+        count= NRF24L01P_RX_BUFFER_SIZE;
+    }
     return 0;
 }
 
@@ -165,6 +191,29 @@ int  nRF24L01P::get_register(int registro){
     result = spi->spi_Receive();
     CS::high();
     return result;   
+}
+
+bool nRF24L01P::packet_in_pipe(int pipe){
+    if ((pipe<NRF24L01P_PIPE_NO_0) || (pipe> NRF24L01P_PIPE_NO_5)){
+        return false;
+    }
+    int status=get_status_register();
+    //& is bitwise (it returns 01001100) && is and (return 0 or 1))
+    if((status & NRF24L01P_STATUS_DR_RX)&&((status & NRF24L01P_STATUS_RX_P_NO)>>1)==(pipe & 0x7)){
+        return true;
+    }
+    return false;
+}
+
+/**
+ * Function to get the status register
+ * @return status register
+ */
+int nRF24L01P::get_status_register(){
+    CS.low();
+    int status = spi->spi_write(NRF24L01P_CMD_NOP);    //the module send status bit every time is sent a command
+    CS.high();
+    return status;
 }
 
 
