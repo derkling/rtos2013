@@ -89,13 +89,10 @@ nRF24L01P::~nRF24L01P() {
 void nRF24L01P::power_up() {
     //I get the current config and I add the power up bit then I write it back 
     int current_config = get_register(NRF24L01P_REG_CONF); 
-    printf("Prima di Acceso %d\n",current_config);
     current_config |= NRF24L01P_PWR_UP;
-    printf("Configurazione %d\n",current_config);
     set_register(NRF24L01P_REG_CONF,current_config);
     usleep(NRF24L01P_TPD2STBY);
     mode=NRF24L01P_STANDBY_MODE;
-    printf("Acceso %d\n",get_register(NRF24L01P_REG_CONF));
 }
 
 void nRF24L01P::power_down() {
@@ -210,12 +207,20 @@ bool nRF24L01P::packet_in_pipe(int pipe){
  * @return status register
  */
 int nRF24L01P::get_status_register(){
-    CS.low();
-    int status = spi->spi_write(NRF24L01P_CMD_NOP);    //the module send status bit every time is sent a command
-    CS.high();
+    CS::low();
+    int status = spi->spi_Receive();    //the module send status bit every time is sent a command
+    CS::high();
     return status;
 }
 
+void nRF24L01P::test(){
+    power_down();
+    printf("Config register at power down %d\n",get_register(NRF24L01P_REG_CONF));
+    power_up();
+    printf("Config register at power up %d\n",get_register(NRF24L01P_REG_CONF));
+    
+    printf("Status register %d\n",get_status_register());
+}
 
 
 

@@ -62,8 +62,7 @@ void *wifi_start(void *arg)
     wifi = new nRF24L01P();
     greenLed::mode(Mode::OUTPUT);
     configureModuleInterrupt();
-    wifi->power_up();
-    wifi->set_receive_mode();
+    wifi->test();
     
     for(;;){
         waitForModule();

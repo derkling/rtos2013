@@ -20,6 +20,7 @@ public:
     void set_transmit_mode();
     void set_receive_mode();
     void transmit(int num_passi);
+    void test();
     
     int receive(int pipe,char *data,int count);
 private:
@@ -28,6 +29,7 @@ private:
     void set_register(int addr_registro,int data_registro);
     int get_register(int registro);
     bool packet_in_pipe(int pipe);
+    int get_status_register();
     spi_driver *spi;
     int mode;
 
