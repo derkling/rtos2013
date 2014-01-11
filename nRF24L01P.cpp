@@ -21,6 +21,7 @@
 #define NRF24L01P_REG_CONF              0x00
 #define NRF24L01P_REG_STATUS            0x07
 #define NRF24L01P_REG_RF_CH             0x05
+#define NRF24L01P_REG_RF_SETUP          0x06
 
 //set data to register
 #define NRF24L01P_PRIM_RX               (1<<0)
@@ -28,6 +29,7 @@
 #define NRF24L01P_STATUS_TX_DS          (1<<5)
 #define NRF24L01P_STATUS_MAX_RT         (1<<4)
 #define NRF24L01P_STATUS_RX_DR          (1<<6)
+#define NRF24L01P_RF_SETUP_RF_PWR_MASK  (0x3<<1)
 
 //time
 #define NRF24L01P_TPD2STBY              2000  //2mS
@@ -70,6 +72,7 @@ nRF24L01P::nRF24L01P() {
     set_register(NRF24L01P_REG_STATUS, NRF24L01P_STATUS_TX_DS | NRF24L01P_STATUS_MAX_RT |
                                 NRF24L01P_STATUS_RX_DR); /*clear every pending interrupt bits*/
     set_frequency(2450);
+    set_power_output(-12);
     
 
 }
@@ -222,9 +225,9 @@ int nRF24L01P::get_register_status(){
     int status;
     CS::low();
     status = spi->spi_write(NRF24L01P_CMD_NOP);
-    printf("status da write %d\n",status);
+    //printf("status da write %d\n",status);
     //status = spi->spi_Receive();
-     printf("status da receive %d\n",status);
+     //printf("status da receive %d\n",status);
     CS::high();
     return status;
 }
@@ -243,12 +246,37 @@ void nRF24L01P::setup_Gpio(){
 }
 
 void nRF24L01P::set_frequency(int frequency){
-    if (frequency < NRF24L01P_MIN_RF_FREQUENCY |
-                frequency > NRF24L01P_MAX_RF_FREQUENCY){
+    printf("Begin set frequency\n");
+    if ((frequency < NRF24L01P_MIN_RF_FREQUENCY) | (frequency > NRF24L01P_MAX_RF_FREQUENCY)){
         printf("Error frequency module %d\n",frequency);
         return;
     }
     int channel = (frequency - NRF24L01P_MIN_RF_FREQUENCY) & 0x7F;  /*from manual RF_freq = frequency - NRF24L01P_MIN_RF_FREQUENCY)*/
     set_register(NRF24L01P_REG_RF_CH, channel);
+    printf("end set frequency\n");
+}
+
+void nRF24L01P::set_power_output(int power){
+    printf("Start set power\n");
+    int rf_config = get_register(NRF24L01P_REG_RF_SETUP) & ~NRF24L01P_RF_SETUP_RF_PWR_MASK; /*get rf config except for the power bits*/
+    switch (power){                                     /*set the power*/
+        case NRF24L01P_TX_PWR_ZERO_DB:
+            rf_config |= NRF24L01P_TX_PWR_ZERO_DB;
+            break;
+        case NRF24L01P_TX_PWR_MINUS_6_DB:
+            rf_config |= NRF24L01P_TX_PWR_MINUS_6_DB;
+            break;
+        case NRF24L01P_TX_PWR_MINUS_12_DB:
+            rf_config |= NRF24L01P_TX_PWR_MINUS_12_DB;
+            break;
+        case NRF24L01P_TX_PWR_MINUS_18_DB:
+            rf_config |= NRF24L01P_TX_PWR_MINUS_18_DB;
+            break;
+        default:
+            printf("Error power module %d\n",power);
+            break;
+    }
+    set_register(NRF24L01P_REG_RF_SETUP, rf_config);    /*set the rf setup register*/
+    printf("End set power\n");
 }
 

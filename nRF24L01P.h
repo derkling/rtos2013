@@ -31,6 +31,7 @@ private:
     spi_driver *spi;
     void setup_Gpio();
     void set_frequency(int frequency);
+    void set_power_output(int power);
     int mode;
 
 };
