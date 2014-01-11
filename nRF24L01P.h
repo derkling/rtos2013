@@ -20,9 +20,9 @@ public:
     void set_transmit_mode();
     void set_receive_mode();
     void transmit(int num_passi);
-    void test();
-    
     int receive(int pipe,char *data,int count);
+    void test(); 
+
 private:
     void CE_enable();
     void CE_disable();
