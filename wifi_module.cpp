@@ -11,6 +11,7 @@ using namespace miosix;
 bool trasmission;
 int num_step=0;
 static Thread *waiting=0;
+char *data; //data received from air
 
 typedef Gpio<GPIOD_BASE,12> greenLed;
 typedef Gpio<GPIOA_BASE,1> IRQ;
@@ -63,10 +64,16 @@ void *wifi_start(void *arg)
     greenLed::mode(Mode::OUTPUT);
     configureModuleInterrupt();
     wifi->test();
-    
+    greenLed::high();
+    usleep(1000000);
+    greenLed::low();
     for(;;){
         waitForModule();
-        printf("Ho ricevuto qualcosa\n");
+        wifi->receive(0,data,1);
+        printf("Received data: %d",*data);
+        greenLed::high();
+        usleep(1000000);
+        greenLed::low();
         //num_step = wifi->receive();
         /*if (trasmission){
             wifi->transmit(num_step);
