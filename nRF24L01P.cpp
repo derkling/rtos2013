@@ -20,11 +20,14 @@
 #define NRF24LO1P_REG_ADDR_BITMASK      0x1f
 #define NRF24L01P_REG_CONF              0x00
 #define NRF24L01P_REG_STATUS            0x07
+#define NRF24L01P_REG_RF_CH             0x05
 
 //set data to register
 #define NRF24L01P_PRIM_RX               (1<<0)
 #define NRF24L01P_PWR_UP                (1<<1)
 #define NRF24L01P_STATUS_TX_DS          (1<<5)
+#define NRF24L01P_STATUS_MAX_RT         (1<<4)
+#define NRF24L01P_STATUS_RX_DR          (1<<6)
 
 //time
 #define NRF24L01P_TPD2STBY              2000  //2mS
@@ -32,6 +35,13 @@
 
 //size
 #define NRF24L01P_TX_FIFO_SIZE            32
+#define NRF24L01P_MIN_RF_FREQUENCY      2400
+#define NRF24L01P_MAX_RF_FREQUENCY      2525
+#define NRF24L01P_TX_PWR_ZERO_DB           0
+#define NRF24L01P_TX_PWR_MINUS_6_DB       -6
+#define NRF24L01P_TX_PWR_MINUS_12_DB     -12
+#define NRF24L01P_TX_PWR_MINUS_18_DB     -18
+
 
 typedef enum {
     NRF24L01P_UNKNOWN_MODE,
@@ -55,16 +65,13 @@ typedef Gpio<GPIOA_BASE,1> IRQ;
 
 nRF24L01P::nRF24L01P() {
     spi = new spi_driver();
-    MISO::mode(Mode::ALTERNATE);
-    MISO::alternateFunction(5);
-    MOSI::mode(Mode::ALTERNATE); 
-    MOSI::alternateFunction(5);
-    IRQ::mode(Mode::INPUT);
-    SCK::mode(Mode::ALTERNATE);
-    SCK::alternateFunction(5);
-    CS::mode(Mode::OUTPUT);
-    CS::high();
-    CE::high();
+    setup_Gpio();
+    power_down();
+    set_register(NRF24L01P_REG_STATUS, NRF24L01P_STATUS_TX_DS | NRF24L01P_STATUS_MAX_RT |
+                                NRF24L01P_STATUS_RX_DR); /*clear every pending interrupt bits*/
+    set_frequency(2450);
+    
+
 }
 
 nRF24L01P::nRF24L01P(const nRF24L01P& orig) {
@@ -114,6 +121,7 @@ void nRF24L01P::set_receive_mode(){
 }
 
 void nRF24L01P::set_transmit_mode(){
+    printf("Inizio transmit \n");
     if (mode==NRF24L01P_POWER_DOWN_MODE){
         power_up();
     }
@@ -125,13 +133,14 @@ void nRF24L01P::set_transmit_mode(){
     }
     usleep(NRF24L01P_TPECE2CSN);
     mode = NRF24L01P_TX_MODE;
+    printf("Fine transmit \n");
     
 }
 /**
- * 
- * @param count
- * @param data
- * @return 
+ * function allowes to transmit a data with the nRF24L01P module
+ * @param count dimension of data
+ * @param data data to send
+ * @return number of bits sent
  */
 int nRF24L01P::transmit(int count, char* data){
     int old_ce = CE::value();
@@ -140,7 +149,7 @@ int nRF24L01P::transmit(int count, char* data){
     if( count > NRF24L01P_TX_FIFO_SIZE)
         count = NRF24L01P_TX_FIFO_SIZE;
     CE_disable();
-    set_register(NRF24L01P_REG_STATUS, NRF24L01P_STATUS_TX_DS); /*clear bit data sent tx fifo*/
+    set_register(NRF24L01P_REG_STATUS, NRF24L01P_STATUS_TX_DS); /*clear bit interrupt data sent tx fifo*/
     CS::low();
     spi->spi_write(NRF24L01P_CMD_WR_TX_PAYLOAD); //command to start write from payload TX
     for( int i=0; i<count; i++){
@@ -151,8 +160,11 @@ int nRF24L01P::transmit(int count, char* data){
     set_transmit_mode();
     CE_enable();
     CE_disable();
-    
-    while( !( get_register_status() & NRF24L01P_STATUS_TX_DS)); //polling waiting for transfert complete
+    printf("Before polling\n");
+    while( !( get_register_status() & NRF24L01P_STATUS_TX_DS)){
+        
+    } //polling waiting for transfert complete
+    printf("After polling\n");
     set_register(NRF24L01P_REG_STATUS, NRF24L01P_STATUS_TX_DS); /*clear bit data sent tx fifo*/
     if( old_mode == NRF24L01P_RX_MODE){              //reset the state before
         set_receive_mode();
@@ -209,13 +221,34 @@ int  nRF24L01P::get_register(int registro){
 int nRF24L01P::get_register_status(){
     int status;
     CS::low();
-    spi->spi_write(NRF24L01P_CMD_NOP);
-    status = spi->spi_Receive();
+    status = spi->spi_write(NRF24L01P_CMD_NOP);
+    printf("status da write %d\n",status);
+    //status = spi->spi_Receive();
+     printf("status da receive %d\n",status);
     CS::high();
     return status;
 }
 
+void nRF24L01P::setup_Gpio(){
+    MISO::mode(Mode::ALTERNATE);
+    MISO::alternateFunction(5);
+    MOSI::mode(Mode::ALTERNATE); 
+    MOSI::alternateFunction(5);
+    IRQ::mode(Mode::INPUT);
+    SCK::mode(Mode::ALTERNATE);
+    SCK::alternateFunction(5);
+    CS::mode(Mode::OUTPUT);
+    CS::high();
+    CE::high();
+}
 
-
-
+void nRF24L01P::set_frequency(int frequency){
+    if (frequency < NRF24L01P_MIN_RF_FREQUENCY |
+                frequency > NRF24L01P_MAX_RF_FREQUENCY){
+        printf("Error frequency module %d\n",frequency);
+        return;
+    }
+    int channel = (frequency - NRF24L01P_MIN_RF_FREQUENCY) & 0x7F;  /*from manual RF_freq = frequency - NRF24L01P_MIN_RF_FREQUENCY)*/
+    set_register(NRF24L01P_REG_RF_CH, channel);
+}
 

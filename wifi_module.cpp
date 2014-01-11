@@ -64,7 +64,7 @@ void *wifi_start(void *arg)
     greenLed::mode(Mode::OUTPUT);
     configureModuleInterrupt();
     wifi->power_up();
-    wifi->set_receive_mode();
+    //wifi->set_transmit_mode();
     
     for(;;){
         greenLed::high();

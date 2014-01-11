@@ -29,6 +29,8 @@ private:
     int get_register_status();
     void CE_restore(int old_ce);
     spi_driver *spi;
+    void setup_Gpio();
+    void set_frequency(int frequency);
     int mode;
 
 };
