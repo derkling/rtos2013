@@ -19,14 +19,15 @@ public:
     void power_down();
     void set_transmit_mode();
     void set_receive_mode();
-    void transmit(int num_passi);
-    
+    int transmit(int count, char* data);
     int receive();
 private:
     void CE_enable();
     void CE_disable();
     void set_register(int addr_registro,int data_registro);
     int get_register(int registro);
+    int get_register_status();
+    void CE_restore(int old_ce);
     spi_driver *spi;
     int mode;
 

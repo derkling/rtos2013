@@ -11,20 +11,27 @@
 
 //NRF24L01P Macro 
 //Command
-#define NRF24L01P_CMD_RD_REG     0x00
-#define NRF24L01P_CMD_WT_REG     0x20
+#define NRF24L01P_CMD_RD_REG            0x00
+#define NRF24L01P_CMD_WT_REG            0x20
+#define NRF24L01P_CMD_NOP               0xff
+#define NRF24L01P_CMD_WR_TX_PAYLOAD     0xa0
 
 //bitmask and register address
-#define NRF24LO1P_REG_ADDR_BITMASK    0x1f
-#define NRF24L01P_REG_CONF       0x00
+#define NRF24LO1P_REG_ADDR_BITMASK      0x1f
+#define NRF24L01P_REG_CONF              0x00
+#define NRF24L01P_REG_STATUS            0x07
 
 //set data to register
-#define NRF24L01P_PRIM_RX        (1<<0)
-#define NRF24L01P_PWR_UP         (1<<1)
+#define NRF24L01P_PRIM_RX               (1<<0)
+#define NRF24L01P_PWR_UP                (1<<1)
+#define NRF24L01P_STATUS_TX_DS          (1<<5)
 
 //time
-#define NRF24L01P_TPD2STBY       2000  //2mS
-#define NRF24L01P_TPECE2CSN      4     //4uS
+#define NRF24L01P_TPD2STBY              2000  //2mS
+#define NRF24L01P_TPECE2CSN                4  //4uS
+
+//size
+#define NRF24L01P_TX_FIFO_SIZE            32
 
 typedef enum {
     NRF24L01P_UNKNOWN_MODE,
@@ -120,14 +127,48 @@ void nRF24L01P::set_transmit_mode(){
     mode = NRF24L01P_TX_MODE;
     
 }
-
-
-void nRF24L01P::transmit(int num_passi){
+/**
+ * 
+ * @param count
+ * @param data
+ * @return 
+ */
+int nRF24L01P::transmit(int count, char* data){
+    int old_ce = CE::value();
+    if( count < 0)
+        return 0;
+    if( count > NRF24L01P_TX_FIFO_SIZE)
+        count = NRF24L01P_TX_FIFO_SIZE;
+    CE_disable();
+    set_register(NRF24L01P_REG_STATUS, NRF24L01P_STATUS_TX_DS); /*clear bit data sent tx fifo*/
+    CS::low();
+    spi->spi_write(NRF24L01P_CMD_WR_TX_PAYLOAD); //command to start write from payload TX
+    for( int i=0; i<count; i++){
+        spi->spi_write(*data++);
+    }
+    CS::high();
+    int old_mode = mode;
+    set_transmit_mode();
+    CE_enable();
+    CE_disable();
+    
+    while( !( get_register_status() & NRF24L01P_STATUS_TX_DS)); //polling waiting for transfert complete
+    set_register(NRF24L01P_REG_STATUS, NRF24L01P_STATUS_TX_DS); /*clear bit data sent tx fifo*/
+    if( old_mode == NRF24L01P_RX_MODE){              //reset the state before
+        set_receive_mode();
+    }
+    CE_restore(old_ce);
+    return count;
     
 }
 
 int nRF24L01P::receive(){
     return 0;
+}
+
+void nRF24L01P::CE_restore(int old_ce){
+    old_ce ? CE::high():CE::low();      //restore old ce value
+    usleep(NRF24L01P_TPECE2CSN);    //sleep to apply ce value change
 }
 
 void nRF24L01P::CE_enable(){
@@ -149,11 +190,9 @@ void nRF24L01P::set_register(int addr_registro,int data_registro){
         CE::low(); //in order to change value of register the module has to be in StandBy1 mode
         CS::low();
         spi->spi_write(NRF24L01P_CMD_WT_REG |(addr_registro & NRF24LO1P_REG_ADDR_BITMASK)); //command to write the at correct address of register
-        spi->spi_write(data_registro & 0xFF);    //data used to set the register
+        spi->spi_write(data_registro & NRF24L01P_CMD_NOP);    //data used to set the register
         CS::high();
-        old_ce ? CE::high():CE::low();                  //restore old ce value
-        usleep(NRF24L01P_TPECE2CSN);            //sleep to apply ce value change
-        
+        CE_restore(old_ce);
 
 }
 
@@ -165,6 +204,15 @@ int  nRF24L01P::get_register(int registro){
     result = spi->spi_Receive();
     CS::high();
     return result;   
+}
+
+int nRF24L01P::get_register_status(){
+    int status;
+    CS::low();
+    spi->spi_write(NRF24L01P_CMD_NOP);
+    status = spi->spi_Receive();
+    CS::high();
+    return status;
 }
 
 
