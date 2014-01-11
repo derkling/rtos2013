@@ -32,6 +32,7 @@ private:
     void setup_Gpio();
     void set_frequency(int frequency);
     void set_power_output(int power);
+    void set_air_data_rate(int rate);
     int mode;
 
 };

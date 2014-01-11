@@ -30,6 +30,7 @@
 #define NRF24L01P_STATUS_MAX_RT         (1<<4)
 #define NRF24L01P_STATUS_RX_DR          (1<<6)
 #define NRF24L01P_RF_SETUP_RF_PWR_MASK  (0x3<<1)
+#define NRF24L01P_RF_SETUP_RF_DR_MASK   (40<<0)
 
 //time
 #define NRF24L01P_TPD2STBY              2000  //2mS
@@ -43,6 +44,9 @@
 #define NRF24L01P_TX_PWR_MINUS_6_DB       -6
 #define NRF24L01P_TX_PWR_MINUS_12_DB     -12
 #define NRF24L01P_TX_PWR_MINUS_18_DB     -18
+#define NRF24L01P_RF_DR_250KBPS          (1<<5)
+#define NRF24L01P_RF_DR_1MBPS           (0)
+#define NRF24L01P_RF_DR_2MBPS           (1<<3)
 
 
 typedef enum {
@@ -73,7 +77,7 @@ nRF24L01P::nRF24L01P() {
                                 NRF24L01P_STATUS_RX_DR); /*clear every pending interrupt bits*/
     set_frequency(2450);
     set_power_output(-12);
-    
+    set_air_data_rate(0);    
 
 }
 
@@ -274,9 +278,29 @@ void nRF24L01P::set_power_output(int power){
             break;
         default:
             printf("Error power module %d\n",power);
-            break;
+            return;
     }
     set_register(NRF24L01P_REG_RF_SETUP, rf_config);    /*set the rf setup register*/
     printf("End set power\n");
+}
+
+void nRF24L01P::set_air_data_rate(int rate){
+    printf("Start set air rate\n");
+    int air_config = get_register(NRF24L01P_REG_RF_SETUP) & ~NRF24L01P_RF_SETUP_RF_DR_MASK; /*get rf config except rf_dr_low and rf_dr_high*/
+    switch (rate){
+        case NRF24L01P_RF_DR_250KBPS:
+            air_config |= NRF24L01P_RF_DR_250KBPS;
+            break;
+        case NRF24L01P_RF_DR_1MBPS:
+            air_config |= NRF24L01P_RF_DR_1MBPS;
+            break;
+        case NRF24L01P_RF_DR_2MBPS:
+            air_config |= NRF24L01P_RF_DR_2MBPS;
+            break;
+        default:
+            printf("Error air data rate %d\n",rate);
+            return;
+    }
+    set_register(NRF24L01P_REG_RF_SETUP, air_config);
 }
 
