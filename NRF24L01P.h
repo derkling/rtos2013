@@ -16,6 +16,11 @@ public:
     writeRegister();
     readRegister();
     readStatusRegister();
+    powerUp();
+    setReceiveMode();
+    setTransmitMode();
+    returnStandBy-I();
+    sendDataToTx
 private:
 
 };

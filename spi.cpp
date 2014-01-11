@@ -20,6 +20,7 @@ spi::spi() {
                 SPI_CR1_SPE;   // accende la periferica
     //il control register C1 dell'SPI ora è: 0000 0011 0110 0100 ( vedi programmer manual pg 896 )
     
+    
 }
 
 spi::spi(const spi& orig) {
