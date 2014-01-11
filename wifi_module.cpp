@@ -70,8 +70,8 @@ void *wifi_start(void *arg)
         greenLed::high();
         wifi->transmit(6,data);
         printf("Ho trasmesso\n");
-        usleep(100000);
         greenLed::low();
+        usleep(2000000);
         //num_step = wifi->receive();
         /*if (trasmission){
             wifi->transmit(num_step);

@@ -31,6 +31,14 @@
 #define NRF24L01P_STATUS_RX_DR          (1<<6)
 #define NRF24L01P_RF_SETUP_RF_PWR_MASK  (0x3<<1)
 #define NRF24L01P_RF_SETUP_RF_DR_MASK   (40<<0)
+#define NRF24L01P_RF_SETUP_PWR_0DBM          (0x3<<1)
+#define NRF24L01P_RF_SETUP_PWR_MINUS_6DBM   (0x2<<1)
+#define NRF24L01P_RF_SETUP_PWR_MINUS_12DBM   (0x1<<1)
+#define NRF24L01P_RF_SETUP_PWR_MINUS_18DBM   (0x0<<1)
+#define NRF24L01P_RF_DR_250KBPS          (1<<5)
+#define NRF24L01P_RF_DR_1MBPS           (0)
+#define NRF24L01P_RF_DR_2MBPS           (1<<3)
+
 
 //time
 #define NRF24L01P_TPD2STBY              2000  //2mS
@@ -44,9 +52,11 @@
 #define NRF24L01P_TX_PWR_MINUS_6_DB       -6
 #define NRF24L01P_TX_PWR_MINUS_12_DB     -12
 #define NRF24L01P_TX_PWR_MINUS_18_DB     -18
-#define NRF24L01P_RF_DR_250KBPS          (1<<5)
-#define NRF24L01P_RF_DR_1MBPS           (0)
-#define NRF24L01P_RF_DR_2MBPS           (1<<3)
+#define NRF24L01P_DATARATE_250KBPS      250
+#define NRF24L01P_DATARATE_1MBPS        1000
+#define NRF24L01P_DATARATE_2MBPS        2000
+
+
 
 
 typedef enum {
@@ -77,7 +87,7 @@ nRF24L01P::nRF24L01P() {
                                 NRF24L01P_STATUS_RX_DR); /*clear every pending interrupt bits*/
     set_frequency(2450);
     set_power_output(-12);
-    set_air_data_rate(0);    
+    set_air_data_rate(1000);    
 
 }
 
@@ -160,6 +170,7 @@ int nRF24L01P::transmit(int count, char* data){
     CS::low();
     spi->spi_write(NRF24L01P_CMD_WR_TX_PAYLOAD); //command to start write from payload TX
     for( int i=0; i<count; i++){
+        printf("char %c\n",*data);
         spi->spi_write(*data++);
     }
     CS::high();
@@ -167,7 +178,8 @@ int nRF24L01P::transmit(int count, char* data){
     set_transmit_mode();
     CE_enable();
     CE_disable();
-    printf("Before polling\n");
+    printf("Before polling \n");
+    printf("Get register status %d\n",get_register_status());
     while( !( get_register_status() & NRF24L01P_STATUS_TX_DS)){
         
     } //polling waiting for transfert complete
@@ -261,27 +273,28 @@ void nRF24L01P::set_frequency(int frequency){
 }
 
 void nRF24L01P::set_power_output(int power){
-    printf("Start set power\n");
+    
     int rf_config = get_register(NRF24L01P_REG_RF_SETUP) & ~NRF24L01P_RF_SETUP_RF_PWR_MASK; /*get rf config except for the power bits*/
+    printf("Start set power config %d\n", rf_config);
     switch (power){                                     /*set the power*/
         case NRF24L01P_TX_PWR_ZERO_DB:
-            rf_config |= NRF24L01P_TX_PWR_ZERO_DB;
+            rf_config |= NRF24L01P_RF_SETUP_PWR_0DBM;
             break;
         case NRF24L01P_TX_PWR_MINUS_6_DB:
-            rf_config |= NRF24L01P_TX_PWR_MINUS_6_DB;
+            rf_config |= NRF24L01P_RF_SETUP_PWR_MINUS_6DBM;
             break;
         case NRF24L01P_TX_PWR_MINUS_12_DB:
-            rf_config |= NRF24L01P_TX_PWR_MINUS_12_DB;
+            rf_config |= NRF24L01P_RF_SETUP_PWR_MINUS_12DBM;
             break;
         case NRF24L01P_TX_PWR_MINUS_18_DB:
-            rf_config |= NRF24L01P_TX_PWR_MINUS_18_DB;
+            rf_config |= NRF24L01P_RF_SETUP_PWR_MINUS_18DBM;
             break;
         default:
             printf("Error power module %d\n",power);
             return;
     }
     set_register(NRF24L01P_REG_RF_SETUP, rf_config);    /*set the rf setup register*/
-    printf("End set power\n");
+    printf("End set power config %d\n",rf_config);
 }
 
 void nRF24L01P::set_air_data_rate(int rate){
