@@ -20,6 +20,7 @@ spi::spi() {
                 SPI_CR1_SPE;   // accende la periferica
     //il control register C1 dell'SPI ora è: 0000 0011 0110 0100 ( vedi programmer manual pg 896 )
     
+    
 }
 
 spi::spi(const spi& orig) {
@@ -43,6 +44,16 @@ spi::~spi() {
 void spi::send(unsigned char data_byte)
 {
     SPI2->DR = data_byte; // setto il data register dell'SPI con il dato arrivato
+    while((SPI2->SR & SPI_SR_RXNE)==0); // waiting 
+    
+    data_byte = SPI2->DR; // come da commento questo fa una dummy read che azzera il bit RXNE
+}
+
+//Overloading, this is used to send data ( i.e. the number of steps in a integer format, 
+//unsigned char is strict, max 255 ( 11111111 )
+void spi::send(int data_int)
+{
+    SPI2->DR = data_int; // setto il data register dell'SPI con il dato arrivato
     while((SPI2->SR & SPI_SR_RXNE)==0); // waiting 
     
     data_byte = SPI2->DR; // come da commento questo fa una dummy read che azzera il bit RXNE
