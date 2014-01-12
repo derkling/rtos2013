@@ -11,50 +11,50 @@
 
 //NRF24L01P Macro 
 //Command
-#define NRF24L01P_CMD_RD_REG            0x00
-#define NRF24L01P_CMD_WT_REG            0x20
-#define NRF24L01P_CMD_NOP               0xff
-#define NRF24L01P_CMD_WR_TX_PAYLOAD     0xa0
+#define NRF24L01P_CMD_RD_REG                    0x00
+#define NRF24L01P_CMD_WT_REG                    0x20
+#define NRF24L01P_CMD_NOP                       0xff
+#define NRF24L01P_CMD_WR_TX_PAYLOAD             0xa0
 
 //bitmask and register address
-#define NRF24LO1P_REG_ADDR_BITMASK      0x1f
-#define NRF24L01P_REG_CONF              0x00
-#define NRF24L01P_REG_STATUS            0x07
-#define NRF24L01P_REG_RF_CH             0x05
-#define NRF24L01P_REG_RF_SETUP          0x06
+#define NRF24LO1P_REG_ADDR_BITMASK              0x1f
+#define NRF24L01P_REG_CONF                      0x00
+#define NRF24L01P_REG_STATUS                    0x07
+#define NRF24L01P_REG_RF_CH                     0x05
+#define NRF24L01P_REG_RF_SETUP                  0x06
 
 //set data to register
-#define NRF24L01P_PRIM_RX               (1<<0)
-#define NRF24L01P_PWR_UP                (1<<1)
-#define NRF24L01P_STATUS_TX_DS          (1<<5)
-#define NRF24L01P_STATUS_MAX_RT         (1<<4)
-#define NRF24L01P_STATUS_RX_DR          (1<<6)
-#define NRF24L01P_RF_SETUP_RF_PWR_MASK  (0x3<<1)
-#define NRF24L01P_RF_SETUP_RF_DR_MASK   (40<<0)
-#define NRF24L01P_RF_SETUP_PWR_0DBM          (0x3<<1)
-#define NRF24L01P_RF_SETUP_PWR_MINUS_6DBM   (0x2<<1)
-#define NRF24L01P_RF_SETUP_PWR_MINUS_12DBM   (0x1<<1)
-#define NRF24L01P_RF_SETUP_PWR_MINUS_18DBM   (0x0<<1)
-#define NRF24L01P_RF_DR_250KBPS          (1<<5)
-#define NRF24L01P_RF_DR_1MBPS           (0)
-#define NRF24L01P_RF_DR_2MBPS           (1<<3)
+#define NRF24L01P_PRIM_RX                       (1<<0)
+#define NRF24L01P_PWR_UP                        (1<<1)
+#define NRF24L01P_STATUS_TX_DS                  (1<<5)
+#define NRF24L01P_STATUS_MAX_RT                 (1<<4)
+#define NRF24L01P_STATUS_RX_DR                  (1<<6)
+#define NRF24L01P_RF_SETUP_RF_PWR_MASK          (0x3<<1)
+#define NRF24L01P_RF_SETUP_RF_DR_MASK           (40<<0)
+#define NRF24L01P_RF_SETUP_PWR_0DBM             (0x3<<1)
+#define NRF24L01P_RF_SETUP_PWR_MINUS_6DBM       (0x2<<1)
+#define NRF24L01P_RF_SETUP_PWR_MINUS_12DBM      (0x1<<1)
+#define NRF24L01P_RF_SETUP_PWR_MINUS_18DBM      (0x0<<1)
+#define NRF24L01P_RF_DR_250KBPS                 (1<<5)
+#define NRF24L01P_RF_DR_1MBPS                   (0)
+#define NRF24L01P_RF_DR_2MBPS                   (1<<3)
 
 
 //time
-#define NRF24L01P_TPD2STBY              2000  //2mS
-#define NRF24L01P_TPECE2CSN                4  //4uS
+#define NRF24L01P_TPD2STBY                      2000  //2mS
+#define NRF24L01P_TPECE2CSN                     4  //4uS
 
 //size
-#define NRF24L01P_TX_FIFO_SIZE            32
-#define NRF24L01P_MIN_RF_FREQUENCY      2400
-#define NRF24L01P_MAX_RF_FREQUENCY      2525
-#define NRF24L01P_TX_PWR_ZERO_DB           0
-#define NRF24L01P_TX_PWR_MINUS_6_DB       -6
-#define NRF24L01P_TX_PWR_MINUS_12_DB     -12
-#define NRF24L01P_TX_PWR_MINUS_18_DB     -18
-#define NRF24L01P_DATARATE_250KBPS      250
-#define NRF24L01P_DATARATE_1MBPS        1000
-#define NRF24L01P_DATARATE_2MBPS        2000
+#define NRF24L01P_TX_FIFO_SIZE                  32
+#define NRF24L01P_MIN_RF_FREQUENCY              2400
+#define NRF24L01P_MAX_RF_FREQUENCY              2525
+#define NRF24L01P_TX_PWR_ZERO_DB                 0
+#define NRF24L01P_TX_PWR_MINUS_6_DB             -6
+#define NRF24L01P_TX_PWR_MINUS_12_DB            -12
+#define NRF24L01P_TX_PWR_MINUS_18_DB            -18
+#define NRF24L01P_DATARATE_250KBPS              250
+#define NRF24L01P_DATARATE_1MBPS                1000
+#define NRF24L01P_DATARATE_2MBPS                2000
 
 
 
