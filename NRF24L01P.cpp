@@ -233,7 +233,7 @@ void NRF24L01P::setReceiveMode()
 
    current_config = readRegister(_NRF24L01P_REG_CONFIG); // retreive the current status of CONFIG register
    
-   if( nrf24l01p_mode != _NRF24L01P_MODE_STANDBY; ) // security control, if somebody call this function before settings transceiver
+   if( nrf24l01p_mode != _NRF24L01P_MODE_STANDBY ) // security control, if somebody call this function before settings transceiver
      {
        fprintf(stderr, "You have to call powerUp first\n");
        return;
@@ -283,7 +283,7 @@ int NRF24L01P::receiveDataFromRx()
  */
 unsigned char NRF24L01P::readRPD()
 {
-   if( nrf24l01p_mode != _NRF24L01P_MODE_TX_MODE; ) // security check
+   if( nrf24l01p_mode != _NRF24L01P_MODE_TX_MODE ) // security check
      {
        fprintf(stderr, "Failed to read RPD, must be in TX_MODE\n");
        return;
@@ -299,7 +299,7 @@ unsigned char NRF24L01P::readRPD()
  */
 void NRF24L01P::setTransmitMode()
 {
-  if( nrf24l01p_mode != _NRF24L01P_MODE_STANDBY; ) // security check
+  if( nrf24l01p_mode != _NRF24L01P_MODE_STANDBY ) // security check
      {
        fprintf(stderr, "Failed to set transmission mode, call ce_down or check pwr_up bit\n");
        return;

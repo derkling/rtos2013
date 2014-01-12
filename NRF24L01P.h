@@ -17,13 +17,14 @@ public:
     readRegister();
     readStatusRegister();
     powerUp();
+    powerDown();
     setReceiveMode();
     setTransmitMode();
     returnStandByI();
     sendDataToTx();
     receiveDataFromRx();
     readRPD();
-    powerDown();
+   
 private:
 
 };
