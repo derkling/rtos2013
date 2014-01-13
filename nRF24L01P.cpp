@@ -10,11 +10,25 @@
 #include "miosix.h"
 
 //NRF24L01P Macro 
+//pipe number for multiceiver
+#define NRF24L01P_PIPE_NO_0     0
+#define NRF24L01P_PIPE_NO_1     1
+#define NRF24L01P_PIPE_NO_2     2
+#define NRF24L01P_PIPE_NO_3     3
+#define NRF24L01P_PIPE_NO_4     4
+#define NRF24L01P_PIPE_NO_5     5
+
+//size buffers
+#define NRF24L01P_RX_BUFFER_SIZE       32
+
+
 //Command
 #define NRF24L01P_CMD_RD_REG                    0x00
 #define NRF24L01P_CMD_WT_REG                    0x20
 #define NRF24L01P_CMD_NOP                       0xff
 #define NRF24L01P_CMD_WR_TX_PAYLOAD             0xa0
+#define NRF24L01P_CMD_NOP        0xff
+#define NRF24L01P_R_RX_PAY       0x61
 
 //bitmask and register address
 #define NRF24LO1P_REG_ADDR_BITMASK              0x1f
@@ -23,7 +37,7 @@
 #define NRF24L01P_REG_RF_CH                     0x05
 #define NRF24L01P_REG_RF_SETUP                  0x06
 
-//set data to register
+
 #define NRF24L01P_PRIM_RX                       (1<<0)
 #define NRF24L01P_PWR_UP                        (1<<1)
 #define NRF24L01P_STATUS_TX_DS                  (1<<5)
@@ -89,6 +103,7 @@ nRF24L01P::nRF24L01P() {
     set_power_output(-12);
     set_air_data_rate(1000);    
 
+    
 }
 
 nRF24L01P::nRF24L01P(const nRF24L01P& orig) {
@@ -104,13 +119,10 @@ nRF24L01P::~nRF24L01P() {
 void nRF24L01P::power_up() {
     //I get the current config and I add the power up bit then I write it back 
     int current_config = get_register(NRF24L01P_REG_CONF); 
-    printf("Prima di Acceso %d\n",current_config);
     current_config |= NRF24L01P_PWR_UP;
-    printf("Configurazione %d\n",current_config);
     set_register(NRF24L01P_REG_CONF,current_config);
     usleep(NRF24L01P_TPD2STBY);
     mode=NRF24L01P_STANDBY_MODE;
-    printf("Acceso %d\n",get_register(NRF24L01P_REG_CONF));
 }
 
 void nRF24L01P::power_down() {
@@ -130,9 +142,8 @@ void nRF24L01P::set_receive_mode(){
     cur_config |= NRF24L01P_PRIM_RX;
     set_register(NRF24L01P_REG_CONF,cur_config);
     if (CE::value()==0){
-        CE::high();
+        CE_enable();
     }
-    usleep(NRF24L01P_TPECE2CSN);
     mode = NRF24L01P_RX_MODE;
    
 }
@@ -146,9 +157,8 @@ void nRF24L01P::set_transmit_mode(){
     cur_config &= ~NRF24L01P_PRIM_RX;
     set_register(NRF24L01P_REG_CONF,cur_config);
     if (CE::value()==0){
-        CE::high();
+        CE_enable();
     }
-    usleep(NRF24L01P_TPECE2CSN);
     mode = NRF24L01P_TX_MODE;
     printf("Fine transmit \n");
     
@@ -193,7 +203,40 @@ int nRF24L01P::transmit(int count, char* data){
     
 }
 
-int nRF24L01P::receive(){
+int nRF24L01P::receive(int pipe,char *data,int count){
+    if(mode!=NRF24L01P_RX_MODE){
+        printf("Before receive set up in recieve_mode\n");
+        return -1;
+    }
+    if (pipe<NRF24L01P_PIPE_NO_0 || pipe>NRF24L01P_PIPE_NO_5){
+        printf("Error number of pipe must be between 0 and 5 not %d\n",pipe);
+        return -1;
+    }
+    if (count<=0) {
+        return 0;
+    }
+    if (count>NRF24L01P_RX_BUFFER_SIZE){
+        count= NRF24L01P_RX_BUFFER_SIZE;
+    }
+    if(packet_in_pipe(pipe)){
+        //NB----I skip the phase of check the lenght of the packet
+        
+        CS::low();
+        spi->spi_write(NRF24L01P_R_RX_PAY);
+        
+        for(int i=0;i<count;i++){
+            *data = spi->spi_Receive();
+            data++;
+        }
+        CS::low();
+        //clear RX_DR status bit
+        set_register(NRF24L01P_REG_STATUS,NRF24L01P_STATUS_DR_RX);
+        return count;
+    }
+    else{
+        printf("Pipe chosen is empty\n");
+        return 0;
+    }
     return 0;
 }
 
@@ -204,7 +247,7 @@ void nRF24L01P::CE_restore(int old_ce){
 
 void nRF24L01P::CE_enable(){
     CE::high();
-    usleep(NRF24L01P_TPECE2CSN);
+    usleep(NRF24L01P_TPECE2CSN);        //sleep to apply ce value change
 }
 
 void nRF24L01P::CE_disable(){
@@ -218,7 +261,7 @@ void nRF24L01P::CE_disable(){
  */
 void nRF24L01P::set_register(int addr_registro,int data_registro){
         int old_ce =CE::value();  //save the CE value    
-        CE::low(); //in order to change value of register the module has to be in StandBy1 mode
+        CE_disable(); //in order to change value of register the module has to be in StandBy1 mode
         CS::low();
         spi->spi_write(NRF24L01P_CMD_WT_REG |(addr_registro & NRF24LO1P_REG_ADDR_BITMASK)); //command to write the at correct address of register
         spi->spi_write(data_registro & NRF24L01P_CMD_NOP);    //data used to set the register
@@ -237,11 +280,43 @@ int  nRF24L01P::get_register(int registro){
     return result;   
 }
 
-int nRF24L01P::get_register_status(){
+bool nRF24L01P::packet_in_pipe(int pipe){
+    if ((pipe<NRF24L01P_PIPE_NO_0) || (pipe> NRF24L01P_PIPE_NO_5)){
+        return false;
+    }
+    int status=get_status_register();
+    //& is bitwise (it returns 01001100) && is and (return 0 or 1))
+    if((status & NRF24L01P_STATUS_DR_RX)&&((status & NRF24L01P_STATUS_RX_P_NO)>>1)==(pipe & 0x7)){
+        return true;
+    }
+    return false;
+}
+
+/**
+ * Function to get the status register
+ * @return status register
+ */
+int nRF24L01P::get_status_register(){
     CS::low();
-    int status = spi->spi_Receive();
+    int status = spi->spi_Receive();    //the module send status bit every time is sent a command
     CS::high();
     return status;
+}
+
+void nRF24L01P::test(){
+    power_down();
+    printf("Config register at power down %d\n",get_register(NRF24L01P_REG_CONF));
+    power_up();
+    printf("Config register at power up %d\n",get_register(NRF24L01P_REG_CONF));
+    set_transmit_mode();
+    printf("Config register at transmit %d\n",get_register(NRF24L01P_REG_CONF));
+    set_receive_mode();
+    printf("Config register at receive %d\n",get_register(NRF24L01P_REG_CONF));
+    char *data;
+    usleep(3000000);
+    int received_lenght_data = receive(0,data,1);
+    printf("receive result: %d\n",received_lenght_data);
+    printf("Status register %d\n",get_status_register());
 }
 
 void nRF24L01P::setup_Gpio(){

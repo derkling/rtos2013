@@ -20,7 +20,8 @@ public:
     void set_transmit_mode();
     void set_receive_mode();
     int transmit(int count, char* data);
-    int receive();
+    int receive(int pipe,char *data,int count);
+    void test(); 
 private:
     void CE_enable();
     void CE_disable();
@@ -28,6 +29,7 @@ private:
     int get_register(int registro);
     int get_register_status();
     void CE_restore(int old_ce);
+    bool packet_in_pipe(int pipe);
     spi_driver *spi;
     void setup_Gpio();
     void set_frequency(int frequency);
