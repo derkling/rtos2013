@@ -13,8 +13,9 @@ public:
     spi();
     spi(const spi& orig);
     virtual ~spi();
-    send();
-    receive();
+    void send(unsigned char dataByte);
+    void send(int data);
+    unsigned char receive();
 private:
 
 };

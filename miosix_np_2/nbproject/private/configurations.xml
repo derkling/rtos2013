@@ -412,7 +412,7 @@
       </df>
       <in>NRF24L01P.cpp</in>
       <in>NRF24L01P.h</in>
-      <in>main.cpp</in>
+      <in>mainTx.cpp</in>
       <in>spi.cpp</in>
       <in>spi.h</in>
     </df>

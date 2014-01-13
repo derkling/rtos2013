@@ -9,6 +9,7 @@
 #include <miosix.h>
 #include <miosix/kernel/scheduler/scheduler.h>
 #include <stdio.h>
+#include "spi.h"
 using namespace miosix;
 
 /*
@@ -142,6 +143,11 @@ typedef Gpio <GPIOB_BASE,12> cs;
 typedef Gpio <GPIOB_BASE,11> ce;
 typedef Gpio <GPIOA_BASE,1> irq;
 
+//DEBUG
+typedef Gpio <GPIOD_BASE, 15> bluLed;
+
+
+
 // thanks to this enum I can check the status of transceiver via software
 // unless read the register.
 typedef enum {
@@ -165,7 +171,8 @@ int tx_fifo_status;
 
 NRF24L01P::NRF24L01P() {
     
-   spi = new spi();
+   bluLed::mode(Mode::OUTPUT); 
+   spiDriver = new spi();
    mosi::mode(Mode::ALTERNATE);
    mosi::alternateFunction(5); 
    miso::mode(Mode::ALTERNATE);
@@ -259,8 +266,8 @@ void NRF24L01P::setReceiveMode()
 void NRF24L01P::sendDataToTx(int data)
 {
     cs::low();
-    spi.send(_NRF24L01P_SPI_CMD_WR_TX_PAYLOAD ); // request to write on the TX_BUFFER a payload
-    spi.send(data);
+    spiDriver->send(_NRF24L01P_SPI_CMD_WR_TX_PAYLOAD ); // request to write on the TX_BUFFER a payload
+    spiDriver->send(data);
     cs::high();
     tx_fifo_status = _TX_FIFO_NOT_EMPTY;
 }
@@ -273,8 +280,8 @@ int NRF24L01P::receiveDataFromRx()
 {   
     int content;
     cs::low();
-    spi.send(_NRF24L01P_SPI_CMD_RD_RX_PAYLOAD);
-    content = spi.receive();
+    spiDriver->send(_NRF24L01P_SPI_CMD_RD_RX_PAYLOAD);
+    content = spiDriver->receive();
     cs::high();
 }
 
@@ -289,7 +296,7 @@ unsigned char NRF24L01P::readRPD()
    if( nrf24l01p_mode != _NRF24L01P_MODE_RX_MODE ) // security check
      {
        fprintf(stderr, "Failed to read RPD, must be in RX_MODE\n");
-       return;
+       return 0;
      }
    
    return readRegister(_NRF24L01P_REG_RPD);
@@ -318,7 +325,7 @@ void NRF24L01P::setTransmitMode()
   new_config = current_config & _NRF24L01P_CONFIG_NO_PRIM_RX; // actually, this is 1111 1110 and preserve previous config, deleting the PRIM_RX
   
   writeRegister(_NRF24L01P_REG_CONFIG , new_config );
-  ce::high() // for more than 10us 
+  ce::high(); // for more than 10us 
   
   nrf24l01p_mode = _NRF24L01P_MODE_TX_MODE;
   
@@ -335,8 +342,8 @@ void NRF24L01P::writeRegister(unsigned char regAddress, unsigned char regData)
    
     cs::low();
     
-    spi.send(request);
-    spi.send(regData); 
+    spiDriver->send(request);
+    spiDriver->send(regData); 
     
     cs::high();
     
@@ -359,8 +366,8 @@ unsigned char NRF24L01P::readRegister(unsigned char regAddress) //arriva su 1 by
     //every spi commands must starts with a high to low cs signal
     cs::low();
     
-    spi.send(regAddress);
-    value = spi.receive();
+    spiDriver->send(regAddress);
+    value = spiDriver->receive();
     
     cs::high();
     
@@ -376,7 +383,7 @@ unsigned char NRF24L01P::readStatusRegister()
 {
     unsigned char value;
     cs::low();
-    value=spi.receive(); // in this there is a dummy write of 0 on MOSI
+    value=spiDriver->receive(); // in this there is a dummy write of 0 on MOSI
     cs::high();
     return value; // need a reverse? it arrives form LSB to MSByte
 
@@ -391,9 +398,11 @@ void __attribute__((naked)) EXTI1_IRQHandler()
 
 void __attribute__((used)) EXTI1HandlerImpl()
 {
-    EXTI->PR=EXTI_PR_PR0; //viene resettato il registro che permette di uscire dalla chiamata a interrupt 
+    EXTI->PR=EXTI_PR_PR1; //viene resettato il registro che permette di uscire dalla chiamata a interrupt 
     
-   
+    //DEBUG
+    bluLed::high();
+	
 }
 
 
@@ -406,3 +415,9 @@ void configureInterrupt()
     NVIC_SetPriority(EXTI1_IRQn,15); //Low priority
     
 }
+
+
+
+
+
+
