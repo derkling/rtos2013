@@ -8,6 +8,7 @@
 #include "NRF24L01P.h"
 #include <miosix.h>
 #include <miosix/kernel/scheduler/scheduler.h>
+#include <stdio.h>
 using namespace miosix;
 
 /*
@@ -139,6 +140,7 @@ typedef Gpio <GPIOB_BASE,14> miso;
 typedef Gpio <GPIOB_BASE,13> sck;
 typedef Gpio <GPIOB_BASE,12> cs;
 typedef Gpio <GPIOB_BASE,11> ce;
+typedef Gpio <GPIOA_BASE,1> irq;
 
 // thanks to this enum I can check the status of transceiver via software
 // unless read the register.
@@ -165,13 +167,14 @@ NRF24L01P::NRF24L01P() {
     
    spi = new spi();
    mosi::mode(Mode::ALTERNATE);
-   mosi::alternateFunction(5);
+   mosi::alternateFunction(5); 
    miso::mode(Mode::ALTERNATE);
    miso::alternateFunction(5);
    sck::mode(Mode::ALTERNATE);
    sck::alternateFunction(5);
    cs::mode(Mode::OUTPUT);
    cs::high();
+   ce::high();
    
    nrf24l01p_mode = _NRF24L01P_MODE_UNDEFINED; // starts with an undefined state
    tx_fifo_status = _TX_FIFO_EMPTY; // the tx_fifo starts empty obviously
@@ -244,7 +247,7 @@ void NRF24L01P::setReceiveMode()
    writeRegister(_NRF24L01P_REG_CONFIG, new_config);
    ce::high();
    
-   sleep(_NRF24L01P_TIMING_Tstby2a_us);
+   usleep(_NRF24L01P_TIMING_Tstby2a_us);
    
    nrf24l01p_mode = _NRF24L01P_MODE_RX_MODE;
 }
@@ -283,9 +286,9 @@ int NRF24L01P::receiveDataFromRx()
  */
 unsigned char NRF24L01P::readRPD()
 {
-   if( nrf24l01p_mode != _NRF24L01P_MODE_TX_MODE ) // security check
+   if( nrf24l01p_mode != _NRF24L01P_MODE_RX_MODE ) // security check
      {
-       fprintf(stderr, "Failed to read RPD, must be in TX_MODE\n");
+       fprintf(stderr, "Failed to read RPD, must be in RX_MODE\n");
        return;
      }
    
@@ -317,7 +320,7 @@ void NRF24L01P::setTransmitMode()
   writeRegister(_NRF24L01P_REG_CONFIG , new_config );
   ce::high() // for more than 10us 
   
-  nrf24l01p_modemode = _NRF24L01P_MODE_TX_MODE;
+  nrf24l01p_mode = _NRF24L01P_MODE_TX_MODE;
   
   //here now starts the transmission packet flow charts, remember to change mode in the function
   //that handles the interrupt and to set the TX_FIFO to empty ( if empty naturally )
@@ -325,20 +328,18 @@ void NRF24L01P::setTransmitMode()
 
 void NRF24L01P::writeRegister(unsigned char regAddress, unsigned char regData)
 {
-    if(nrf24l01p_modemode > _NRF24L01P_MODE_POWER_DOWN  )
-       {
-        fprintf(stderr, " WriteRegister only in power_down or stand_by mode"); //check manual for this 
-        return;
-       }
+    this->returnStandByI();
+    // aggiungere controllo ce e ripristinarlo alla fine di questa funzione 
     unsigned char request;
     request = regAddress | _NRF24L01P_SPI_W_REGISTER;
    
     cs::low();
     
     spi.send(request);
-    spi.send(regData); // this I think need a revert , Data has been to delivered LSB to MSByte
+    spi.send(regData); 
     
     cs::high();
+    
     
 }
 
@@ -381,16 +382,27 @@ unsigned char NRF24L01P::readStatusRegister()
 
 }
 
-void __attribute__((naked)) EXTI0_IRQHandler()
+void __attribute__((naked)) EXTI1_IRQHandler()
 {
     saveContext();
-    asm volatile("bl _Z16EXTI0HandlerImplv");
+    asm volatile("bl _Z16EXTI1HandlerImplv");
     restoreContext();
 }
 
-void __attribute__((used)) EXTI0HandlerImpl()
+void __attribute__((used)) EXTI1HandlerImpl()
 {
     EXTI->PR=EXTI_PR_PR0; //viene resettato il registro che permette di uscire dalla chiamata a interrupt 
     
    
+}
+
+
+void configureInterrupt()
+{
+    irq::mode(Mode::INPUT);
+    EXTI->IMR |= EXTI_IMR_MR1;
+    EXTI->RTSR |= EXTI_RTSR_TR1;
+    NVIC_EnableIRQ(EXTI1_IRQn);
+    NVIC_SetPriority(EXTI1_IRQn,15); //Low priority
+    
 }

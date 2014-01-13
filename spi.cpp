@@ -56,7 +56,7 @@ void spi::send(int data_int)
     SPI2->DR = data_int; // setto il data register dell'SPI con il dato arrivato
     while((SPI2->SR & SPI_SR_RXNE)==0); // waiting 
     
-    data_byte = SPI2->DR; // come da commento questo fa una dummy read che azzera il bit RXNE
+    data_int = SPI2->DR; // come da commento questo fa una dummy read che azzera il bit RXNE
 }
 
 /**

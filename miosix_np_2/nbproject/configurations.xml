@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configurationDescriptor version="89">
+<configurationDescriptor version="90">
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
-    <df root=".." name="miosix_np_2">
+    <df root=".." name="0">
       <df name="miosix">
         <df name="arch">
           <df name="arm7_lpc2000">
@@ -402,7 +402,11 @@
         </df>
         <in>miosix.h</in>
       </df>
+      <in>NRF24L01P.cpp</in>
+      <in>NRF24L01P.h</in>
       <in>main.cpp</in>
+      <in>spi.cpp</in>
+      <in>spi.h</in>
     </df>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -419,7 +423,6 @@
   <confs>
     <conf name="Default" type="0">
       <toolsSet>
-        <remote-sources-mode>LOCAL_SOURCES</remote-sources-mode>
         <compilerSet>ARM_MIOSIX_EABI|GNU</compilerSet>
         <dependencyChecking>false</dependencyChecking>
         <rebuildPropChanged>false</rebuildPropChanged>
@@ -1538,7 +1541,6 @@
     </conf>
     <conf name="lpc2138_miosix_board" type="0">
       <toolsSet>
-        <remote-sources-mode>LOCAL_SOURCES</remote-sources-mode>
         <compilerSet>ARM_MIOSIX_EABI|GNU</compilerSet>
         <dependencyChecking>false</dependencyChecking>
         <rebuildPropChanged>false</rebuildPropChanged>
@@ -2653,7 +2655,6 @@
     </conf>
     <conf name="stm32f103ze_stm3210e-eval" type="0">
       <toolsSet>
-        <remote-sources-mode>LOCAL_SOURCES</remote-sources-mode>
         <compilerSet>ARM_MIOSIX_EABI|GNU</compilerSet>
         <dependencyChecking>false</dependencyChecking>
         <rebuildPropChanged>false</rebuildPropChanged>
@@ -2702,6 +2703,10 @@
           </ccTool>
         </makeTool>
       </makefileType>
+      <item path="../NRF24L01P.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../NRF24L01P.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="../main.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="../miosix/arch/arm7_lpc2000/common/arch_settings.h"
@@ -3772,10 +3777,13 @@
       </item>
       <item path="../miosix/util/version.h" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="../spi.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../spi.h" ex="false" tool="3" flavor2="0">
+      </item>
     </conf>
     <conf name="stm32f103ve_mp3v2" type="0">
       <toolsSet>
-        <remote-sources-mode>LOCAL_SOURCES</remote-sources-mode>
         <compilerSet>ARM_MIOSIX_EABI|GNU</compilerSet>
         <dependencyChecking>false</dependencyChecking>
         <rebuildPropChanged>false</rebuildPropChanged>
@@ -4892,7 +4900,6 @@
     </conf>
     <conf name="stm32f100rb_stm32vldiscovery" type="0">
       <toolsSet>
-        <remote-sources-mode>LOCAL_SOURCES</remote-sources-mode>
         <compilerSet>ARM_MIOSIX_EABI|GNU</compilerSet>
         <dependencyChecking>false</dependencyChecking>
         <rebuildPropChanged>false</rebuildPropChanged>
@@ -6009,7 +6016,6 @@
     </conf>
     <conf name="stm32f103ve_strive_mini" type="0">
       <toolsSet>
-        <remote-sources-mode>LOCAL_SOURCES</remote-sources-mode>
         <compilerSet>ARM_MIOSIX_EABI|GNU</compilerSet>
         <dependencyChecking>false</dependencyChecking>
         <rebuildPropChanged>false</rebuildPropChanged>
@@ -7126,7 +7132,6 @@
     </conf>
     <conf name="stm32f103ze_redbull_v2" type="0">
       <toolsSet>
-        <remote-sources-mode>LOCAL_SOURCES</remote-sources-mode>
         <compilerSet>ARM_MIOSIX_EABI|GNU</compilerSet>
         <dependencyChecking>false</dependencyChecking>
         <rebuildPropChanged>false</rebuildPropChanged>
@@ -8243,7 +8248,6 @@
     </conf>
     <conf name="stm32f407vg_stm32f4discovery" type="0">
       <toolsSet>
-        <remote-sources-mode>LOCAL_SOURCES</remote-sources-mode>
         <compilerSet>ARM_MIOSIX_EABI|GNU</compilerSet>
         <dependencyChecking>false</dependencyChecking>
         <rebuildPropChanged>false</rebuildPropChanged>
@@ -9358,7 +9362,6 @@
     </conf>
     <conf name="stm32f207ig_stm3220g-eval" type="0">
       <toolsSet>
-        <remote-sources-mode>LOCAL_SOURCES</remote-sources-mode>
         <compilerSet>ARM_MIOSIX_EABI|GNU</compilerSet>
         <dependencyChecking>false</dependencyChecking>
         <rebuildPropChanged>false</rebuildPropChanged>
@@ -10473,7 +10476,6 @@
     </conf>
     <conf name="stm32f207zg_ethboard_v2" type="0">
       <toolsSet>
-        <remote-sources-mode>LOCAL_SOURCES</remote-sources-mode>
         <compilerSet>ARM_MIOSIX_EABI|GNU</compilerSet>
         <dependencyChecking>false</dependencyChecking>
         <rebuildPropChanged>false</rebuildPropChanged>
@@ -11588,7 +11590,6 @@
     </conf>
     <conf name="stm32f207ze_als_camboard" type="0">
       <toolsSet>
-        <remote-sources-mode>LOCAL_SOURCES</remote-sources-mode>
         <compilerSet>ARM_MIOSIX_EABI|GNU</compilerSet>
         <dependencyChecking>false</dependencyChecking>
         <rebuildPropChanged>false</rebuildPropChanged>
@@ -12703,7 +12704,6 @@
     </conf>
     <conf name="stm32l151c8_als_mainboard" type="0">
       <toolsSet>
-        <remote-sources-mode>LOCAL_SOURCES</remote-sources-mode>
         <compilerSet>ARM_MIOSIX_EABI|GNU</compilerSet>
         <dependencyChecking>false</dependencyChecking>
         <rebuildPropChanged>false</rebuildPropChanged>
@@ -13818,7 +13818,6 @@
     </conf>
     <conf name="stm32f407vg_bitsboard" type="0">
       <toolsSet>
-        <remote-sources-mode>LOCAL_SOURCES</remote-sources-mode>
         <compilerSet>ARM_MIOSIX_EABI|GNU</compilerSet>
         <dependencyChecking>false</dependencyChecking>
         <rebuildPropChanged>false</rebuildPropChanged>

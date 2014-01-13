@@ -24,7 +24,7 @@ public:
     sendDataToTx();
     receiveDataFromRx();
     readRPD();
-   
+    configureInterrupt();
 private:
 
 };
