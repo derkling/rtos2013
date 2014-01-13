@@ -64,7 +64,7 @@ void *wifi_start(void *arg)
     wifi = new nRF24L01P();
     greenLed::mode(Mode::OUTPUT);
     configureModuleInterrupt();
-    wifi->test();
+    wifi->test_transmit();
     greenLed::high();
     usleep(1000000);
     greenLed::low();
@@ -74,13 +74,13 @@ void *wifi_start(void *arg)
         printf("Ho trasmesso\n");
         greenLed::low();
         usleep(2000000);
-        wifi->receive(0,data,1);
+        /*wifi->receive(0,data,1);
         printf("Received data: %d",*data);
         greenLed::high();
         usleep(1000000);
         greenLed::low();
-        //num_step = wifi->receive();
-        /*if (trasmission){
+        num_step = wifi->receive();
+        if (trasmission){
             wifi->transmit(num_step);
         }
         else{
