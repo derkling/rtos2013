@@ -25,7 +25,6 @@
 //Command
 #define NRF24L01P_CMD_RD_REG                    0x00
 #define NRF24L01P_CMD_WT_REG                    0x20
-#define NRF24L01P_CMD_NOP                       0xff
 #define NRF24L01P_CMD_WR_TX_PAYLOAD             0xa0
 #define NRF24L01P_CMD_NOP        0xff
 #define NRF24L01P_R_RX_PAY       0x61
@@ -52,6 +51,8 @@
 #define NRF24L01P_RF_DR_250KBPS                 (1<<5)
 #define NRF24L01P_RF_DR_1MBPS                   (0)
 #define NRF24L01P_RF_DR_2MBPS                   (1<<3)
+#define NRF24L01P_STATUS_DR_RX                  (1<<6)         //set if data register full write 1 to clear
+#define NRF24L01P_STATUS_RX_P_NO                (0x7<<1) 
 
 
 //time
@@ -284,7 +285,7 @@ bool nRF24L01P::packet_in_pipe(int pipe){
     if ((pipe<NRF24L01P_PIPE_NO_0) || (pipe> NRF24L01P_PIPE_NO_5)){
         return false;
     }
-    int status=get_status_register();
+    int status=get_register_status();
     //& is bitwise (it returns 01001100) && is and (return 0 or 1))
     if((status & NRF24L01P_STATUS_DR_RX)&&((status & NRF24L01P_STATUS_RX_P_NO)>>1)==(pipe & 0x7)){
         return true;
@@ -296,7 +297,7 @@ bool nRF24L01P::packet_in_pipe(int pipe){
  * Function to get the status register
  * @return status register
  */
-int nRF24L01P::get_status_register(){
+int nRF24L01P::get_register_status(){
     CS::low();
     int status = spi->spi_Receive();    //the module send status bit every time is sent a command
     CS::high();
@@ -316,7 +317,7 @@ void nRF24L01P::test(){
     usleep(3000000);
     int received_lenght_data = receive(0,data,1);
     printf("receive result: %d\n",received_lenght_data);
-    printf("Status register %d\n",get_status_register());
+    printf("Status register %d\n",get_register_status());
 }
 
 void nRF24L01P::setup_Gpio(){
