@@ -48,8 +48,8 @@ void configureSpi(){
 	sck::mode(Mode::ALTERNATE);
 	miso::mode(Mode::ALTERNATE);
 	mosi::mode(Mode::ALTERNATE);
+
 	cs::high();
-//	cs::alternateFunction(5);
 	sck::alternateFunction(5);
 	miso::alternateFunction(5);
 	mosi::alternateFunction(5);
@@ -58,21 +58,19 @@ void configureSpi(){
 	powerLine::mode(Mode::OUTPUT);
 	powerLine::low();
 
-	//imposto gpio 11 in output digitale per chip enable
+	//imposto gpiob 11 in output digitale per chip enable
 	cen::mode(Mode::OUTPUT);
-	cen::low();//non attivo il modulo wireless
+	cen::low();
 	
-	//impostazione interrupt(DA CONTROLLARE!!!!!!)
-	//essendo pa1 interrupt non devo impostare bit in siscfg_exticr1(va messo 0 nel registro e già ci dovrebbe essere)
+	//configurazione gestione interrupt
 	interruptLine::mode(Mode::INPUT_PULL_UP);
-//	EXTI->IMR |= EXTI_IMR_MR1;
-//	EXTI->RTSR &= ~EXTI_RTSR_TR1;
-//	EXTI->FTSR |= EXTI_FTSR_TR1;
-//	NVIC_EnableIRQ(EXTI1_IRQn);
-//	NVIC_SetPriority(EXTI1_IRQn,15);//linea che non so bene cosa faccia(copiata dal prof)
+	SYSCFG->EXTICR[1] = SYSCFG_EXTICR1_EXTI1_PA;
+	EXTI->IMR |= EXTI_IMR_MR1;
+	EXTI->RTSR &= ~EXTI_RTSR_TR1;
+	EXTI->FTSR |= EXTI_FTSR_TR1;
+	NVIC_EnableIRQ(EXTI1_IRQn);
+	NVIC_SetPriority(EXTI1_IRQn,15);
 
-	//imposto il control register 2(DA CONTROLLARE)
-	//INOLTRE DA CONTROLLARE SE USARE CONNESSIONE FULL-DUPLEX O HALF-DUPLEX
 	SPI2->CR2 |= SPI_CR2_SSOE;//abilito l'uscita SS
 
 	//imposto il control register 1
@@ -145,8 +143,10 @@ int spiSendCommandWriteData(uint8_t command, uint8_t addr,uint8_t* sr, uint8_t* 
 	i=0;//i usato per tenere traccia del prossimo dato da inviare
 
 	while( ( SPI2->SR & SPI_SR_TXE ) == 0 ){}//aspetto che registro trasmissione sia vuoto(probabilmente istruzione inutile)
-	cs::low();
+	
+	cs::low();//attivo il cs(lo abbasso)
 	usleep(1);
+
 	SPI2->DR = temp;//inserisco comando nel data register
 	
 	while( ( SPI2->SR & SPI_SR_TXE ) == 0 ){}//aspetto che sia copiato nel registro di invio
@@ -167,7 +167,7 @@ int spiSendCommandWriteData(uint8_t command, uint8_t addr,uint8_t* sr, uint8_t* 
 
 	if( lenght == 0 ){//se non c'erano dati da inviare finito
 		usleep(1);
-		cs::high();
+		cs::high();//disabilito il cs(alzo cs)
 		return 1;
 	}
 
@@ -188,8 +188,10 @@ int spiSendCommandWriteData(uint8_t command, uint8_t addr,uint8_t* sr, uint8_t* 
 	while( ( SPI2->SR & SPI_SR_RXNE ) == 0 ){}//aspetto la trasmissione dell'ultimo dato
 
 	temp = SPI2->DR;
+
 	usleep(1);
-	cs::high();
+	cs::high();//disabilito cs(lo alzo)
+
 	return 1;
 
 }
@@ -225,8 +227,10 @@ int spiSendCommandReadData(uint8_t command, uint8_t addr,uint8_t* sr, uint8_t* d
 	i=0;//i usato per tenere traccia del numero di dati ricevuti
 
 	while( ( SPI2->SR & SPI_SR_TXE ) == 0 ){}//aspetto che registro trasmissione sia vuoto(probabilmente istruzione inutile)
-	cs::low();
+
+	cs::low();//abilito il cs(lo abbasso)
 	usleep(1);
+
 	SPI2->DR = temp;//inserisco comando nel data register
 	
 	while( ( SPI2->SR & SPI_SR_TXE ) == 0 ){}//aspetto che sia copiato nel registro di invio
@@ -247,7 +251,7 @@ int spiSendCommandReadData(uint8_t command, uint8_t addr,uint8_t* sr, uint8_t* d
 
 	if( lenght == 0 ){//se non c'erano dati da inviare finito
 		usleep(1);
-		cs::high();
+		cs::high();//disabilito cs(lo alzo)
 		return 1;
 	}
 
@@ -269,8 +273,10 @@ int spiSendCommandReadData(uint8_t command, uint8_t addr,uint8_t* sr, uint8_t* d
 	while( ( SPI2->SR & SPI_SR_RXNE ) == 0 ){}//aspetto la ricezione dell'ultimo dato
 
 	temp = SPI2->DR;
+
 	usleep(1);
-	cs::high();
+	cs::high();//disabilito cs(lo alzo)
+
 	data[i-1] = (uint8_t)temp;
 
 	return 1;
