@@ -239,7 +239,7 @@ int  nRF24L01P::get_register(int registro){
 
 int nRF24L01P::get_register_status(){
     CS::low();
-    int status = spi->spi_write(NRF24L01P_CMD_NOP);
+    int status = spi->spi_Receive();
     CS::high();
     return status;
 }
