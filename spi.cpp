@@ -15,25 +15,6 @@ typedef Gpio<GPIOB_BASE,13> sck;//clock spi
 typedef Gpio<GPIOB_BASE,14> miso;//miso spi
 typedef Gpio<GPIOB_BASE,15> mosi;//mosi spi
 
-//prossime due funzioni sono l'interrupt handler
-void __attribute__((naked)) EXTI1_IRQHandler(){
-
-	saveContext();
-	asm volatile("bl _Z16EXTI1HandlerImplv");
-	restoreContext();
-
-}
-
-/*! @brief routine di interrupt scatenato dal modulo wireless
- * 	   verrà chiamato quando arriva un pacchetto o finisce la trasmissione
- */
-void __attribute__((used)) EXTI1HandlerImpl(){
-
-	EXTI->PR=EXTI_PR_PR1;
-
-	//TO DO gestione interrupt del modulo wireless(arriva quando trasmissione finita o pacchetto ricevuto
-
-}
 
 /*! @brief configura la periferica spi2 e i gpio usati per la comunicazione con il modulo wireless
  */
@@ -71,15 +52,16 @@ void configureSpi(){
 	NVIC_EnableIRQ(EXTI1_IRQn);
 	NVIC_SetPriority(EXTI1_IRQn,15);
 
-	SPI2->CR2 |= SPI_CR2_SSOE;//abilito l'uscita SS
+	
 
 	//imposto il control register 1
-	SPI2->CR1 |= SPI_CR1_BR_0 | SPI_CR1_BR_1 | SPI_CR1_BR_2 ;//imposta a velocità di trasmissione a 2 MHz
+	SPI2->CR1 |= SPI_CR1_BR_0 | SPI_CR1_BR_1 | SPI_CR1_BR_2 ;//imposta a velocità di trasmissione a 0.65mbps
 	SPI2->CR1 &= ~SPI_CR1_CPHA;//impostato campionamento sul primo fronte di clock
 	SPI2->CR1 &= ~SPI_CR1_CPOL;//impostato clock idle basso
 	SPI2->CR1 &= ~SPI_CR1_DFF;//impostato frame da 8 bit
 	SPI2->CR1 &= ~SPI_CR1_LSBFIRST;//impostato così a 0 manda prima msb
-	SPI2->CR1 &= ~SPI_CR1_SSM;//il management del SS è hardware
+	SPI2->CR1 |= SPI_CR1_SSM;//il management del SS è software
+	SPI2->CR2 |= SPI_CR2_SSOE;//abilito l'uscita SS
 	SPI2->CR1 |= SPI_CR1_MSTR;//imposto come master
 	SPI2->CR1 |= SPI_CR1_SPE;//enable della spi
 

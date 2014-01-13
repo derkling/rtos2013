@@ -1,29 +1,43 @@
-
-#include <cstdio>
-#include <unistd.h>
-#include <pthread.h>
 #include "miosix.h"
 #include "spi.h"
+#include "social_wireless.h"
+#include <cstdio>
+#include <unistd.h>
+
 
 using namespace std;
 using namespace miosix;
 
-int main()
-{
-	uint8_t sr;
-	uint8_t config_reg;
-	uint8_t rilettura;
-	configureSpi();
-	powerLineUp();
-	sleep(1);
+typedef Gpio<GPIOD_BASE,15> blueLed;
+
+int main(){
+    
+	blueLed::mode(Mode::OUTPUT);
+	
+     
+	uint8_t sr=255;
+        
+        uint8_t data;
+
+        char* payload="qwertyuiop";
+        
+        init();
+
+//      beep();
+        
+        transmit(payload);
+	
+//        spiSendCommandReadData(R_REGISTER,OBSERVE_TX,&sr,&data,1);
+	
+	blueLed::high();
+//        beep();
+
 	while(1){
-		spiSendCommandReadData(R_REGISTER,CONFIG,&sr,&config_reg,1);
-		sleep(1);
-		config_reg |= 1;
-		spiSendCommandWriteData(W_REGISTER,CONFIG,&sr,&config_reg,1);
-		sleep(1);
-		spiSendCommandReadData(R_REGISTER,CONFIG,&sr,&rilettura,1);
-		sleep(1);
+
 	}
 }
+
+
+
+
 

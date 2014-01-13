@@ -16,7 +16,7 @@
 //i successivi sono attivabili solo dopo aver inviato il comando ACTIVATE e il dato ACTIVATE_BYTE
 #define R_RX_PL_WID 				((uint8_t)0x60)		/*!<Read RX-payload width for the top R_RX_PAYLOAD in the RX fifo */
 #define W_ACK_PAYLOAD 				((uint8_t)0xA8)		/*!<Used in RX mode */
-#define W_TX_PAYLOAD_NO_ACK 			((uint8_t)0xB0)		/*!<Used in TX mode. Disable autoack */
+#define W_TX_PAYLOAD_NOACK 			((uint8_t)0xB0)		/*!<Used in TX mode. Disable autoack */
 
 /********************  DEFINIZIONE DI INDIRIZZI DEI REGISTRI MODULO NRF24L  ********************/ 
 #define COMMAND_WITHOUT_ADDRESS			((uint8_t)0x00)		/*!<Indirizzo vuoto(se il comando non usa il campo indirizzo */
@@ -72,5 +72,15 @@
 
 /********************  DEFINIZIONE DATI PARTICOLARI  ********************/
 #define ACTIVATE_BYTE 				((uint8_t)0x73)		/*!<Dato da inviare dopo ACTIVATE per usare altre features */
- 
+
+/*********************  CONFIGURAZIONE  ************************************/
+#define RF_SETUP_1MBPS                          ((uint8_t)0x07) /*!<Air Data 1mbps, TX Power 0dbm, LNA Gain Enabled*/
+#define FEATURE_EN_DPL                          ((uint8_t)0x05) /*!<EN_DPL 1, EN_ACK_PAY 0, EN_DYN_ACK 1*/
+#define DYNPD_DPL_P0                            ((uint8_t)0x01) /*!<DPL_P0 1: Enable dynamic payload on data pipe 0*/
+#define EN_AA_ENAA_P0                           ((uint8_t)0x01) /*!<Enable auto ack on data pipe 0*/
+#define SETUP_RETR_ARC0                         ((uint8_t)0x00) /*!<Automatic Retransmission Count 0*/
+#define EN_RXADDR_ERX_P0                        ((uint8_t)0x01) /*!<Activate only data pipe 0*/
+#define CONFIG_PWR_PRIM_RX                      ((uint8_t)0x0B) /*!<Power Up, Primary RX*/
+#define CONFIG_PWR_PRIM_TX                      ((uint8_t)0x0A) /*!<Power Up, Primary TX*/
+
 #endif /* NRF24L01_H */
