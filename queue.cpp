@@ -1,4 +1,4 @@
-#include <queue.h>
+#include "queue.h"
 #define SEPARATORE '\0'
 
 //FUNZIONI
@@ -12,7 +12,7 @@ int addData (char* data, queue_t queue){
         *(queue.next) = data[i];
         queue.freeSpace--;
         //controllare la correttezza
-        if (queue.next + 1 == queue.buffer[QUEUE_LENGHT]){
+        if (queue.next + 1 == &(queue.buffer[QUEUE_LENGHT])){
             queue.next = queue.buffer;
         } else {
             queue.next++;
@@ -27,9 +27,30 @@ int addData (char* data, queue_t queue){
 }
 
 char* enqueue(queue_t queue){
-    char data[strlen(queue.head)];
-    strcpy(data, queue.head);
-    queue.head = queue.head + strlen(queue.head) + 1;
+    int dataSize = 1;
+    char* pnt = queue.head;
+    while(*(pnt) != SEPARATORE){
+        dataSize++;
+        if (pnt == &(queue.buffer[QUEUE_LENGHT])){
+            pnt = queue.buffer;
+        } else {
+            pnt++;
+        }
+    }
+    char data[dataSize];
+    for (int i = 0; *(queue.head) != SEPARATORE; i++){
+        data[i] = *(queue.head);
+        queue.freeSpace++;
+        if (queue.head == &(queue.buffer[QUEUE_LENGHT])){
+            queue.head = queue.buffer;
+        } else {
+            queue.head++;
+        }
+    }
+    queue.head++;
+    queue.freeSpace++;
+    data[dataSize - 1] = '\0';
+    
     return data;
 }
 
