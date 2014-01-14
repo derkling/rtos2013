@@ -1,6 +1,8 @@
 # Exclude doxygen
 miosix/_doc/doxygen/html/*
 
+miosix_np_2/nbproject/*
+
 # Exclude temporary files
 main.elf
 main.bin
