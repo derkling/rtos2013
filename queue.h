@@ -7,16 +7,17 @@ typedef struct{
     char buffer[QUEUE_LENGHT]; //elementi della coda
     char* head = buffer; //testa della coda.
     char* next = head; //prossimo elemento libero della coda
-    bool isFull = false; //indica se la coda ha elementi
-}queue;
+     //indica se la coda ha elementi
+    int freeSpace = QUEUE_LENGHT;
+}queue_t;
 
 //FUNZIONI
 /*!@brief Aggiunge un dato alla coda.
  * @param data: stringa contenente il dato da inserire in coda.
  * @param queue: coda da gestire.
- * @retval Ritorna -1 se la coda è piena.
+ * @retval Ritorna -1 se la coda è piena, 0 altrimenti.
  */
-int addData(char* data, queue q);
+int addData(char* data, queue_t queue);
 
 /*!@brief Serve la coda. Si consiglia di utilizzare prima la funzione isEmpty() 
  *        per controllare se la coda ha elementi.
@@ -24,7 +25,11 @@ int addData(char* data, queue q);
  * @retval Ritorna il valore del primo dato da servire in coda, se non ci sono 
  *         elementi in coda ritorna NULL.
  */
-char* enqueue(queue q);
+char* enqueue(queue_t queue);
 
+/*!@brief Controlla se la coda è vuota.
+ * @param queue: coda da gestire.
+ * @retval Ritorna true se la coda è vuota, false altrimenti.
+ */
+bool isEmpty(queue_t queue);
 #endif	/* QUEUE_H */
-
