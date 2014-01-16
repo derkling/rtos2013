@@ -5,13 +5,19 @@
 //TYPEDEF
 typedef struct{
     char buffer[QUEUE_LENGHT]; //elementi della coda
-    char* head = buffer; //testa della coda.
-    char* next = head; //prossimo elemento libero della coda
+    char* head; //testa della coda.
+    char* next; //prossimo elemento libero della coda
      //indica se la coda ha elementi
-    int freeSpace = QUEUE_LENGHT;
+    int freeSpace;
 }queue_t;
 
 //FUNZIONI
+
+/*!@brief Crea un nuovo dato tipo queue_t correttamente inizializzato.
+ * @retval Ritorna l'elemento queue_t correttamente inizializzato.
+ */
+queue_t queueInizializer(queue_t queue);
+
 /*!@brief Aggiunge un dato alla coda.
  * @param data: stringa contenente il dato da inserire in coda.
  * @param queue: coda da gestire.
@@ -31,5 +37,5 @@ char* enqueue(queue_t queue);
  * @param queue: coda da gestire.
  * @retval Ritorna true se la coda è vuota, false altrimenti.
  */
-bool isEmpty(queue_t queue);
+bool queueIsEmpty(queue_t queue);
 #endif	/* QUEUE_H */

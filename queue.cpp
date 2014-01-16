@@ -1,9 +1,24 @@
 #include "queue.h"
+#include <string.h>
 #define SEPARATORE '\0'
 
 //FUNZIONI
+
+queue_t queueInizializer(queue_t queue){
+    //inizializzo l'head
+    queue.head = queue.buffer;
+    //inizializzo il next
+    queue.next = queue.head;
+    //inizializzo la quantita' di spazio libero
+    queue.freeSpace = QUEUE_LENGHT;
+    //ritorno queue inizializzato
+    return queue;
+}
+
 int addData (char* data, queue_t queue){
-    if (queue.freeSpace != 0 || (strlen(data) + 1) > queue.freeSpace){
+    
+    int size = strlen(data);
+    if ((queue.freeSpace != 0) || (size + 1 > queue.freeSpace)){
         //coda piena
         return -1;
     }
@@ -54,7 +69,7 @@ char* enqueue(queue_t queue){
     return data;
 }
 
-bool isEmpty(queue_t queue){
+bool queueIsEmpty(queue_t queue){
     if (queue.freeSpace != 0){
         return false;
     } else {
