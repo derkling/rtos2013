@@ -9,6 +9,7 @@
 #include <miosix.h>
 #include <miosix/kernel/scheduler/scheduler.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include "spi.h"
 using namespace miosix;
 
@@ -146,6 +147,10 @@ typedef Gpio <GPIOA_BASE,1> irq;
 //DEBUG
 typedef Gpio <GPIOD_BASE, 15> bluLed;
 
+typedef Gpio <GPIOD_BASE, 14> redLed;
+
+typedef Gpio <GPIOD_BASE, 13> orangeLed;
+
 
 
 // thanks to this enum I can check the status of transceiver via software
@@ -170,8 +175,9 @@ int nrf24l01p_mode;
 int tx_fifo_status;
 
 NRF24L01P::NRF24L01P() {
-    
-   bluLed::mode(Mode::OUTPUT); 
+   bluLed::mode(Mode::OUTPUT);
+   redLed::mode(Mode::OUTPUT);
+   orangeLed::mode(Mode::OUTPUT);
    spiDriver = new spi();
    mosi::mode(Mode::ALTERNATE);
    mosi::alternateFunction(5); 
@@ -180,8 +186,9 @@ NRF24L01P::NRF24L01P() {
    sck::mode(Mode::ALTERNATE);
    sck::alternateFunction(5);
    cs::mode(Mode::OUTPUT);
+   ce::mode(Mode::OUTPUT);
    cs::high();
-   ce::high();
+   ce::low();
    
    nrf24l01p_mode = _NRF24L01P_MODE_UNDEFINED; // starts with an undefined state
    tx_fifo_status = _TX_FIFO_EMPTY; // the tx_fifo starts empty obviously
@@ -200,7 +207,6 @@ NRF24L01P::~NRF24L01P() {
 void NRF24L01P::powerUp()
 {
    unsigned char current_config , new_config;
-   
    current_config = readRegister(_NRF24L01P_REG_CONFIG); // retreive the current status of CONFIG register
    new_config = current_config | _NRF24L01P_CONFIG_PWR_UP; // put to 1 the PWR_UP bit in CONFIG register
    
@@ -208,14 +214,29 @@ void NRF24L01P::powerUp()
    
    //now have to wait to worst time from power_down to standby ( charts for info )
    
-   sleep(_NRF24L01P_TIMING_Tpd2stby_us);
+   usleep(_NRF24L01P_TIMING_Tpd2stby_us);
+   
+   configureTxAddress(3); //3 byte of transmit address
+   writeRegister(_NRF24L01P_REG_TX_ADDR , 5);
+   writeRegister(_NRF24L01P_REG_RX_ADDR_P0 ,5);
+   
+   
    nrf24l01p_mode = _NRF24L01P_MODE_STANDBY; // now we are in standby mode 
+   bluLed::high();
+}
+
+void NRF24L01P::configureTxAddress(int number)
+{
+    int n_bit = number-2; // see register means
+    
+    writeRegister(_NRF24L01P_REG_SETUP_AW, n_bit );
+    
 }
 
 void NRF24L01P::powerDown()
 {
  
-unsigned char current_config , new_config;
+int current_config , new_config;
 current_config = readRegister(_NRF24L01P_REG_CONFIG); // retreive the current status of CONFIG register
 new_config = current_config & _NRF24L01P_CONFIG_NO_PWR_UP; // put to 0 the PWR_UP bit in CONFIG register
 
@@ -239,7 +260,7 @@ void NRF24L01P::returnStandByI()
  */
 void NRF24L01P::setReceiveMode()
 {
-   unsigned char current_config , new_config;
+   int current_config , new_config;
 
    current_config = readRegister(_NRF24L01P_REG_CONFIG); // retreive the current status of CONFIG register
    
@@ -257,21 +278,95 @@ void NRF24L01P::setReceiveMode()
    usleep(_NRF24L01P_TIMING_Tstby2a_us);
    
    nrf24l01p_mode = _NRF24L01P_MODE_RX_MODE;
+   
+   redLed::high();
 }
 
 /**
  * used to send data to TX_FIFO_BUFFER through the SPI
- * @param data: data to send
+ * @param data: data is a char pointer to the data to send, if it is a integer it scan byte per byte the integer
  */
-void NRF24L01P::sendDataToTx(int data)
+void NRF24L01P::TrasmitData(char *data , int dim)
 {
-    cs::low();
+    int i;
+    int original_ce = ce::value();
+    ce::low();
+    
+    if(dim > _NRF24L01P_TX_FIFO_SIZE  ) dim = _NRF24L01P_TX_FIFO_SIZE; //check the size of data
+   
+    int current_config = this->readStatusRegister();
+    int new_config = current_config | _NRF24L01P_STATUS_TX_DS; // reset TX_DS
+    writeRegister(_NRF24L01P_REG_STATUS,  new_config );
+    
+    cs::low(); //---SPI START! 
+    
     spiDriver->send(_NRF24L01P_SPI_CMD_WR_TX_PAYLOAD ); // request to write on the TX_BUFFER a payload
-    spiDriver->send(data);
-    cs::high();
-    tx_fifo_status = _TX_FIFO_NOT_EMPTY;
+    
+    for(i=0;i<dim;i++) 
+        {
+         spiDriver->send(*data++);
+        }
+    
+    cs::high(); //---SPI END!
+    
+    int OriginalMode = nrf24l01p_mode; // save the current mode of nrf
+    this->setTransmitMode(); // and switch to transmission mode
+    ce::high();
+    usleep(_NRF24L01P_TIMING_Thce_us);
+    ce::low(); 
+    
+    int result =  this->readStatusRegister();
+    printf("il registro status prima di aver trasmesso è: %d\n" , result);
+    
+    result = this->readRegister(23);
+    printf("il registro FIFO_STATUS_TX prima di aver trasmesso è: %d\n" , result);
+    
+    while(!(this->readStatusRegister() & _NRF24L01P_STATUS_TX_DS ))
+         {
+          // Wait untill IRQ set the TX_DS to 1.
+         }
+    
+    result =  this->readStatusRegister();
+    printf("trasmesso! il registro status dopo aver trasmesso è: %d\n" , result);
+    
+    result = this->readRegister(23);
+    printf("il registro FIFO_STATUS_TX dopo aver trasmesso è: %d\n" , result);
+    
+    current_config = this->readStatusRegister();
+    new_config = current_config | _NRF24L01P_STATUS_TX_DS; // reset TX_DS for next IRQ
+    writeRegister(_NRF24L01P_REG_STATUS,  new_config );
+    
+    if(OriginalMode == _NRF24L01P_MODE_RX_MODE )
+      {
+        this->setReceiveMode();
+      }
+    
+    if(original_ce == 1 ) 
+     ce::high();
+    else 
+     ce::low();
+    
+    usleep(_NRF24L01P_TIMING_Tpece2csn_us);
+    
 }
 
+void NRF24L01P::flushTx()
+{
+    printf("ORA FLUSH TX\n");
+  cs::low();
+  spiDriver->send( _NRF24L01P_SPI_CMD_FLUSH_TX  );  //svuoto coda TX
+  cs::high();
+  tx_fifo_status = _TX_FIFO_EMPTY;
+}
+
+void NRF24L01P::NoAckOnThisPack()
+{
+    printf("Tolgo ack\n");
+  cs::low();
+  spiDriver->send( _NRF24L01P_SPI_CMD_W_TX_PYLD_NO_ACK  );  // Don't want ack on this packet 
+  cs::high();
+
+}
 /**
  * used to take data from RX_FIFO_BUFFER through SPI 
  * @return 
@@ -291,7 +386,7 @@ int NRF24L01P::receiveDataFromRx()
  * This means that a NRF24L01p is near us, so we can send our payload.
  * @return 
  */
-unsigned char NRF24L01P::readRPD()
+int NRF24L01P::readRPD()
 {
    if( nrf24l01p_mode != _NRF24L01P_MODE_RX_MODE ) // security check
      {
@@ -309,35 +404,26 @@ unsigned char NRF24L01P::readRPD()
  */
 void NRF24L01P::setTransmitMode()
 {
-  if( nrf24l01p_mode != _NRF24L01P_MODE_STANDBY ) // security check
-     {
-       fprintf(stderr, "Failed to set transmission mode, call ce_down or check pwr_up bit\n");
-       return;
-     }   
-  if( tx_fifo_status == _TX_FIFO_EMPTY ) // with this I avoid to finish in Standby-II ( possible operating mode , not suggested )
-     {
-       fprintf(stderr, "Failed to set transmission mode,there is no data to transmit, push something to TX_BUFFER\n");
-       return;
-     }
+  this->returnStandByI();
   
-  unsigned char current_config , new_config;
+  int current_config , new_config;
   current_config = readRegister(_NRF24L01P_REG_CONFIG);
   new_config = current_config & _NRF24L01P_CONFIG_NO_PRIM_RX; // actually, this is 1111 1110 and preserve previous config, deleting the PRIM_RX
   
   writeRegister(_NRF24L01P_REG_CONFIG , new_config );
-  ce::high(); // for more than 10us 
   
   nrf24l01p_mode = _NRF24L01P_MODE_TX_MODE;
+  orangeLed::high();
   
   //here now starts the transmission packet flow charts, remember to change mode in the function
   //that handles the interrupt and to set the TX_FIFO to empty ( if empty naturally )
 }
 
-void NRF24L01P::writeRegister(unsigned char regAddress, unsigned char regData)
+void NRF24L01P::writeRegister(int regAddress, int regData)
 {
     this->returnStandByI();
     // aggiungere controllo ce e ripristinarlo alla fine di questa funzione 
-    unsigned char request;
+    int request;
     request = regAddress | _NRF24L01P_SPI_W_REGISTER;
    
     cs::low();
@@ -357,11 +443,10 @@ void NRF24L01P::writeRegister(unsigned char regAddress, unsigned char regData)
  * @return : the value in hex of the register
  * 
  */
-unsigned char NRF24L01P::readRegister(unsigned char regAddress) //arriva su 1 byte
+int NRF24L01P::readRegister(int regAddress) //arriva su 1 byte
 {
-    // unsigned char request; serve solo 1 byte
     // request = regAddress; tanto questo è in | bit a bit con 0x00 ( READ ) e in & bit a bit con una MASK 0x1f
-    unsigned char value;
+    int value;
     
     //every spi commands must starts with a high to low cs signal
     cs::low();
@@ -379,9 +464,9 @@ unsigned char NRF24L01P::readRegister(unsigned char regAddress) //arriva su 1 by
  * the status register is passe via miso after a dummy write on mosi
  * @return : the value in hex of status register of NRF24L01P
  */
-unsigned char NRF24L01P::readStatusRegister()
+int NRF24L01P::readStatusRegister()
 {
-    unsigned char value;
+    int value;
     cs::low();
     value=spiDriver->receive(); // in this there is a dummy write of 0 on MOSI
     cs::high();
@@ -401,12 +486,11 @@ void __attribute__((used)) EXTI1HandlerImpl()
     EXTI->PR=EXTI_PR_PR1; //viene resettato il registro che permette di uscire dalla chiamata a interrupt 
     
     //DEBUG
-    bluLed::high();
-	
+    redLed::high();
 }
 
 
-void configureInterrupt()
+void NRF24L01P::configureInterrupt()
 {
     irq::mode(Mode::INPUT);
     EXTI->IMR |= EXTI_IMR_MR1;
