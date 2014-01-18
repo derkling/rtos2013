@@ -15,7 +15,7 @@ char *data; //data received from air
 
 typedef Gpio<GPIOD_BASE,12> greenLed;
 typedef Gpio<GPIOA_BASE,1> IRQ;
-
+typedef Gpio<GPIOD_BASE,14> redLed;
 
 void invia(int num_passi){
     trasmission=true;
@@ -30,6 +30,7 @@ void __attribute__((naked)) EXTI1_IRQHandler(){
 
 void __attribute__((used))EXTI1HandlerImpl(){
     EXTI->PR=EXTI_PR_PR1;
+    redLed::high();
     if(waiting==0) return;
     waiting->IRQwakeup(); 
     if(waiting->IRQgetPriority()>Thread::IRQgetCurrentThread()->IRQgetPriority())
@@ -63,6 +64,7 @@ void *wifi_start(void *arg)
     nRF24L01P *wifi;
     wifi = new nRF24L01P();
     greenLed::mode(Mode::OUTPUT);
+    redLed::mode(Mode::OUTPUT);
     configureModuleInterrupt();
     wifi->test_transmit();
     greenLed::high();

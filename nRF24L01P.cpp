@@ -28,6 +28,7 @@
 #define NRF24L01P_CMD_WR_TX_PAYLOAD             0xa0
 #define NRF24L01P_CMD_NOP        0xff
 #define NRF24L01P_R_RX_PAY       0x61
+#define NRF24L01P_SPI_CMD_FLUSH_TX          0xe1
 
 //bitmask and register address
 #define NRF24LO1P_REG_ADDR_BITMASK              0x1f
@@ -100,13 +101,14 @@ typedef Gpio<GPIOA_BASE,1> IRQ;
 nRF24L01P::nRF24L01P() {
     spi = new spi_driver();
     setup_Gpio();
-    power_down();
+    //power_down();
     set_register(NRF24L01P_REG_STATUS, NRF24L01P_STATUS_TX_DS | NRF24L01P_STATUS_MAX_RT |
-                                NRF24L01P_STATUS_RX_DR); /*clear every pending interrupt bits*/
-      set_frequency(2450);
-      set_power_output(-12);
-      set_air_data_rate(1000);    
-      set_register(NRF24L01P_REG_AA, NRF24L01P_EN_AA_NONE); //deactivate wait for ack
+                                NRF24L01P_STATUS_RX_DR);/*clear every pending interrupt bits*/
+    
+       // set_frequency(2450);
+     // set_power_output(-12);
+     // set_air_data_rate(1000);    
+     set_register(NRF24L01P_REG_AA, NRF24L01P_EN_AA_NONE);// deactivate wait for ack*/
       
     
 }
@@ -131,6 +133,7 @@ void nRF24L01P::power_up() {
     set_register(NRF24L01P_REG_TX_ADDR , 5);
     set_register(NRF24L01P_REG_RX_ADDR_P0 ,5);
     mode=NRF24L01P_STANDBY_MODE;
+    flushTx();
 }
 
 void nRF24L01P::power_down() {
@@ -164,9 +167,9 @@ void nRF24L01P::set_transmit_mode(){
     int cur_config = get_register(NRF24L01P_REG_CONF);
     cur_config &= ~NRF24L01P_PRIM_RX;
     set_register(NRF24L01P_REG_CONF,cur_config);
-    if (CE::value()==0){
+    
         CE_enable();
-    }
+    
     mode = NRF24L01P_TX_MODE;
     printf("Fine transmit \n");
     
@@ -187,10 +190,11 @@ int nRF24L01P::transmit(int count, char* data){
     set_register(NRF24L01P_REG_STATUS, NRF24L01P_STATUS_TX_DS); /*clear bit interrupt data sent tx fifo*/
     CS::low();
     spi->spi_write(NRF24L01P_CMD_WR_TX_PAYLOAD); //command to start write from payload TX
-    for( int i=0; i<count; i++){
+    /*for( int i=0; i<count; i++){
         printf("char %c\n",*data);
         spi->spi_write(*data++);
-    }
+    }*/
+    spi->spi_write(12);
     CS::high();
     int old_mode = mode;
     set_transmit_mode();
@@ -328,6 +332,7 @@ void nRF24L01P::test_receive(){
 }
 
 void nRF24L01P::setup_Gpio(){
+    
     MISO::mode(Mode::ALTERNATE);
     MISO::alternateFunction(5);
     MOSI::mode(Mode::ALTERNATE); 
@@ -337,6 +342,7 @@ void nRF24L01P::setup_Gpio(){
     SCK::alternateFunction(5);
     CS::mode(Mode::OUTPUT);
     CS::high();
+    CE::mode(Mode::OUTPUT);
     CE::high();
 }
 
@@ -411,3 +417,11 @@ void nRF24L01P::set_tx_address(int number){
     set_register(NRF24L01P_REG_SETUP_AW, num_bit);
 }
 
+void nRF24L01P::flushTx()
+{
+    printf("ORA FLUSH TX\n");
+  CS::low();
+  spi->spi_write( NRF24L01P_SPI_CMD_FLUSH_TX  );  //svuoto coda TX
+  CS::high();
+  
+}
