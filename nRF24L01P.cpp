@@ -36,6 +36,9 @@
 #define NRF24L01P_REG_RF_CH                     0x05
 #define NRF24L01P_REG_RF_SETUP                  0x06
 #define NRF24L01P_REG_AA                        0x01
+#define NRF24L01P_REG_SETUP_AW                  0x03
+#define NRF24L01P_REG_TX_ADDR                   0x10
+#define NRF24L01P_REG_RX_ADDR_P0            0x0a
 
 #define NRF24L01P_PRIM_RX                       (1<<0)
 #define NRF24L01P_PWR_UP                        (1<<1)
@@ -104,6 +107,7 @@ nRF24L01P::nRF24L01P() {
       set_power_output(-12);
       set_air_data_rate(1000);    
       set_register(NRF24L01P_REG_AA, NRF24L01P_EN_AA_NONE); //deactivate wait for ack
+      
     
 }
 
@@ -123,6 +127,9 @@ void nRF24L01P::power_up() {
     current_config |= NRF24L01P_PWR_UP;
     set_register(NRF24L01P_REG_CONF,current_config);
     usleep(NRF24L01P_TPD2STBY);
+    set_tx_address(3);
+    set_register(NRF24L01P_REG_TX_ADDR , 5);
+    set_register(NRF24L01P_REG_RX_ADDR_P0 ,5);
     mode=NRF24L01P_STANDBY_MODE;
 }
 
@@ -397,5 +404,10 @@ void nRF24L01P::test_transmit(){
     set_transmit_mode();
     printf("Config register at transmit %d\n",get_register(NRF24L01P_REG_CONF));
     
+}
+
+void nRF24L01P::set_tx_address(int number){
+    int num_bit = number -2;
+    set_register(NRF24L01P_REG_SETUP_AW, num_bit);
 }
 
