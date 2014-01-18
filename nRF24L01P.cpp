@@ -35,7 +35,10 @@
 #define NRF24L01P_REG_STATUS                    0x07
 #define NRF24L01P_REG_RF_CH                     0x05
 #define NRF24L01P_REG_RF_SETUP                  0x06
-
+#define NRF24L01P_REG_AA                        0x01
+#define NRF24L01P_REG_SETUP_AW                  0x03
+#define NRF24L01P_REG_TX_ADDR                   0x10
+#define NRF24L01P_REG_RX_ADDR_P0            0x0a
 
 #define NRF24L01P_PRIM_RX                       (1<<0)
 #define NRF24L01P_PWR_UP                        (1<<1)
@@ -70,7 +73,7 @@
 #define NRF24L01P_DATARATE_250KBPS              250
 #define NRF24L01P_DATARATE_1MBPS                1000
 #define NRF24L01P_DATARATE_2MBPS                2000
-
+#define NRF24L01P_EN_AA_NONE                   0
 
 
 
@@ -100,10 +103,10 @@ nRF24L01P::nRF24L01P() {
     power_down();
     set_register(NRF24L01P_REG_STATUS, NRF24L01P_STATUS_TX_DS | NRF24L01P_STATUS_MAX_RT |
                                 NRF24L01P_STATUS_RX_DR); /*clear every pending interrupt bits*/
-   /* set_frequency(2450);
-    set_power_output(-12);
-    set_air_data_rate(1000);    
-*/
+      set_frequency(2450);
+      set_power_output(-12);
+      set_air_data_rate(1000);    
+      set_register(NRF24L01P_REG_AA, NRF24L01P_EN_AA_NONE); //deactivate wait for ack
     
 }
 
@@ -123,6 +126,9 @@ void nRF24L01P::power_up() {
     current_config |= NRF24L01P_PWR_UP;
     set_register(NRF24L01P_REG_CONF,current_config);
     usleep(NRF24L01P_TPD2STBY);
+    set_tx_address(3);
+    set_register(NRF24L01P_REG_TX_ADDR , 5);
+    set_register(NRF24L01P_REG_RX_ADDR_P0 ,5);
     mode=NRF24L01P_STANDBY_MODE;
 }
 
@@ -304,7 +310,7 @@ int nRF24L01P::get_register_status(){
     return status;
 }
 
-void nRF24L01P::test(){
+void nRF24L01P::test_receive(){
     power_down();
     printf("Config register at power down %d\n",get_register(NRF24L01P_REG_CONF));
     power_up();
@@ -377,13 +383,13 @@ void nRF24L01P::set_air_data_rate(int rate){
     printf("Start set air rate\n");
     int air_config = get_register(NRF24L01P_REG_RF_SETUP) & ~NRF24L01P_RF_SETUP_RF_DR_MASK; /*get rf config except rf_dr_low and rf_dr_high*/
     switch (rate){
-        case NRF24L01P_RF_DR_250KBPS:
+        case NRF24L01P_DATARATE_250KBPS:
             air_config |= NRF24L01P_RF_DR_250KBPS;
             break;
-        case NRF24L01P_RF_DR_1MBPS:
+        case NRF24L01P_DATARATE_1MBPS:
             air_config |= NRF24L01P_RF_DR_1MBPS;
             break;
-        case NRF24L01P_RF_DR_2MBPS:
+        case NRF24L01P_DATARATE_2MBPS:
             air_config |= NRF24L01P_RF_DR_2MBPS;
             break;
         default:
@@ -391,5 +397,20 @@ void nRF24L01P::set_air_data_rate(int rate){
             return;
     }
     set_register(NRF24L01P_REG_RF_SETUP, air_config);
+}
+
+void nRF24L01P::test_transmit(){
+    power_down();
+    printf("Config register at power down %d\n",get_register(NRF24L01P_REG_CONF));
+    power_up();
+    printf("Config register at power up %d\n",get_register(NRF24L01P_REG_CONF));
+    set_transmit_mode();
+    printf("Config register at transmit %d\n",get_register(NRF24L01P_REG_CONF));
+    
+}
+
+void nRF24L01P::set_tx_address(int number){
+    int num_bit = number -2;
+    set_register(NRF24L01P_REG_SETUP_AW, num_bit);
 }
 

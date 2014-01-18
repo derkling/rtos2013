@@ -64,7 +64,7 @@ void *wifi_start(void *arg)
     wifi = new nRF24L01P();
     greenLed::mode(Mode::OUTPUT);
     configureModuleInterrupt();
-    wifi->test();
+    wifi->test_transmit();
     greenLed::high();
     usleep(1000000);
     greenLed::low();
@@ -72,8 +72,8 @@ void *wifi_start(void *arg)
         printf("wait module");
         waitForModule();
         printf("ho ricevuto qlcs\n");
-        //num_step = wifi->receive();
-        /*if (trasmission){
+        num_step = wifi->receive();
+        if (trasmission){
             wifi->transmit(num_step);
         }
         else{

@@ -21,7 +21,8 @@ public:
     void set_receive_mode();
     int transmit(int count, char* data);
     int receive(int pipe,char *data,int count);
-    void test(); 
+    void test_receive(); 
+    void test_transmit();
 private:
     void CE_enable();
     void CE_disable();
@@ -35,6 +36,7 @@ private:
     void set_frequency(int frequency);
     void set_power_output(int power);
     void set_air_data_rate(int rate);
+    void set_tx_address(int number);
     int mode;
 
 };
