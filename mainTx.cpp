@@ -9,15 +9,15 @@ using namespace miosix;
 int main()
 {
     NRF24L01P* module = new NRF24L01P();
-    int result; char data='f';
+    int result; char data;
     char* pointer;
     
     
     module->powerUp();
     module->configureInterrupt();
     
-    printf("Inserisci qualcosa da trasmettere[ un solo carattere ]\n");
-    scanf("%c",&data);
+    printf("Dammi un carattere da trasmettere\n");
+    scanf("%c", &data);
     pointer = &data;
     module->TrasmitData(pointer , sizeof(data));
     

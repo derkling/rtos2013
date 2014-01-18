@@ -27,8 +27,10 @@ public:
     void configureInterrupt();
     void configureTxAddress(int n_byte);
     void flushTx();
+    void flushRx();
     void NoAckOnThisPack();
     void TrasmitData(char* data_pointer , int dim);
+    void resetModule();
 
 private:
     spi *spiDriver;
