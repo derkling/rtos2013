@@ -14,7 +14,7 @@ SUBDIRS := miosix
 ## List here your source files (both .s, .c and .cpp)
 ##
 SRC :=                                  \
-main.cpp spi.cpp social_wireless.cpp
+main.cpp spi.cpp social_wireless.cpp queue.cpp
 
 ##
 ## List here additional static libraries with relative path
