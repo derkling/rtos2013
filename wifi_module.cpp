@@ -31,6 +31,7 @@ void __attribute__((naked)) EXTI1_IRQHandler(){
 void __attribute__((used))EXTI1HandlerImpl(){
     EXTI->PR=EXTI_PR_PR1;
     redLed::high();
+    printf("Sono nell'interrupt");
     if(waiting==0) return;
     waiting->IRQwakeup(); 
     if(waiting->IRQgetPriority()>Thread::IRQgetCurrentThread()->IRQgetPriority())
@@ -90,6 +91,7 @@ void *wifi_start(void *arg)
         }
     */
     }
+    
    
     printf("Hello world, write your application here\n");
     

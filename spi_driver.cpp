@@ -44,7 +44,7 @@ void spi_driver::spi_write(int command){
 }
 
 int spi_driver::spi_Receive(){
-     SPI2->DR = 0;             /*dummy write forza la ricezione di un byte*/
+     SPI2->DR = 0xff;             /*dummy write forza la ricezione di un byte*/
      while((SPI2->SR & SPI_SR_RXNE)==0);
      return SPI2->DR;  
 }

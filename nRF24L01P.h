@@ -23,6 +23,8 @@ public:
     int receive(int pipe,char *data,int count);
     void test_receive(); 
     void test_transmit();
+    int get_frequency();
+    int get_air_data_rate(); 
 private:
     void CE_enable();
     void CE_disable();
