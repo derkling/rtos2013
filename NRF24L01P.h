@@ -31,7 +31,7 @@ public:
     void NoAckOnThisPack();
     void TrasmitData(char* data_pointer , int dim);
     void resetModule();
-
+    void showInternal();
 private:
     spi *spiDriver;
 };

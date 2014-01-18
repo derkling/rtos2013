@@ -334,7 +334,7 @@ void NRF24L01P::TrasmitData(char *data , int dim)
     
     if(dim > _NRF24L01P_TX_FIFO_SIZE  ) dim = _NRF24L01P_TX_FIFO_SIZE; //check the size of data
    
-    printf("Have to transmit %c", *data);
+    printf("Have to transmit %c\n", *data);
     
     int current_config = this->readStatusRegister();
     int new_config = current_config | _NRF24L01P_STATUS_TX_DS; // reset TX_DS
@@ -370,7 +370,8 @@ void NRF24L01P::TrasmitData(char *data , int dim)
          }
     
     result =  this->readStatusRegister();
-    printf("trasmesso! il registro status dopo aver trasmesso è: %d\n" , result);
+    printf("**************TRASMISSION COMPLETE******************");
+    printf("il registro status dopo aver trasmesso è: %d\n" , result);
     
     result = this->readRegister(23);
     printf("il registro FIFO_STATUS_TX dopo aver trasmesso è: %d\n" , result);
@@ -379,14 +380,14 @@ void NRF24L01P::TrasmitData(char *data , int dim)
     new_config = current_config | _NRF24L01P_STATUS_TX_DS; // reset TX_DS for next IRQ
     writeRegister(_NRF24L01P_REG_STATUS,  new_config );
     
-    if(OriginalMode == _NRF24L01P_MODE_RX_MODE )
-      {
+    //if(OriginalMode == _NRF24L01P_MODE_RX_MODE ) // BANG...if the previous mode wasn't receive this mantain the transceiver in trasmission forever
+      //{ now comment, it will be useful later! 
         this->setReceiveMode();
-      }
+     // }
     
-    if(original_ce == 1 ) 
-     ce::high();
-    else 
+    //if(original_ce == 1 ) 
+     //ce::high();
+    //else 
      ce::low();
     
     usleep(_NRF24L01P_TIMING_Tpece2csn_us);
@@ -516,6 +517,86 @@ int NRF24L01P::readRegister(int regAddress) //arriva su 1 byte
     return value;
 }
 
+void NRF24L01P::showInternal()
+{   
+    int result;
+    
+    result = this->readRegister(0);
+    printf("<<CONFIG REGISTER>> è: %d\n" , result);
+    
+    result = this->readRegister(1);
+    printf("EN_AA REGISTER è: %d\n" , result);
+    
+    result = this->readRegister(2);
+    printf("EN_RXADDR REGISTER è: %d\n" , result);
+    
+    result = this->readRegister(3);
+    printf("SETUP_AW REGISTER è: %d\n" , result);
+    
+    result = this->readRegister(4);
+    printf("SETUP_RETR REGISTER è: %d\n" , result);
+    
+    result = this->readRegister(5);
+    printf("RF_CH REGISTER è: %d\n" , result);
+    
+    result = this->readRegister(6);
+    printf("RF_SETUP REGISTER è: %d\n" , result);
+    
+    result = this->readRegister(7);
+    printf("<<STATUS REGISTER>> è: %d\n" , result);
+    
+    result = this->readRegister(8);
+    printf("OBSERVE_TX REGISTER è: %d\n" , result);
+    
+    result = this->readRegister(9);
+    printf("RPD REGISTER è: %d\n" , result);
+    
+    result = this->readRegister(10);
+    printf("RX_ADDR_P0 REGISTER è: %d\n" , result);
+    
+     result = this->readRegister(11);
+    printf("RX_ADDR_P1 REGISTER è: %d\n" , result);
+    
+     result = this->readRegister(12);
+    printf("RX_ADDR_P2 REGISTER è: %d\n" , result);
+    
+     result = this->readRegister(13);
+    printf("RX_ADDR_P3 REGISTER è: %d\n" , result);
+    
+     result = this->readRegister(14);
+    printf("RX_ADDR_P4 REGISTER è: %d\n" , result);
+    
+     result = this->readRegister(15);
+    printf("RX_ADDR_P5 REGISTER è: %d\n" , result);
+            
+     result = this->readRegister(16);
+    printf("TX_ADDR REGISTER è: %d\n" , result);
+    
+    result = this->readRegister(17);
+    printf("RX_PW_P0 REGISTER è: %d\n" , result);
+    
+    result = this->readRegister(18);
+    printf("RX_PW_P1 REGISTER è: %d\n" , result);
+    
+    result = this->readRegister(19);
+    printf("RX_PW_P2 REGISTER è: %d\n" , result);
+    
+    result = this->readRegister(20);
+    printf("RX_PW_P3 REGISTER è: %d\n" , result);
+   
+    result = this->readRegister(21);
+    printf("RX_PW_P4 REGISTER è: %d\n" , result);
+    
+    result = this->readRegister(22);
+    printf("RX_PW_P5 REGISTER è: %d\n" , result);
+    
+    result = this->readRegister(23);
+    printf("<<FIFO_STATUS>> REGISTER è: %d\n" , result);
+    
+    result = this->readRegister(29);
+    printf("FEATURE REGISTER è: %d\n" , result);
+
+}
 /**
  * 
  * the status register is passe via miso after a dummy write on mosi
