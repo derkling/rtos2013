@@ -100,10 +100,10 @@ nRF24L01P::nRF24L01P() {
     power_down();
     set_register(NRF24L01P_REG_STATUS, NRF24L01P_STATUS_TX_DS | NRF24L01P_STATUS_MAX_RT |
                                 NRF24L01P_STATUS_RX_DR); /*clear every pending interrupt bits*/
-    set_frequency(2450);
+   /* set_frequency(2450);
     set_power_output(-12);
     set_air_data_rate(1000);    
-
+*/
     
 }
 
@@ -309,10 +309,14 @@ void nRF24L01P::test(){
     printf("Config register at power down %d\n",get_register(NRF24L01P_REG_CONF));
     power_up();
     printf("Config register at power up %d\n",get_register(NRF24L01P_REG_CONF));
-    set_transmit_mode();
-    printf("Config register at transmit %d\n",get_register(NRF24L01P_REG_CONF));
+        printf("Status register before receive %d\n",get_register_status());
+        set_transmit_mode();
+            printf("Config register at power up %d\n",get_register(NRF24L01P_REG_CONF));
+        printf("Status register before receive %d\n",get_register_status());
     set_receive_mode();
     printf("Config register at receive %d\n",get_register(NRF24L01P_REG_CONF));
+            printf("Status register after receive %d\n",get_register_status());
+
     char *data;
     usleep(3000000);
     int received_lenght_data = receive(0,data,1);
