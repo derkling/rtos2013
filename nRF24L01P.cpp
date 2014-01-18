@@ -10,6 +10,15 @@
 #include "miosix.h"
 
 //NRF24L01P Macro 
+//rf register 
+ 
+#define NRF24L01P_RF_HIGH_BIT       (1 << 3)
+#define NRF24L01P_RF_LOW_BIT        (1 << 5)
+#define NRF24L01P_RF_MASK           (NRF24L01P_RF_LOW_BIT| NRF24L01P_RF_HIGH_BIT)
+#define NRF24L01P_RF_250KBPS        (NRF24L01P_RF_LOW_BIT)
+#define NRF24L01P_RF_1MBPS          (0)
+#define NRF24L01P_RF_2MBPS          (NRF24L01P_RF_HIGH_BIT)
+
 //pipe number for multiceiver
 #define NRF24L01P_PIPE_NO_0     0
 #define NRF24L01P_PIPE_NO_1     1
@@ -128,9 +137,6 @@ void nRF24L01P::power_up() {
     current_config |= NRF24L01P_PWR_UP;
     set_register(NRF24L01P_REG_CONF,current_config);
     usleep(NRF24L01P_TPD2STBY);
-    set_tx_address(3);
-    set_register(NRF24L01P_REG_TX_ADDR , 5);
-    set_register(NRF24L01P_REG_RX_ADDR_P0 ,5);
     mode=NRF24L01P_STANDBY_MODE;
 }
 
@@ -322,12 +328,17 @@ void nRF24L01P::test_receive(){
     printf("Config register at receive %d\n",get_register(NRF24L01P_REG_CONF));
     printf("Status register after receive %d\n",get_register_status());
 
+    printf("default value");
+    printf( "nRF24L01+ Frequency    : %d MHz\r\n",  get_frequency() );
+   // printf( "nRF24L01+ Output power : %d dBm\r\n",  my_nrf24l01p.getRfOutputPower() );
+    printf( "nRF24L01+ Data Rate    : %d kbps\r\n", get_air_data_rate());
+   // printf( "nRF24L01+ RX Address   : 0x%010llX\r\n", my_nrf24l01p.getRxAddress() );
     char *data;
     while(true){
     usleep(3000000);
     printf("Status register %d\n",get_register_status());
     printf("Config register %d\n",get_register(NRF24L01P_REG_CONF));
-    int received_lenght_data = receive(0,data,1);
+    int received_lenght_data = receive(NRF24L01P_PIPE_NO_0,data,1);
     printf("ricevuto da pipe 1 %d\n",receive(1,data,1));
     printf("ho ricevuto %s\n",data);
     printf("receive result: %d\n",received_lenght_data);
@@ -360,6 +371,11 @@ void nRF24L01P::set_frequency(int frequency){
     int channel = (frequency - NRF24L01P_MIN_RF_FREQUENCY) & 0x7F;  /*from manual RF_freq = frequency - NRF24L01P_MIN_RF_FREQUENCY)*/
     set_register(NRF24L01P_REG_RF_CH, channel);
     printf("end set frequency\n");
+}
+int nRF24L01P::get_frequency(){
+    int freq = get_register(NRF24L01P_REG_RF_CH);
+    return (freq + NRF24L01P_MIN_RF_FREQUENCY);
+
 }
 
 void nRF24L01P::set_power_output(int power){
@@ -405,6 +421,28 @@ void nRF24L01P::set_air_data_rate(int rate){
             return;
     }
     set_register(NRF24L01P_REG_RF_SETUP, air_config);
+}
+
+int nRF24L01P::get_air_data_rate() {
+ 
+    int rate = get_register(NRF24L01P_REG_RF_SETUP) & NRF24L01P_RF_SETUP_RF_DR_MASK;
+ 
+    switch ( rate ) {
+ 
+        case NRF24L01P_RF_250KBPS:
+            return NRF24L01P_DATARATE_250KBPS;
+ 
+        case NRF24L01P_RF_1MBPS:
+            return NRF24L01P_DATARATE_1MBPS;
+ 
+        case NRF24L01P_RF_2MBPS:
+            return NRF24L01P_DATARATE_2MBPS;
+ 
+        default:
+            printf( "nRF24L01P: Unknown Air Data Rate value %d\r\n", rate );
+            return 0;
+
+    }
 }
 
 void nRF24L01P::test_transmit(){
