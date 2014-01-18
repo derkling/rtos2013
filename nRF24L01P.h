@@ -28,6 +28,7 @@ public:
     int get_output_power();
     int get_crc_width();
     void disable_auto_ack();
+    void disable_auto_retransmit();
 
 private:
     void CE_enable();

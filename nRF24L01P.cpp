@@ -49,6 +49,7 @@
 #define NRF24L01P_REG_SETUP_AW                  0x03
 #define NRF24L01P_REG_TX_ADDR                   0x10
 #define NRF24L01P_REG_RX_ADDR_P0            0x0a
+#define NRF24L01P_REG_SETUP_RETR            0x04
 
 #define NRF24L01P_PRIM_RX                       (1<<0)
 #define NRF24L01P_PWR_UP                        (1<<1)
@@ -70,9 +71,9 @@
 #define NRF24L01P_CONFIG_CRC0                   (1<<2)
 #define NRF24L01P_CONFIG_EN_CRC                 (1<<3)
 #define NRF24L01P_CONFIG_CRC_MASK       (NRF24L01P_CONFIG_EN_CRC| NRF24L01P_CONFIG_CRC0)
-#define _NRF24L01P_CONFIG_CRC_NONE       (0)
-#define _NRF24L01P_CONFIG_CRC_8BIT       (NRF24L01P_CONFIG_EN_CRC)
-#define _NRF24L01P_CONFIG_CRC_16BIT      (NRF24L01P_CONFIG_EN_CRC|NRF24L01P_CONFIG_CRC0)
+#define NRF24L01P_CONFIG_CRC_NONE       (0)
+#define NRF24L01P_CONFIG_CRC_8BIT       (NRF24L01P_CONFIG_EN_CRC)
+#define NRF24L01P_CONFIG_CRC_16BIT      (NRF24L01P_CONFIG_EN_CRC|NRF24L01P_CONFIG_CRC0)
 #define NRF24L01P_CRC_NONE               0
 #define NRF24L01P_CRC_8_BIT              8
 #define NRF24L01P_CRC_16_BIT            16
@@ -92,6 +93,7 @@
 #define NRF24L01P_DATARATE_1MBPS                1000
 #define NRF24L01P_DATARATE_2MBPS                2000
 #define NRF24L01P_EN_AA_NONE                   0
+#define NRF24L01P_SETUP_RETR_NONE       0
 
 
 
@@ -127,6 +129,7 @@ nRF24L01P::nRF24L01P() {
     set_air_data_rate(NRF24L01P_DATARATE_1MBPS);
     set_crc_width(NRF24L01P_CRC_8_BIT);
     disable_auto_ack();
+    disable_auto_retransmit();
     printf("Frequency %d\n",get_frequency());
     printf("Output power %d\n",get_output_power());
     printf("Air data rate %d\n",get_air_data_rate());
@@ -495,13 +498,13 @@ int nRF24L01P::get_crc_width() {
  
     switch ( crcWidth ) {
  
-        case _NRF24L01P_CONFIG_CRC_NONE:
+        case NRF24L01P_CONFIG_CRC_NONE:
             return NRF24L01P_CRC_NONE;
  
-        case _NRF24L01P_CONFIG_CRC_8BIT:
+        case NRF24L01P_CONFIG_CRC_8BIT:
             return NRF24L01P_CRC_8_BIT;
  
-        case _NRF24L01P_CONFIG_CRC_16BIT:
+        case NRF24L01P_CONFIG_CRC_16BIT:
             return NRF24L01P_CRC_16_BIT;
  
         default:
@@ -542,15 +545,15 @@ void nRF24L01P::set_crc_width(int width) {
     switch ( width ) {
  
         case NRF24L01P_CRC_NONE:
-            config |= _NRF24L01P_CONFIG_CRC_NONE;
+            config |= NRF24L01P_CONFIG_CRC_NONE;
             break;
  
         case NRF24L01P_CRC_8_BIT:
-            config |= _NRF24L01P_CONFIG_CRC_8BIT;
+            config |= NRF24L01P_CONFIG_CRC_8BIT;
             break;
  
         case NRF24L01P_CRC_16_BIT:
-            config |= _NRF24L01P_CONFIG_CRC_16BIT;
+            config |= NRF24L01P_CONFIG_CRC_16BIT;
             break;
  
         default:
@@ -565,4 +568,10 @@ void nRF24L01P::set_crc_width(int width) {
 
 void nRF24L01P::disable_auto_ack(){
     set_register(NRF24L01P_REG_AA, NRF24L01P_EN_AA_NONE);// deactivate wait for ack*/
+}
+
+void nRF24L01P::disable_auto_retransmit() {
+ 
+    set_register(NRF24L01P_REG_SETUP_RETR, NRF24L01P_SETUP_RETR_NONE);
+ 
 }
