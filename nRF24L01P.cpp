@@ -127,7 +127,11 @@ nRF24L01P::nRF24L01P() {
     set_air_data_rate(NRF24L01P_DATARATE_1MBPS);
     set_crc_width(NRF24L01P_CRC_8_BIT);
     set_register(NRF24L01P_REG_AA, NRF24L01P_EN_AA_NONE);// deactivate wait for ack*/
-    
+    printf("Frequency %d\n",get_frequency());
+    printf("Output power %d\n",get_output_power());
+    printf("Air data rate %d\n",get_air_data_rate());
+    printf("Crc %d\n",get_crc_width());
+      
 }
 
 nRF24L01P::nRF24L01P(const nRF24L01P& orig) {
@@ -454,9 +458,56 @@ int nRF24L01P::get_air_data_rate() {
             return NRF24L01P_DATARATE_2MBPS;
  
         default:
-            printf( "nRF24L01P: Unknown Air Data Rate value %d\r\n", rate );
+            printf( "nRF24L01P: Unknown Air Data Rate value %d\n", rate );
             return 0;
 
+    }
+}
+
+int nRF24L01P::get_output_power() {
+ 
+    int power = get_register(NRF24L01P_REG_RF_SETUP) & NRF24L01P_RF_SETUP_RF_PWR_MASK;
+ 
+    switch ( power ) {
+ 
+        case NRF24L01P_RF_SETUP_PWR_0DBM:
+            return NRF24L01P_TX_PWR_ZERO_DB;
+ 
+        case NRF24L01P_RF_SETUP_PWR_MINUS_6DBM:
+            return NRF24L01P_TX_PWR_MINUS_6_DB;
+ 
+        case NRF24L01P_RF_SETUP_PWR_MINUS_12DBM:
+            return NRF24L01P_TX_PWR_MINUS_12_DB;
+ 
+        case NRF24L01P_RF_SETUP_PWR_MINUS_18DBM:
+            return NRF24L01P_TX_PWR_MINUS_18_DB;
+ 
+        default:
+            printf( "nRF24L01P: Unknown RF Output Power value %d\n", power );
+            return 0;
+ 
+    }
+}
+
+int nRF24L01P::get_crc_width() {
+ 
+    int crcWidth = get_register(NRF24L01P_REG_CONF) & NRF24L01P_CONFIG_CRC_MASK;
+ 
+    switch ( crcWidth ) {
+ 
+        case _NRF24L01P_CONFIG_CRC_NONE:
+            return NRF24L01P_CRC_NONE;
+ 
+        case _NRF24L01P_CONFIG_CRC_8BIT:
+            return NRF24L01P_CRC_8_BIT;
+ 
+        case _NRF24L01P_CONFIG_CRC_16BIT:
+            return NRF24L01P_CRC_16_BIT;
+ 
+        default:
+            printf( "nRF24L01P: Unknown CRC Width value %d\n", crcWidth );
+            return 0;
+ 
     }
 }
 

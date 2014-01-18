@@ -25,6 +25,9 @@ public:
     void test_transmit();
     int get_frequency();
     int get_air_data_rate(); 
+    int get_output_power();
+    int get_crc_width();
+
 private:
     void CE_enable();
     void CE_disable();
