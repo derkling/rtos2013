@@ -126,7 +126,7 @@ nRF24L01P::nRF24L01P() {
     set_power_output(NRF24L01P_TX_PWR_MINUS_12_DB);
     set_air_data_rate(NRF24L01P_DATARATE_1MBPS);
     set_crc_width(NRF24L01P_CRC_8_BIT);
-    set_register(NRF24L01P_REG_AA, NRF24L01P_EN_AA_NONE);// deactivate wait for ack*/
+    disable_auto_ack();
     printf("Frequency %d\n",get_frequency());
     printf("Output power %d\n",get_output_power());
     printf("Air data rate %d\n",get_air_data_rate());
@@ -561,4 +561,8 @@ void nRF24L01P::set_crc_width(int width) {
  
     set_register(NRF24L01P_REG_CONF, config);
  
+}
+
+void nRF24L01P::disable_auto_ack(){
+    set_register(NRF24L01P_REG_AA, NRF24L01P_EN_AA_NONE);// deactivate wait for ack*/
 }

@@ -27,6 +27,7 @@ public:
     int get_air_data_rate(); 
     int get_output_power();
     int get_crc_width();
+    void disable_auto_ack();
 
 private:
     void CE_enable();
