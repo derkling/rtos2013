@@ -30,6 +30,7 @@ void __attribute__((naked)) EXTI1_IRQHandler(){
 
 void __attribute__((used))EXTI1HandlerImpl(){
     EXTI->PR=EXTI_PR_PR1;
+    printf("Sono nell'interrupt");
     if(waiting==0) return;
     waiting->IRQwakeup(); 
     if(waiting->IRQgetPriority()>Thread::IRQgetCurrentThread()->IRQgetPriority())
@@ -59,28 +60,25 @@ void configureModuleInterrupt()
 }
 void *wifi_start(void *arg)
 {
-    char data[32] = "prova";
+    char data[32];
     nRF24L01P *wifi;
     wifi = new nRF24L01P();
     greenLed::mode(Mode::OUTPUT);
     configureModuleInterrupt();
-    wifi->test_transmit();
+    wifi->test_receive();
     greenLed::high();
     usleep(1000000);
     greenLed::low();
     for(;;){
-        printf("wait module");
+        printf("wait module\n");
         waitForModule();
         printf("ho ricevuto qlcs\n");
-        num_step = wifi->receive();
-        if (trasmission){
-            wifi->transmit(num_step);
-        }
-        else{
-            wifi->receive();
-        }
-    */
+        num_step = wifi->receive(0,data,1);
+        
+        
+        printf("data %s\n",data);
     }
+    
    
     printf("Hello world, write your application here\n");
     

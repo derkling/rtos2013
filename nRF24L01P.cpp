@@ -103,9 +103,11 @@ nRF24L01P::nRF24L01P() {
     power_down();
     set_register(NRF24L01P_REG_STATUS, NRF24L01P_STATUS_TX_DS | NRF24L01P_STATUS_MAX_RT |
                                 NRF24L01P_STATUS_RX_DR); /*clear every pending interrupt bits*/
-      set_frequency(2450);
+    /*
+    set_frequency(2450);
       set_power_output(-12);
-      set_air_data_rate(1000);    
+      set_air_data_rate(1000); 
+      */
       set_register(NRF24L01P_REG_AA, NRF24L01P_EN_AA_NONE); //deactivate wait for ack
     
 }
@@ -149,8 +151,9 @@ void nRF24L01P::set_receive_mode(){
     cur_config |= NRF24L01P_PRIM_RX;
     set_register(NRF24L01P_REG_CONF,cur_config);
     if (CE::value()==0){
-        CE_enable();
+    CE_enable();
     }
+    
     mode = NRF24L01P_RX_MODE;
    
 }
@@ -248,7 +251,7 @@ int nRF24L01P::receive(int pipe,char *data,int count){
 }
 
 void nRF24L01P::CE_restore(int old_ce){
-    old_ce ? CE::high():CE::low();      //restore old ce value
+    old_ce ? CE::high():CE::low();      //wifi_module.cpp:75:34: error: no matching function for call to 'nRF24L01P::receive()'restore old ce value
     usleep(NRF24L01P_TPECE2CSN);    //sleep to apply ce value change
 }
 
@@ -291,6 +294,7 @@ bool nRF24L01P::packet_in_pipe(int pipe){
     if ((pipe<NRF24L01P_PIPE_NO_0) || (pipe> NRF24L01P_PIPE_NO_5)){
         return false;
     }
+    printf("Status register in packet_inpipe %d",get_register_status());
     int status=get_register_status();
     //& is bitwise (it returns 01001100) && is and (return 0 or 1))
     if((status & NRF24L01P_STATUS_DR_RX)&&((status & NRF24L01P_STATUS_RX_P_NO)>>1)==(pipe & 0x7)){
@@ -311,23 +315,25 @@ int nRF24L01P::get_register_status(){
 }
 
 void nRF24L01P::test_receive(){
-    power_down();
-    printf("Config register at power down %d\n",get_register(NRF24L01P_REG_CONF));
     power_up();
     printf("Config register at power up %d\n",get_register(NRF24L01P_REG_CONF));
-        printf("Status register before receive %d\n",get_register_status());
-        set_transmit_mode();
-            printf("Config register at power up %d\n",get_register(NRF24L01P_REG_CONF));
-        printf("Status register before receive %d\n",get_register_status());
+    printf("Status register before receive %d\n",get_register_status());
     set_receive_mode();
     printf("Config register at receive %d\n",get_register(NRF24L01P_REG_CONF));
-            printf("Status register after receive %d\n",get_register_status());
+    printf("Status register after receive %d\n",get_register_status());
 
     char *data;
+    while(true){
     usleep(3000000);
-    int received_lenght_data = receive(0,data,1);
-    printf("receive result: %d\n",received_lenght_data);
     printf("Status register %d\n",get_register_status());
+    printf("Config register %d\n",get_register(NRF24L01P_REG_CONF));
+    int received_lenght_data = receive(0,data,1);
+    printf("ricevuto da pipe 1 %d\n",receive(1,data,1));
+    printf("ho ricevuto %s\n",data);
+    printf("receive result: %d\n",received_lenght_data);
+
+
+    }
 }
 
 void nRF24L01P::setup_Gpio(){
@@ -340,7 +346,9 @@ void nRF24L01P::setup_Gpio(){
     SCK::alternateFunction(5);
     CS::mode(Mode::OUTPUT);
     CS::high();
+    CE::mode(Mode::OUTPUT);
     CE::high();
+    
 }
 
 void nRF24L01P::set_frequency(int frequency){
