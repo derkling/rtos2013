@@ -40,6 +40,7 @@ private:
     void set_air_data_rate(int rate);
     void set_tx_address(int number);
     void flushTx();
+    void set_crc_width(int width);
 
     int mode;
 

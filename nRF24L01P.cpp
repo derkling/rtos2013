@@ -65,9 +65,17 @@
 #define NRF24L01P_RF_DR_1MBPS                   (0)
 #define NRF24L01P_RF_DR_2MBPS                   (1<<3)
 #define NRF24L01P_STATUS_DR_RX                  (1<<6)         //set if data register full write 1 to clear
-#define NRF24L01P_STATUS_RX_P_NO                (0x7<<1) 
-
-
+#define NRF24L01P_STATUS_RX_P_NO                (0x7<<1)
+//CRC
+#define NRF24L01P_CONFIG_CRC0                   (1<<2)
+#define NRF24L01P_CONFIG_EN_CRC                 (1<<3)
+#define NRF24L01P_CONFIG_CRC_MASK       (NRF24L01P_CONFIG_EN_CRC| NRF24L01P_CONFIG_CRC0)
+#define _NRF24L01P_CONFIG_CRC_NONE       (0)
+#define _NRF24L01P_CONFIG_CRC_8BIT       (NRF24L01P_CONFIG_EN_CRC)
+#define _NRF24L01P_CONFIG_CRC_16BIT      (NRF24L01P_CONFIG_EN_CRC|NRF24L01P_CONFIG_CRC0)
+#define NRF24L01P_CRC_NONE               0
+#define NRF24L01P_CRC_8_BIT              8
+#define NRF24L01P_CRC_16_BIT            16
 //time
 #define NRF24L01P_TPD2STBY                      2000  //2mS
 #define NRF24L01P_TPECE2CSN                     4  //4uS
@@ -114,10 +122,11 @@ nRF24L01P::nRF24L01P() {
     set_register(NRF24L01P_REG_STATUS, NRF24L01P_STATUS_TX_DS | NRF24L01P_STATUS_MAX_RT |
                                 NRF24L01P_STATUS_RX_DR);/*clear every pending interrupt bits*/
     
-       // set_frequency(2450);
-     // set_power_output(-12);
-     // set_air_data_rate(1000);    
-     set_register(NRF24L01P_REG_AA, NRF24L01P_EN_AA_NONE);// deactivate wait for ack*/
+    set_frequency(NRF24L01P_MIN_RF_FREQUENCY);
+    set_power_output(NRF24L01P_TX_PWR_MINUS_12_DB);
+    set_air_data_rate(NRF24L01P_DATARATE_1MBPS);
+    set_crc_width(NRF24L01P_CRC_8_BIT);
+    set_register(NRF24L01P_REG_AA, NRF24L01P_EN_AA_NONE);// deactivate wait for ack*/
     
 }
 
@@ -473,4 +482,32 @@ void nRF24L01P::flushTx()
   spi->spi_write( NRF24L01P_SPI_CMD_FLUSH_TX  );  //svuoto coda TX
   CS::high();
   
+}
+
+void nRF24L01P::set_crc_width(int width) {
+ 
+    int config = (NRF24L01P_REG_CONF) & ~NRF24L01P_CONFIG_CRC_MASK;
+ 
+    switch ( width ) {
+ 
+        case NRF24L01P_CRC_NONE:
+            config |= _NRF24L01P_CONFIG_CRC_NONE;
+            break;
+ 
+        case NRF24L01P_CRC_8_BIT:
+            config |= _NRF24L01P_CONFIG_CRC_8BIT;
+            break;
+ 
+        case NRF24L01P_CRC_16_BIT:
+            config |= _NRF24L01P_CONFIG_CRC_16BIT;
+            break;
+ 
+        default:
+            printf( "nRF24L01P: Invalid CRC Width setting %d\n", width );
+            return;
+ 
+    }
+ 
+    set_register(NRF24L01P_REG_CONF, config);
+ 
 }
