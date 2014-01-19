@@ -52,9 +52,11 @@ void waitForModule(){
 
 void configureModuleInterrupt()
 {
-    IRQ::mode(Mode::INPUT);
+    IRQ::mode(Mode::INPUT_PULL_UP);
+    SYSCFG->EXTICR[1] = SYSCFG_EXTICR1_EXTI1_PA;
     EXTI->IMR |= EXTI_IMR_MR1; /*Periferica che gestisce gli external interrupt, è per il gpio 0*/
-    EXTI->RTSR |= EXTI_RTSR_TR1; /*Vado a verificare durante il fronte di salita*/
+    EXTI->RTSR &= ~EXTI_RTSR_TR1; /*Vado a verificare durante il fronte di salita*/
+    EXTI->FTSR |= EXTI_FTSR_TR1;
     NVIC_EnableIRQ(EXTI1_IRQn); /*Abilitano il controller dell'interrupt, passando il nome e poi la priorità*/
     NVIC_SetPriority(EXTI1_IRQn,15); //Low priority
     
