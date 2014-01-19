@@ -14,13 +14,13 @@ SUBDIRS := miosix
 ## List here your source files (both .s, .c and .cpp)
 ##
 SRC :=                                  \
-main.cpp
-
+main2.cpp\
+button.cpp
 ##
 ## List here additional static libraries with relative path
 ##
 LIBS :=
-
+	
 ##
 ## List here additional include directories (in the form -Iinclude_dir)
 ##
