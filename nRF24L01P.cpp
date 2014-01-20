@@ -26,6 +26,7 @@
 #define NRF24L01P_PIPE_NO_3     3
 #define NRF24L01P_PIPE_NO_4     4
 #define NRF24L01P_PIPE_NO_5     5
+#define NRF24L01P_REG_RX_PW_P0              0x11
 
 //size buffers
 #define NRF24L01P_RX_BUFFER_SIZE       32
@@ -90,6 +91,7 @@
 
 //size
 #define NRF24L01P_TX_FIFO_SIZE                  32
+#define NRF24L01P_RX_FIFO_SIZE                  32
 #define NRF24L01P_MIN_RF_FREQUENCY              2400
 #define NRF24L01P_MAX_RF_FREQUENCY              2525
 #define NRF24L01P_TX_PWR_ZERO_DB                 0
@@ -100,10 +102,12 @@
 #define NRF24L01P_DATARATE_1MBPS                1000
 #define NRF24L01P_DATARATE_2MBPS                2000
 #define NRF24L01P_EN_AA_NONE                   0
+#define NRF24L01P_EN_RXADDR_NONE        0
 #define NRF24L01P_SETUP_RETR_NONE       0
 #define NRF24L01P_ADDRESS_DEFAULT   ((unsigned long long) 0xE7E7E7E7E7 )
 #define NRF24L01P_ADDRESS_DEFAULT_WIDTH  5
 
+#define NRF24L01P_RX_PW_Px_MASK         0x3F
 
 
 typedef enum {
@@ -130,11 +134,13 @@ nRF24L01P::nRF24L01P() {
     spi = new spi_driver();
     setup_Gpio();
     //power_down();
+    
     set_register(NRF24L01P_REG_STATUS, NRF24L01P_STATUS_TX_DS | NRF24L01P_STATUS_MAX_RT |
                                 NRF24L01P_STATUS_RX_DR);/*clear every pending interrupt bits*/
-    
-    set_frequency(NRF24L01P_MIN_RF_FREQUENCY);
-    set_power_output(NRF24L01P_TX_PWR_MINUS_12_DB);
+    set_register(NRF24L01P_REG_EN_RXADDR, NRF24L01P_EN_RXADDR_NONE);
+    set_tx_address(5);
+    set_frequency(NRF24L01P_MIN_RF_FREQUENCY+2);
+    set_power_output(NRF24L01P_TX_PWR_ZERO_DB);
     set_air_data_rate(NRF24L01P_DATARATE_1MBPS);
     set_crc_width(NRF24L01P_CRC_8_BIT);
     setTxAddress(NRF24L01P_ADDRESS_DEFAULT, NRF24L01P_ADDRESS_DEFAULT_WIDTH);
@@ -825,4 +831,26 @@ void nRF24L01P::setRxAddress(unsigned long long address, int width, int pipe) {
     enRxAddr |= (1 << ( pipe - NRF24L01P_PIPE_NO_0) );
  
     set_register(NRF24L01P_REG_EN_RXADDR, enRxAddr);
+}
+
+void nRF24L01P::setTransferSize(int size, int pipe) {
+ 
+    if ( ( pipe < NRF24L01P_PIPE_NO_0) || ( pipe > NRF24L01P_PIPE_NO_5 ) ) {
+ 
+        printf( "nRF24L01P: Invalid Transfer Size pipe number %d\n", pipe );
+        return;
+ 
+    }
+ 
+    if ( ( size < 0 ) || ( size > NRF24L01P_RX_FIFO_SIZE ) ) {
+ 
+        printf( "nRF24L01P: Invalid Transfer Size setting %d\n", size );
+        return;
+ 
+    }
+ 
+    int rxPwPxRegister = NRF24L01P_REG_RX_PW_P0 + ( pipe - NRF24L01P_PIPE_NO_0 );
+ 
+    set_register(rxPwPxRegister, ( size & NRF24L01P_RX_PW_Px_MASK ) );
+ 
 }

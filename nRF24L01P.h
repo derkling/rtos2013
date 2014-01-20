@@ -50,6 +50,7 @@ private:
     void set_crc_width(int width);
     void setTxAddress(unsigned long long address, int width);
     void setRxAddress(unsigned long long address, int width, int pipe);
+    void setTransferSize(int size, int pipe);
     int mode;
 
 };
