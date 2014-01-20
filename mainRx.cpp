@@ -14,15 +14,14 @@ int main()
     NRF24L01P* module = new NRF24L01P();
     
     module->powerUp();
-        module->configureInterrupt();
+    module->configureInterrupt();
+    module->writeRegister(1,0); //disabilito su tutti i canali l'auto ack ( TEMPORANEO )
 
     module->setReceiveMode();
+    module->setRfChannel(2);
+    module->setAirDataRate(38); // if this is 38, the transmitter must be 38 too
     
-   
-    result =  module->readRegister(0);
-    printf("il registro config è: %d\n" , result);
-    result =  module->readStatusRegister();
-    printf("il registro status è: %d\n" , result);
+    module->showInternal();
 
     
 }

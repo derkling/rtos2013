@@ -16,7 +16,7 @@ int main()
     module->powerUp();
     module->configureInterrupt();
     
-    module->writeRegister(1,0); //disabilito su tutti i canali l'auto ack
+    module->writeRegister(1,0); //disabilito su tutti i canali l'auto ack ( TEMPORANEO )
     
     module->showInternal();
     

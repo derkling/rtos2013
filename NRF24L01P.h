@@ -32,6 +32,8 @@ public:
     void TrasmitData(char* data_pointer , int dim);
     void resetModule();
     void showInternal();
+    void setRfChannel(int channel);
+    void setAirDataRate(int air_rate);
 private:
     spi *spiDriver;
 };

@@ -296,6 +296,32 @@ void NRF24L01P::returnStandByI()
 }
 
 /**
+ * Remember that the RF channel is set according to formula: F0 = 2400 + RF_CH [ MHZ ]
+ * the frequency are from 2,4 GHZ to 2,525GHZ, so the offset is between 0 and 125
+ */
+void NRF24L01P::setRfChannel(int offset)
+{
+    if(offset < 0 || offset >125)
+        printf("Wrong offset\n");
+    writeRegister(_NRF24L01P_REG_RF_CH,offset );
+
+}
+
+/**
+ * AirDataRate    air_rate
+ *   250kbps         38      better receiver sensitivity 
+ *    1Mbps           6
+ *    2Mbps          14      lower power consumption and low collision
+ *   
+ */
+void NRF24L01P::setAirDataRate(int air_rate)
+{
+    if(air_rate == 38 || air_rate == 6 || air_rate == 14) // must be a valid air data rate 
+        writeRegister(_NRF24L01P_REG_RF_SETUP , air_rate);
+    else
+        printf("Wrong air_rate value\n");
+}
+/**
  In order to call this function you have to call power_up, PWR_UP MUST be 1! 
  */
 void NRF24L01P::setReceiveMode()
@@ -370,7 +396,7 @@ void NRF24L01P::TrasmitData(char *data , int dim)
          }
     
     result =  this->readStatusRegister();
-    printf("**************TRASMISSION COMPLETE******************");
+    printf("**************TRANSMISSION COMPLETE******************");
     printf("il registro status dopo aver trasmesso è: %d\n" , result);
     
     result = this->readRegister(23);
@@ -380,7 +406,7 @@ void NRF24L01P::TrasmitData(char *data , int dim)
     new_config = current_config | _NRF24L01P_STATUS_TX_DS; // reset TX_DS for next IRQ
     writeRegister(_NRF24L01P_REG_STATUS,  new_config );
     
-    //if(OriginalMode == _NRF24L01P_MODE_RX_MODE ) // BANG...if the previous mode wasn't receive this mantain the transceiver in trasmission forever
+    //if(OriginalMode == _NRF24L01P_MODE_RX_MODE )
       //{ now comment, it will be useful later! 
         this->setReceiveMode();
      // }
@@ -416,7 +442,7 @@ void NRF24L01P::flushRx()
 
 void NRF24L01P::NoAckOnThisPack()
 {
-  printf("Tolgo ack\n");
+  printf("Removing ack on this packet \n");
   cs::low();
   spiDriver->send( _NRF24L01P_SPI_CMD_W_TX_PYLD_NO_ACK  );  // Don't want ack on this packet 
   cs::high();
@@ -549,7 +575,7 @@ void NRF24L01P::showInternal()
     printf("OBSERVE_TX REGISTER è: %d\n" , result);
     
     result = this->readRegister(9);
-    printf("RPD REGISTER è: %d\n" , result);
+    printf("<<RPD REGISTER>> è: %d\n" , result);
     
     result = this->readRegister(10);
     printf("RX_ADDR_P0 REGISTER è: %d\n" , result);
