@@ -17,18 +17,20 @@ int main(){
 	uint8_t sr=255;
         
         uint8_t data;
-
-        char* payload="qwertyuiop";
-        
+       
         init();
 
 //      beep();
-        
+        char* payload="orange on";
         sendData(payload);
         
-        sendData(payload);
+        payload="beep";
         sendData(payload);
         
+        payload="orange off";
+        sendData(payload);
+        
+        payload="orange on";
         sendData(payload);
         
 	

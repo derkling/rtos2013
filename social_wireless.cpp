@@ -8,7 +8,7 @@
 #include "queue.h"
 
 void beep(void);
-void *transmitConsumer(void *arg);
+//void *transmitConsumer(void *arg);
 void transmit(char* payload);
 
 using namespace std;
@@ -18,10 +18,11 @@ using namespace miosix;
 typedef Gpio<GPIOB_BASE,1> buzzer;
 typedef Gpio<GPIOD_BASE,12> greenLed;
 typedef Gpio<GPIOD_BASE,13> orangeLed;
+typedef Gpio<GPIOD_BASE,14> redLed;
 
 //var globali
 uint8_t rxPayload[33]={0};
-pthread_mutex_t mutex=PTHREAD_MUTEX_INITIALIZER;
+
 pthread_cond_t cond=PTHREAD_COND_INITIALIZER;
 pthread_mutex_t data=PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t spi=PTHREAD_MUTEX_INITIALIZER;
@@ -51,35 +52,33 @@ void __attribute__((used)) EXTI1HandlerImpl(){
     
     NVIC_DisableIRQ(EXTI1_IRQn);
     EXTI->PR = EXTI_PR_PR1;//era usato uguale (=) boh    
-//    pthread_mutex_lock(&mutex);
-//    interrupt=true;
+//  pthread_mutex_lock(&mutex);
     pthread_cond_broadcast(&cond);
-//    pthread_mutex_unlock(&mutex);
+//  pthread_mutex_unlock(&mutex);
     greenLed::high();
 }
 
 //funzione privata
 //consumatore di trasmissione
 //magari un threat che si sveglia quando la coda delle trasmissioni non è vuota
-
 void *transmitConsumer(void *arg){
-    
-    sleep(5);
-   
-    pthread_mutex_lock(&data);
-    
-    
-    if(!queueIsEmpty(&queue)){
-        
-        char* payload=enqueue(&queue);
+    for(;;){
+        sleep(5);
+
+        pthread_mutex_lock(&data);
+
+
+        if(!queueIsEmpty(&queue)){
+
+            char* payload=enqueue(&queue);
+            pthread_mutex_unlock(&data);
+            pthread_mutex_lock(&spi);
+            transmit(payload);
+            pthread_mutex_unlock(&spi);
+        }
         pthread_mutex_unlock(&data);
-        pthread_mutex_lock(&spi);
-        transmit(payload);
-        pthread_mutex_unlock(&spi);
+    
     }
-    pthread_mutex_unlock(&data);
-    
-    
     
 
 }
@@ -90,12 +89,10 @@ void *interruptConsumer(void *arg){
     
     for(;;){
         
-        pthread_mutex_lock(&mutex);
-        while(!interrupt) pthread_cond_wait(&cond,&mutex); //questo thread è in wait fino a che la var interrupt non diventa true
-//       interrupt=false;
-        pthread_mutex_unlock(&mutex);
-        
         pthread_mutex_lock(&spi);
+        pthread_cond_wait(&cond,&spi); //questo thread è in wait fino a che la var interrupt non diventa true
+        
+        //mutex spi locked
         
         //gestione interrupt
         
@@ -112,16 +109,23 @@ void *interruptConsumer(void *arg){
         }
         else if(sr==64 || sr==96 ){
             //rx interrupt
-            orangeLed::high();
-            beep();
+            redLed::high();
+//            beep();
+            
             uint8_t payloadWidth;
+            
             spiSendCommandReadData(R_RX_PL_WID,COMMAND_WITHOUT_ADDRESS,&sr,&payloadWidth,1);
+            
+            
             
             spiSendCommandReadData(R_RX_PAYLOAD,COMMAND_WITHOUT_ADDRESS,&sr,rxPayload,(int)payloadWidth);
             rxPayload[payloadWidth]='\0';
-            printf("%s",rxPayload);
-            //if(payload_sender==podometro)podometro.messageforyou
-            
+//          printf("%s",rxPayload);
+//          if(payload_sender==podometro)podometro.messageforyou
+            if(strncmp((char*)rxPayload,"orange on",payloadWidth)==0)orangeLed::high();
+            if(strncmp((char*)rxPayload,"orange off",payloadWidth)==0)orangeLed::low();
+            if(strncmp((char*)rxPayload,"beep",payloadWidth)==0)beep();
+  
         }
 
         //000 0 none (impossibile)
@@ -135,6 +139,8 @@ void *interruptConsumer(void *arg){
         
         NVIC_EnableIRQ(EXTI1_IRQn);
         
+        pthread_mutex_unlock(&spi);
+        
     }
 }
 
@@ -143,6 +149,7 @@ void init(){
     buzzer::mode(Mode::OUTPUT);
     greenLed::mode(Mode::OUTPUT);
     orangeLed::mode(Mode::OUTPUT);
+    redLed::mode(Mode::OUTPUT);
     
     queueInizializer(&queue);
     
@@ -213,7 +220,7 @@ void init(){
 
     //CONFIG->PWR_UP=1 CONFIG->PRIM_RX=1
     //CONFIG=0x0B
-    data=CONFIG_PWR_PRIM_RX;
+    data=CONFIG_PWRUP_PRIM_RX;
     spiSendCommandWriteData(W_REGISTER,CONFIG,&sr,&data,1);//power up, rx mode: write 0b0001011 in config (0, mask rxdr, mask txds, mask maxrt, encrc, crco=1byte, pwr_up, prim_rx)
     usleep(2000);//quando PWR_UP diventa 1 serve un t > 1.5ms per entrare nello stato STBY1 (Standby 1)
 
@@ -228,6 +235,8 @@ void init(){
 //aggiunge in dati nella coda delle trasmissioni
 void transmit(char* payload){
     
+    //RX MODE
+    
     chipDisable();
     
     //STBY1 MODE
@@ -237,7 +246,7 @@ void transmit(char* payload){
 
     //CONFIG->PWR_UP=1 CONFIG->PRIM_TX=0
     //CONFIG=0A
-    data=CONFIG_PWR_PRIM_TX;
+    data=CONFIG_PWRUP_PRIM_TX;
     spiSendCommandWriteData(W_REGISTER,CONFIG,&sr,&data,1);//power up, tx mode: write 0b00001010 in config (0, mask rxdr, mask txds, mask maxrt, encrc, crco=1byte, pwr_up, prim_rx)
     
     
@@ -261,24 +270,26 @@ void transmit(char* payload){
     
     usleep(1000);//finished with one packet, ce=0
     
-    //STBY1 MODE (dovrebbe)
+    //STBY1 MODE OR STBY2 MODE
     
-    //CONFIG->PWR_UP=1 CONFIG->PRIM_RX=1
-    //CONFIG=0B
-    data=CONFIG_PWR_PRIM_RX;
+    //CONFIG->PWR_UP=0 CONFIG->PRIM_RX=1
+    //CONFIG=09
+    data=CONFIG_PWRDOWN_PRIM_RX;
     spiSendCommandWriteData(W_REGISTER,CONFIG,&sr,&data,1);//power up, rx mode: write 0b00001011 in config (0, mask rxdr, mask txds, mask maxrt, encrc, crco=1byte, pwr_up, prim_rx)
     
+    //POWER DOWN MODE
+    
+    //CONFIG->PWR_UP=1 CONFIG->PRIM_RX=1
+    //CONFIG=0x0B
+    data=CONFIG_PWRUP_PRIM_RX;
+    spiSendCommandWriteData(W_REGISTER,CONFIG,&sr,&data,1);//power up, rx mode: write 0b0001011 in config (0, mask rxdr, mask txds, mask maxrt, encrc, crco=1byte, pwr_up, prim_rx)
+    usleep(2000);//quando PWR_UP diventa 1 serve un t > 1.5ms per entrare nello stato STBY1 (Standby 1)
+
     chipEnable();
-    
-    //RX MODE
-    
-    //ancora da fare
-    //qui non c'è certezza della stato in cui finisce dopo la trasmissione. stby1 o stby2? xke dipende se ce=1 quando txfifo è vuota
-            //1a sol: impostare reuse_tx_pl in init(), da tx interrupt ce=0 -> stby1
-            //2a sol: da tx interrupt consumer powerdown -> powerup -> 1.5ms -> stby1 
-            //meglio la prima xke usa meno l'spi
-    
-    
+    usleep(150);//t>130us per raggiungere lo stato RX MODE. si resta in questo stato finchè CE=1 e CONFIG->PWR_UP=1
+
+    //a questo punto il modulo è in RX MODE
+        
 }
 
 void sendData(char* payload){
@@ -287,10 +298,6 @@ void sendData(char* payload){
     pthread_mutex_unlock(&data);
     
 }
-
-
-
-
 
 void beep(){
     buzzer::high();

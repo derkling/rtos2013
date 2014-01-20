@@ -80,7 +80,8 @@
 #define EN_AA_ENAA_P0                           ((uint8_t)0x01) /*!<Enable auto ack on data pipe 0*/
 #define SETUP_RETR_ARC0                         ((uint8_t)0x00) /*!<Automatic Retransmission Count 0*/
 #define EN_RXADDR_ERX_P0                        ((uint8_t)0x01) /*!<Activate only data pipe 0*/
-#define CONFIG_PWR_PRIM_RX                      ((uint8_t)0x0B) /*!<Power Up, Primary RX*/
-#define CONFIG_PWR_PRIM_TX                      ((uint8_t)0x0A) /*!<Power Up, Primary TX*/
+#define CONFIG_PWRUP_PRIM_RX                    ((uint8_t)0x0B) /*!<Power Up, Primary RX*/
+#define CONFIG_PWRUP_PRIM_TX                    ((uint8_t)0x0A) /*!<Power Up, Primary TX*/
+#define CONFIG_PWRDOWN_PRIM_RX                  ((uint8_t)0x09) /*!<Power Down, Primary TX*/
 
 #endif /* NRF24L01_H */
