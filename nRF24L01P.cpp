@@ -145,8 +145,9 @@ nRF24L01P::nRF24L01P() {
     set_crc_width(NRF24L01P_CRC_8_BIT);
     setTxAddress(NRF24L01P_ADDRESS_DEFAULT, NRF24L01P_ADDRESS_DEFAULT_WIDTH);
     setRxAddress(NRF24L01P_ADDRESS_DEFAULT, NRF24L01P_ADDRESS_DEFAULT_WIDTH,NRF24L01P_PIPE_NO_0);
-    disable_auto_ack();
+    //disable_auto_ack();
     disable_auto_retransmit();
+    setTransferSize(4,NRF24L01P_PIPE_NO_0);
     printf("Frequency %d\n",get_frequency());
     printf("Output power %d\n",get_output_power());
     printf("Air data rate %d\n",get_air_data_rate());
