@@ -69,6 +69,7 @@
 #define NRF24L01P_RF_DR_2MBPS                   (1<<3)
 #define NRF24L01P_STATUS_DR_RX                  (1<<6)         //set if data register full write 1 to clear
 #define NRF24L01P_STATUS_RX_P_NO                (0x7<<1)
+#define NRF24L01P_ENAA_P0                       (1<<0)
 //CRC
 #define NRF24L01P_CONFIG_CRC0                   (1<<2)
 #define NRF24L01P_CONFIG_EN_CRC                 (1<<3)
@@ -145,9 +146,10 @@ nRF24L01P::nRF24L01P() {
     set_crc_width(NRF24L01P_CRC_8_BIT);
     setTxAddress(NRF24L01P_ADDRESS_DEFAULT, NRF24L01P_ADDRESS_DEFAULT_WIDTH);
     setRxAddress(NRF24L01P_ADDRESS_DEFAULT, NRF24L01P_ADDRESS_DEFAULT_WIDTH,NRF24L01P_PIPE_NO_0);
-    //disable_auto_ack();
+    disable_auto_ack();
     disable_auto_retransmit();
     setTransferSize(4,NRF24L01P_PIPE_NO_0);
+    set_register(NRF24L01P_REG_AA,NRF24L01P_ENAA_P0);
     printf("Frequency %d\n",get_frequency());
     printf("Output power %d\n",get_output_power());
     printf("Air data rate %d\n",get_air_data_rate());
@@ -155,6 +157,7 @@ nRF24L01P::nRF24L01P() {
     printf("SETUP_AW %d\n",get_register(NRF24L01P_REG_SETUP_AW));
     printf("tx register 0x%010llX\n",get_tx_address());
     printf("rx address 0x%010llX\n",get_rx_address(NRF24L01P_PIPE_NO_0));
+    showInternal();
       
 }
 
@@ -182,6 +185,7 @@ void nRF24L01P::power_up() {
     printf("rx address 0x%010llX\n",get_rx_address(NRF24L01P_PIPE_NO_0));
     mode=NRF24L01P_STANDBY_MODE;
     flushTx();
+    showInternal();
 }
 
 void nRF24L01P::power_down() {
@@ -854,4 +858,101 @@ void nRF24L01P::setTransferSize(int size, int pipe) {
  
     set_register(rxPwPxRegister, ( size & NRF24L01P_RX_PW_Px_MASK ) );
  
+}
+
+int nRF24L01P::readRegister(int regAddress) //arriva su 1 byte
+{
+    // request = regAddress; tanto questo è in | bit a bit con 0x00 ( READ ) e in & bit a bit con una MASK 0x1f
+    int value;
+    
+    //every spi commands must starts with a high to low cs signal
+    CS::low();
+    
+    spi->spi_write(regAddress);
+    value = spi->spi_Receive();
+    
+    CS::high();
+    
+    return value;
+}
+
+void nRF24L01P::showInternal()
+{   
+    int result;
+    
+    result = this->readRegister(0);
+    printf("<<CONFIG REGISTER>> è: %d\n" , result);
+    
+    result = this->readRegister(1);
+    printf("EN_AA REGISTER è: %d\n" , result);
+    
+    result = this->readRegister(2);
+    printf("EN_RXADDR REGISTER è: %d\n" , result);
+    
+    result = this->readRegister(3);
+    printf("SETUP_AW REGISTER è: %d\n" , result);
+    
+    result = this->readRegister(4);
+    printf("SETUP_RETR REGISTER è: %d\n" , result);
+    
+    result = this->readRegister(5);
+    printf("RF_CH REGISTER è: %d\n" , result);
+    
+    result = this->readRegister(6);
+    printf("RF_SETUP REGISTER è: %d\n" , result);
+    
+    result = this->readRegister(7);
+    printf("<<STATUS REGISTER>> è: %d\n" , result);
+    
+    result = this->readRegister(8);
+    printf("OBSERVE_TX REGISTER è: %d\n" , result);
+    
+    result = this->readRegister(9);
+    printf("RPD REGISTER è: %d\n" , result);
+    
+    result = this->readRegister(10);
+    printf("RX_ADDR_P0 REGISTER è: %d\n" , result);
+    
+     result = this->readRegister(11);
+    printf("RX_ADDR_P1 REGISTER è: %d\n" , result);
+    
+     result = this->readRegister(12);
+    printf("RX_ADDR_P2 REGISTER è: %d\n" , result);
+    
+     result = this->readRegister(13);
+    printf("RX_ADDR_P3 REGISTER è: %d\n" , result);
+    
+     result = this->readRegister(14);
+    printf("RX_ADDR_P4 REGISTER è: %d\n" , result);
+    
+     result = this->readRegister(15);
+    printf("RX_ADDR_P5 REGISTER è: %d\n" , result);
+            
+     result = this->readRegister(16);
+    printf("TX_ADDR REGISTER è: %d\n" , result);
+    
+    result = this->readRegister(17);
+    printf("RX_PW_P0 REGISTER è: %d\n" , result);
+    
+    result = this->readRegister(18);
+    printf("RX_PW_P1 REGISTER è: %d\n" , result);
+    
+    result = this->readRegister(19);
+    printf("RX_PW_P2 REGISTER è: %d\n" , result);
+    
+    result = this->readRegister(20);
+    printf("RX_PW_P3 REGISTER è: %d\n" , result);
+   
+    result = this->readRegister(21);
+    printf("RX_PW_P4 REGISTER è: %d\n" , result);
+    
+    result = this->readRegister(22);
+    printf("RX_PW_P5 REGISTER è: %d\n" , result);
+    
+    result = this->readRegister(23);
+    printf("<<FIFO_STATUS>> REGISTER è: %d\n" , result);
+    
+    result = this->readRegister(29);
+    printf("FEATURE REGISTER è: %d\n" , result);
+
 }

@@ -31,6 +31,8 @@ public:
     void disable_auto_retransmit();
     unsigned long long get_tx_address();
     unsigned long long get_rx_address(int pipe);
+    void showInternal();
+    int readRegister(int regAddress);
 
 private:
     void CE_enable();
