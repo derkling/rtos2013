@@ -89,6 +89,8 @@
 //time
 #define NRF24L01P_TPD2STBY                      2000  //2mS
 #define NRF24L01P_TPECE2CSN                     4  //4uS
+#define NRF24L01P_TPECETR                       10
+#define NRF24L01P_TPRCV                         130
 
 //size
 #define NRF24L01P_TX_FIFO_SIZE                  32
@@ -149,7 +151,7 @@ nRF24L01P::nRF24L01P() {
     disable_auto_ack();
     disable_auto_retransmit();
     setTransferSize(4,NRF24L01P_PIPE_NO_0);
-    set_register(NRF24L01P_REG_AA,NRF24L01P_ENAA_P0);
+    //set_register(NRF24L01P_REG_AA,NRF24L01P_ENAA_P0);
     printf("Frequency %d\n",get_frequency());
     printf("Output power %d\n",get_output_power());
     printf("Air data rate %d\n",get_air_data_rate());
@@ -204,9 +206,11 @@ void nRF24L01P::set_receive_mode(){
     int cur_config = get_register(NRF24L01P_REG_CONF);
     cur_config |= NRF24L01P_PRIM_RX;
     set_register(NRF24L01P_REG_CONF,cur_config);
-    if (CE::value()==0){
+    /*if (CE::value()==0){
     CE_enable();
-    }
+    }*/
+    CE::high();
+    usleep(NRF24L01P_TPRCV);    
     
     mode = NRF24L01P_RX_MODE;
    
@@ -243,15 +247,16 @@ int nRF24L01P::transmit(int count, char* data){
     set_register(NRF24L01P_REG_STATUS, NRF24L01P_STATUS_TX_DS); /*clear bit interrupt data sent tx fifo*/
     CS::low();
     spi->spi_write(NRF24L01P_CMD_WR_TX_PAYLOAD); //command to start write from payload TX
-    /*for( int i=0; i<count; i++){
+    for( int i=0; i<count; i++){
         printf("char %c\n",*data);
         spi->spi_write(*data++);
     }
-    */spi->spi_write(12);
+    //spi->spi_write(12);
     CS::high();
     int old_mode = mode;
     set_transmit_mode();
-    CE_enable();
+    CE::high();
+    usleep(NRF24L01P_TPECETR);  
     CE_disable();
     printf("Before polling \n");
     printf("Get register status %d\n",get_register_status());
