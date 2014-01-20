@@ -106,14 +106,13 @@ void *wifi_receive(void *arg){
     greenLed::mode(Mode::OUTPUT);
     redLed::mode(Mode::OUTPUT);
     configureModuleInterrupt();
-    wifi->test_transmit();
+    wifi->test_receive();
     greenLed::high();
     usleep(1000000);
     greenLed::low();
     for(;;){
+        printf("ho ricevuto qualcosa");
         greenLed::high();
-        wifi->transmit(6,data);
-        printf("Ho trasmesso\n");
         greenLed::low();
         usleep(2000000);
         /*wifi->receive(0,data,1);
