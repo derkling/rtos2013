@@ -5,8 +5,11 @@
 #include <unistd.h>
 #include <pthread.h>
 #include <string.h>
+#include "queue.h"
 
 void beep(void);
+void *transmitConsumer(void *arg);
+void transmit(char* payload);
 
 using namespace std;
 using namespace miosix;
@@ -20,9 +23,13 @@ typedef Gpio<GPIOD_BASE,13> orangeLed;
 uint8_t rxPayload[33]={0};
 pthread_mutex_t mutex=PTHREAD_MUTEX_INITIALIZER;
 pthread_cond_t cond=PTHREAD_COND_INITIALIZER;
+pthread_mutex_t data=PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t spi=PTHREAD_MUTEX_INITIALIZER;
+queue_t queue;
 
 
 pthread_t interrupt_thread;
+pthread_t transmit_thread;
 bool interrupt=false;
 
 
@@ -43,22 +50,52 @@ void __attribute__((naked)) EXTI1_IRQHandler(){
 void __attribute__((used)) EXTI1HandlerImpl(){
     
     NVIC_DisableIRQ(EXTI1_IRQn);
-    EXTI->PR |= EXTI_PR_PR1;//era usato uguale (=) boh    
-    pthread_mutex_lock(&mutex);
-    interrupt=true;
+    EXTI->PR = EXTI_PR_PR1;//era usato uguale (=) boh    
+//    pthread_mutex_lock(&mutex);
+//    interrupt=true;
     pthread_cond_broadcast(&cond);
-    pthread_mutex_unlock(&mutex);
+//    pthread_mutex_unlock(&mutex);
     greenLed::high();
 }
 
+//funzione privata
+//consumatore di trasmissione
+//magari un threat che si sveglia quando la coda delle trasmissioni non è vuota
+
+void *transmitConsumer(void *arg){
+    
+    sleep(5);
+   
+    pthread_mutex_lock(&data);
+    
+    
+    if(!queueIsEmpty(&queue)){
+        
+        char* payload=enqueue(&queue);
+        pthread_mutex_unlock(&data);
+        pthread_mutex_lock(&spi);
+        transmit(payload);
+        pthread_mutex_unlock(&spi);
+    }
+    pthread_mutex_unlock(&data);
+    
+    
+    
+
+}
+
 void *interruptConsumer(void *arg){
+    
+    
     
     for(;;){
         
         pthread_mutex_lock(&mutex);
         while(!interrupt) pthread_cond_wait(&cond,&mutex); //questo thread è in wait fino a che la var interrupt non diventa true
-        interrupt=false;
+//       interrupt=false;
         pthread_mutex_unlock(&mutex);
+        
+        pthread_mutex_lock(&spi);
         
         //gestione interrupt
         
@@ -73,7 +110,7 @@ void *interruptConsumer(void *arg){
             beep();
             
         }
-        else if(sr==64){
+        else if(sr==64 || sr==96 ){
             //rx interrupt
             orangeLed::high();
             beep();
@@ -82,8 +119,8 @@ void *interruptConsumer(void *arg){
             
             spiSendCommandReadData(R_RX_PAYLOAD,COMMAND_WITHOUT_ADDRESS,&sr,rxPayload,(int)payloadWidth);
             rxPayload[payloadWidth]='\0';
+            printf("%s",rxPayload);
             //if(payload_sender==podometro)podometro.messageforyou
-            
             
         }
 
@@ -107,8 +144,12 @@ void init(){
     greenLed::mode(Mode::OUTPUT);
     orangeLed::mode(Mode::OUTPUT);
     
+    queueInizializer(&queue);
+    
     //questa è ancora da capire dove metterla
     pthread_create(&interrupt_thread,NULL,&interruptConsumer,NULL);
+    
+    pthread_create(&transmit_thread,NULL,&transmitConsumer,NULL);
     
     configureSpi();//0.65mbps, frame 8 bit, msbit first, lsbyte firts, ss software, stm32 master
     powerLineDown();//VDD=0V
@@ -218,7 +259,7 @@ void transmit(char* payload){
     
     //TX MODE
     
-    sleep(1);//finished with one packet, ce=0
+    usleep(1000);//finished with one packet, ce=0
     
     //STBY1 MODE (dovrebbe)
     
@@ -240,14 +281,16 @@ void transmit(char* payload){
     
 }
 
-
-//funzione privata
-//consumatore di trasmissione
-//magari un threat che si sveglia quando la coda delle trasmissioni non è vuota
-void consumeTransmit(){
-	
-
+void sendData(char* payload){
+    pthread_mutex_lock(&data);
+    int res=addData(payload, &queue);
+    pthread_mutex_unlock(&data);
+    
 }
+
+
+
+
 
 void beep(){
     buzzer::high();

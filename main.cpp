@@ -24,7 +24,13 @@ int main(){
 
 //      beep();
         
-        transmit(payload);
+        sendData(payload);
+        
+        sendData(payload);
+        sendData(payload);
+        
+        sendData(payload);
+        
 	
 //        spiSendCommandReadData(R_REGISTER,OBSERVE_TX,&sr,&data,1);
 	
