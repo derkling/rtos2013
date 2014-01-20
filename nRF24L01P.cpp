@@ -90,6 +90,7 @@
 #define NRF24L01P_TPD2STBY                      2000  //2mS
 #define NRF24L01P_TPECE2CSN                     4  //4uS
 #define NRF24L01P_TPECETR                       10
+#define NRF24L01P_TPRCV                         130
 
 //size
 #define NRF24L01P_TX_FIFO_SIZE                  32
@@ -205,9 +206,11 @@ void nRF24L01P::set_receive_mode(){
     int cur_config = get_register(NRF24L01P_REG_CONF);
     cur_config |= NRF24L01P_PRIM_RX;
     set_register(NRF24L01P_REG_CONF,cur_config);
-    if (CE::value()==0){
+    /*if (CE::value()==0){
     CE_enable();
-    }
+    }*/
+    CE::high();
+    usleep(NRF24L01P_TPRCV);    
     
     mode = NRF24L01P_RX_MODE;
    

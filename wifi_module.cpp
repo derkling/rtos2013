@@ -75,6 +75,8 @@ void *wifi_start(void *arg)
     greenLed::low();
     for(;;){
         greenLed::high();
+         /*printf("Dammi un stringa da trasmettere\n");
+        scanf("%s", data);*/
         wifi->transmit(6,data);
         printf("Ho trasmesso\n");
         greenLed::low();
