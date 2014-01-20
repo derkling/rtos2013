@@ -48,7 +48,8 @@ private:
     void set_tx_address(int number);
     void flushTx();
     void set_crc_width(int width);
-
+    void setTxAddress(unsigned long long address, int width);
+    void setRxAddress(unsigned long long address, int width, int pipe);
     int mode;
 
 };

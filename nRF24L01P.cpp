@@ -50,6 +50,7 @@
 #define NRF24L01P_REG_TX_ADDR                   0x10
 #define NRF24L01P_REG_RX_ADDR_P0            0x0a
 #define NRF24L01P_REG_SETUP_RETR            0x04
+#define NRF24L01P_REG_EN_RXADDR             0x02
 
 #define NRF24L01P_PRIM_RX                       (1<<0)
 #define NRF24L01P_PWR_UP                        (1<<1)
@@ -100,6 +101,8 @@
 #define NRF24L01P_DATARATE_2MBPS                2000
 #define NRF24L01P_EN_AA_NONE                   0
 #define NRF24L01P_SETUP_RETR_NONE       0
+#define NRF24L01P_ADDRESS_DEFAULT   ((unsigned long long) 0xE7E7E7E7E7 )
+#define NRF24L01P_ADDRESS_DEFAULT_WIDTH  5
 
 
 
@@ -134,12 +137,15 @@ nRF24L01P::nRF24L01P() {
     set_power_output(NRF24L01P_TX_PWR_MINUS_12_DB);
     set_air_data_rate(NRF24L01P_DATARATE_1MBPS);
     set_crc_width(NRF24L01P_CRC_8_BIT);
+    setTxAddress(NRF24L01P_ADDRESS_DEFAULT, NRF24L01P_ADDRESS_DEFAULT_WIDTH);
+    setRxAddress(NRF24L01P_ADDRESS_DEFAULT, NRF24L01P_ADDRESS_DEFAULT_WIDTH,NRF24L01P_PIPE_NO_0);
     disable_auto_ack();
     disable_auto_retransmit();
     printf("Frequency %d\n",get_frequency());
     printf("Output power %d\n",get_output_power());
     printf("Air data rate %d\n",get_air_data_rate());
     printf("Crc %d\n",get_crc_width());
+    printf("SETUP_AW %d\n",get_register(NRF24L01P_REG_SETUP_AW));
     printf("tx register 0x%010llX\n",get_tx_address());
     printf("rx address 0x%010llX\n",get_rx_address(NRF24L01P_PIPE_NO_0));
       
@@ -162,8 +168,9 @@ void nRF24L01P::power_up() {
     set_register(NRF24L01P_REG_CONF,current_config);
     usleep(NRF24L01P_TPD2STBY);
     //set_tx_address(5);
-    set_register(NRF24L01P_REG_TX_ADDR , 0xE7);
-    set_register(NRF24L01P_REG_RX_ADDR_P0 ,0xE7);
+    //set_register(NRF24L01P_REG_TX_ADDR , 0xE7E7E7E701);
+    //set_register(NRF24L01P_REG_RX_ADDR_P0 ,0xE7E7E7E7E7);
+    printf("SETUP_AW %d\n",get_register(NRF24L01P_REG_SETUP_AW));
     printf("tx register 0x%010llX\n",get_tx_address());
     printf("rx address 0x%010llX\n",get_rx_address(NRF24L01P_PIPE_NO_0));
     mode=NRF24L01P_STANDBY_MODE;
@@ -228,8 +235,8 @@ int nRF24L01P::transmit(int count, char* data){
     /*for( int i=0; i<count; i++){
         printf("char %c\n",*data);
         spi->spi_write(*data++);
-    }*/
-    spi->spi_write(12);
+    }
+    */spi->spi_write(12);
     CS::high();
     int old_mode = mode;
     set_transmit_mode();
@@ -704,4 +711,118 @@ unsigned long long nRF24L01P::get_rx_address(int pipe) {
  
     return address;
  
+}
+
+void nRF24L01P::setTxAddress(unsigned long long address, int width) {
+ 
+    int setupAw = get_register(NRF24L01P_REG_SETUP_AW) & ~NRF24L01P_SETUP_AW_AW_MASK;
+ 
+    switch ( width ) {
+ 
+        case 3:
+            setupAw |= NRF24L01P_SETUP_AW_AW_3BYTE;
+            break;
+ 
+        case 4:
+            setupAw |= NRF24L01P_SETUP_AW_AW_4BYTE;
+            break;
+ 
+        case 5:
+            setupAw |= NRF24L01P_SETUP_AW_AW_5BYTE;
+            break;
+ 
+        default:
+            printf( "nRF24L01P: Invalid setTxAddress width setting %d\n", width );
+            return;
+ 
+    }
+ 
+    set_register(NRF24L01P_REG_SETUP_AW, setupAw);
+ 
+    int cn = (NRF24L01P_CMD_WT_REG   | (NRF24L01P_REG_TX_ADDR & NRF24LO1P_REG_ADDR_BITMASK));
+ 
+    CS::low();
+ 
+    spi->spi_write(cn);
+ 
+    while ( width-- > 0 ) {
+ 
+        //
+        // LSByte first
+        //
+        spi->spi_write((int) (address & 0xFF));
+        address >>= 8;
+ 
+    }
+ 
+    CS::high();
+ 
+}
+
+void nRF24L01P::setRxAddress(unsigned long long address, int width, int pipe) {
+ 
+    if ( ( pipe < NRF24L01P_PIPE_NO_0 ) || ( pipe > NRF24L01P_PIPE_NO_5 ) ) {
+ 
+        printf( "nRF24L01P: Invalid setRxAddress pipe number %d\n", pipe );
+        return;
+ 
+    }
+ 
+    if ( ( pipe == NRF24L01P_PIPE_NO_0 ) || ( pipe == NRF24L01P_PIPE_NO_1 ) ) {
+ 
+        int setupAw = get_register(NRF24L01P_REG_SETUP_AW) & ~NRF24L01P_SETUP_AW_AW_MASK;
+    
+        switch ( width ) {
+    
+            case 3:
+                setupAw |= NRF24L01P_SETUP_AW_AW_3BYTE;
+                break;
+    
+            case 4:
+                setupAw |= NRF24L01P_SETUP_AW_AW_4BYTE;
+                break;
+    
+            case 5:
+                setupAw |= NRF24L01P_SETUP_AW_AW_5BYTE;
+                break;
+    
+            default:
+                printf( "nRF24L01P: Invalid setRxAddress width setting %d\n", width );
+                return;
+    
+        }
+    
+        set_register(NRF24L01P_REG_SETUP_AW, setupAw);
+ 
+    } else {
+    
+        width = 1;
+    
+    }
+ 
+    int rxAddrPxRegister = NRF24L01P_REG_RX_ADDR_P0 + ( pipe - NRF24L01P_PIPE_NO_0 );
+ 
+    int cn = (NRF24L01P_CMD_WT_REG | (rxAddrPxRegister & NRF24LO1P_REG_ADDR_BITMASK));
+ 
+    CS::low();
+ 
+    spi->spi_write(cn);
+ 
+    while ( width-- > 0 ) {
+ 
+        //
+        // LSByte first
+        //
+        spi->spi_write((int) (address & 0xFF));
+        address >>= 8;
+ 
+    }
+ 
+    CS::high();;
+ 
+    int enRxAddr = get_register(NRF24L01P_REG_EN_RXADDR);
+ 
+    enRxAddr |= (1 << ( pipe - NRF24L01P_PIPE_NO_0) );
+ 
+    set_register(NRF24L01P_REG_EN_RXADDR, enRxAddr);
 }
