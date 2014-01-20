@@ -349,7 +349,7 @@ bool nRF24L01P::packet_in_pipe(int pipe){
     if ((pipe<NRF24L01P_PIPE_NO_0) || (pipe> NRF24L01P_PIPE_NO_5)){
         return false;
     }
-    printf("Status register in packet_inpipe %\n",get_register_status());
+    //printf("Status register in packet_inpipe %\n",get_register_status());
     int status=get_register_status();
     //& is bitwise (it returns 01001100) && is and (return 0 or 1))
     if((status & NRF24L01P_STATUS_DR_RX)&&((status & NRF24L01P_STATUS_RX_P_NO)>>1)==(pipe & 0x7)){
@@ -383,17 +383,19 @@ void nRF24L01P::test_receive(){
     printf( "nRF24L01+ Data Rate    : %d kbps\r\n", get_air_data_rate());
    // printf( "nRF24L01+ RX Address   : 0x%010llX\r\n", my_nrf24l01p.getRxAddress() );
     char *data;
-    while(true){
-    usleep(3000000);
+        showInternal();
+
+   /* while(true){
     printf("Status register %d\n",get_register_status());
     printf("Config register %d\n",get_register(NRF24L01P_REG_CONF));
     printf("ricevuto da pipe 0 %d\n",receive(NRF24L01P_PIPE_NO_0,data,1));
     printf("ho ricevuto %s\n",data);    
     printf("ricevuto da pipe 1 %d\n",receive(NRF24L01P_PIPE_NO_1,data,1));
     printf("ho ricevuto %s\n",data);
+    usleep(3000000);
+        
 
-
-    }
+    }*/
 }
 
 void nRF24L01P::setup_Gpio(){

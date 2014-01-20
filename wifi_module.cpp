@@ -111,7 +111,9 @@ void *wifi_receive(void *arg){
     usleep(1000000);
     greenLed::low();
     for(;;){
-        printf("ho ricevuto qualcosa");
+        printf("ho ricevuto qualcosa\n");
+        printf("%d\n",wifi->receive(0,data,5));
+        printf("%s\n",data);
         greenLed::high();
         greenLed::low();
         usleep(2000000);
