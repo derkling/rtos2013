@@ -29,6 +29,8 @@ public:
     int get_crc_width();
     void disable_auto_ack();
     void disable_auto_retransmit();
+    unsigned long long get_tx_address();
+    unsigned long long get_rx_address(int pipe);
 
 private:
     void CE_enable();

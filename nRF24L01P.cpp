@@ -77,6 +77,12 @@
 #define NRF24L01P_CRC_NONE               0
 #define NRF24L01P_CRC_8_BIT              8
 #define NRF24L01P_CRC_16_BIT            16
+
+// SETUP_AW register:
+#define NRF24L01P_SETUP_AW_AW_MASK      (0x3<<0)
+#define NRF24L01P_SETUP_AW_AW_3BYTE     (0x1<<0)
+#define NRF24L01P_SETUP_AW_AW_4BYTE     (0x2<<0)
+#define NRF24L01P_SETUP_AW_AW_5BYTE     (0x3<<0)
 //time
 #define NRF24L01P_TPD2STBY                      2000  //2mS
 #define NRF24L01P_TPECE2CSN                     4  //4uS
@@ -134,6 +140,8 @@ nRF24L01P::nRF24L01P() {
     printf("Output power %d\n",get_output_power());
     printf("Air data rate %d\n",get_air_data_rate());
     printf("Crc %d\n",get_crc_width());
+    printf("tx register 0x%010llX\n",get_tx_address());
+    printf("rx address 0x%010llX\n",get_rx_address(NRF24L01P_PIPE_NO_0));
       
 }
 
@@ -153,9 +161,11 @@ void nRF24L01P::power_up() {
     current_config |= NRF24L01P_PWR_UP;
     set_register(NRF24L01P_REG_CONF,current_config);
     usleep(NRF24L01P_TPD2STBY);
-    set_tx_address(3);
-    set_register(NRF24L01P_REG_TX_ADDR , 5);
-    set_register(NRF24L01P_REG_RX_ADDR_P0 ,5);
+    //set_tx_address(5);
+    set_register(NRF24L01P_REG_TX_ADDR , 0xE7);
+    set_register(NRF24L01P_REG_RX_ADDR_P0 ,0xE7);
+    printf("tx register 0x%010llX\n",get_tx_address());
+    printf("rx address 0x%010llX\n",get_rx_address(NRF24L01P_PIPE_NO_0));
     mode=NRF24L01P_STANDBY_MODE;
     flushTx();
 }
@@ -573,5 +583,125 @@ void nRF24L01P::disable_auto_ack(){
 void nRF24L01P::disable_auto_retransmit() {
  
     set_register(NRF24L01P_REG_SETUP_RETR, NRF24L01P_SETUP_RETR_NONE);
+ 
+}
+
+unsigned long long nRF24L01P::get_tx_address() {
+ 
+    int setupAw = get_register(NRF24L01P_REG_SETUP_AW) & NRF24L01P_SETUP_AW_AW_MASK;
+ 
+    int width;
+ 
+    switch ( setupAw ) {
+ 
+        case NRF24L01P_SETUP_AW_AW_3BYTE:
+            width = 3;
+            break;
+ 
+        case NRF24L01P_SETUP_AW_AW_4BYTE:
+            width = 4;
+            break;
+ 
+        case NRF24L01P_SETUP_AW_AW_5BYTE:
+            width = 5;
+            break;
+ 
+        default:
+            printf( "nRF24L01P: Unknown getTxAddress width value %d\n", setupAw );
+            return 0;
+ 
+    }
+ 
+    int cn = (NRF24L01P_CMD_RD_REG | (NRF24L01P_REG_TX_ADDR & NRF24LO1P_REG_ADDR_BITMASK));
+ 
+    unsigned long long address = 0;
+ 
+    CS::low();
+ 
+    spi->spi_write(cn);
+ 
+    for ( int i=0; i<width; i++ ) {
+ 
+        //
+        // LSByte first
+        //
+        address |= ( ( (unsigned long long)( spi->spi_Receive() & 0xFF ) ) << (i*8) );
+ 
+    }
+ 
+    CS::high();
+ 
+    return address;
+}
+
+unsigned long long nRF24L01P::get_rx_address(int pipe) {
+ 
+    if ( ( pipe < NRF24L01P_PIPE_NO_0 ) || ( pipe > NRF24L01P_PIPE_NO_5 ) ) {
+ 
+        printf( "nRF24L01P: Invalid setRxAddress pipe number %d\n", pipe );
+        return 0;
+ 
+    }
+ 
+    int width;
+ 
+    if ( ( pipe == NRF24L01P_PIPE_NO_0 ) || ( pipe == NRF24L01P_PIPE_NO_1 ) ) {
+ 
+        int setupAw = get_register(NRF24L01P_REG_SETUP_AW) & NRF24L01P_SETUP_AW_AW_MASK;
+ 
+        switch ( setupAw ) {
+ 
+            case NRF24L01P_SETUP_AW_AW_3BYTE:
+                width = 3;
+                break;
+ 
+            case NRF24L01P_SETUP_AW_AW_4BYTE:
+                width = 4;
+                break;
+ 
+            case NRF24L01P_SETUP_AW_AW_5BYTE:
+                width = 5;
+                break;
+ 
+            default:
+                printf( "nRF24L01P: Unknown getRxAddress width value %d\n", setupAw );
+                return 0;
+ 
+        }
+ 
+    } else {
+ 
+        width = 1;
+ 
+    }
+ 
+    int rxAddrPxRegister = NRF24L01P_REG_RX_ADDR_P0 + ( pipe - NRF24L01P_PIPE_NO_0 );
+ 
+    int cn = (NRF24L01P_CMD_RD_REG | (rxAddrPxRegister & NRF24LO1P_REG_ADDR_BITMASK));
+ 
+    unsigned long long address = 0;
+ 
+    CS::low();
+ 
+    spi->spi_write(cn);
+ 
+    for ( int i=0; i<width; i++ ) {
+ 
+        //
+        // LSByte first
+        //
+        address |= ( ( (unsigned long long)( spi->spi_Receive() & 0xFF ) ) << (i*8) );
+ 
+    }
+ 
+    CS::high();
+ 
+    if ( !( ( pipe == NRF24L01P_PIPE_NO_0 ) || ( pipe == NRF24L01P_PIPE_NO_1 ) ) ) {
+ 
+        address |= ( get_rx_address(NRF24L01P_PIPE_NO_1) & ~((unsigned long long) 0xFF) );
+ 
+    }
+ 
+    return address;
  
 }
