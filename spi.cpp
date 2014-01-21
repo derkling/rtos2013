@@ -41,7 +41,7 @@ spi::~spi() {
  * 
  * @param data_byte: dato da inviare tramite SPI 
  */
-void spi::send(unsigned char data_byte)
+void spi::send(int data_byte)
 {
     SPI2->DR = data_byte; // setto il data register dell'SPI con il dato arrivato
     while((SPI2->SR & SPI_SR_RXNE)==0); // waiting 
@@ -49,21 +49,11 @@ void spi::send(unsigned char data_byte)
     data_byte = SPI2->DR; // come da commento questo fa una dummy read che azzera il bit RXNE
 }
 
-//Overloading, this is used to send data ( i.e. the number of steps in a integer format, 
-//unsigned char is strict, max 255 ( 11111111 )
-void spi::send(int data_int)
-{
-    SPI2->DR = data_int; // setto il data register dell'SPI con il dato arrivato
-    while((SPI2->SR & SPI_SR_RXNE)==0); // waiting 
-    
-    data_int = SPI2->DR; // come da commento questo fa una dummy read che azzera il bit RXNE
-}
-
 /**
  * For a complete description of the transmission workflow see p.m pg 864 full-duplex
  * @return 
  */
-unsigned char spi::receive()
+int spi::receive()
 {
     SPI2->DR=0;
     while((SPI2->SR & SPI_SR_RXNE)==0);
