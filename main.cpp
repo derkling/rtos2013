@@ -25,13 +25,13 @@ int main(){
         sendData(payload);
         
         char payload1[]="beep";
-        sendData(payload);
+        sendData(payload1);
         
         char payload2[]="tre";
-        sendData(payload);
+        sendData(payload2);
         
         char payload3[]="orangeon";
-        sendData(payload);
+        sendData(payload3);
         
 	
 //        spiSendCommandReadData(R_REGISTER,OBSERVE_TX,&sr,&data,1);

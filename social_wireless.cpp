@@ -62,6 +62,7 @@ void __attribute__((used)) EXTI1HandlerImpl(){
 //consumatore di trasmissione
 //magari un threat che si sveglia quando la coda delle trasmissioni non è vuota
 void *transmitConsumer(void *arg){
+	char payload[32];
     for(;;){
         sleep(5);
 
@@ -70,11 +71,14 @@ void *transmitConsumer(void *arg){
 
         if(!queueIsEmpty(&queue)){
 
-            char* payload=enqueue(&queue);
+            
+            enqueue(&queue,payload);
             pthread_mutex_unlock(&str);
             pthread_mutex_lock(&spi);
             transmit(payload);
             pthread_mutex_unlock(&spi);
+            
+            
         }
         pthread_mutex_unlock(&str);
     
@@ -299,11 +303,11 @@ void transmit(char* payload){
         
 }
 
-void sendData(char* payload){
+int sendData(char* payload){
     pthread_mutex_lock(&str);
     int res=addData(payload, &queue);
     pthread_mutex_unlock(&str);
-    
+    return res;
 }
 
 void beep(){

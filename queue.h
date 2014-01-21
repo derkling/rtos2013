@@ -31,7 +31,7 @@ int addData(char* data, queue_t* queue);
  * @retval Ritorna il valore del primo dato da servire in coda, se non ci sono 
  *         elementi in coda ritorna NULL.
  */
-char* enqueue(queue_t* queue);
+char* enqueue(queue_t* queue, char* str);
 
 /*!@brief Controlla se la coda è vuota.
  * @param queue: coda da gestire.
