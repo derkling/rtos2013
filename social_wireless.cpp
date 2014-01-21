@@ -24,7 +24,7 @@ typedef Gpio<GPIOD_BASE,14> redLed;
 uint8_t rxPayload[33]={0};
 
 pthread_cond_t cond=PTHREAD_COND_INITIALIZER;
-pthread_mutex_t data=PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t str=PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t spi=PTHREAD_MUTEX_INITIALIZER;
 queue_t queue;
 
@@ -65,18 +65,18 @@ void *transmitConsumer(void *arg){
     for(;;){
         sleep(5);
 
-        pthread_mutex_lock(&data);
+        pthread_mutex_lock(&str);
 
 
         if(!queueIsEmpty(&queue)){
 
             char* payload=enqueue(&queue);
-            pthread_mutex_unlock(&data);
+            pthread_mutex_unlock(&str);
             pthread_mutex_lock(&spi);
             transmit(payload);
             pthread_mutex_unlock(&spi);
         }
-        pthread_mutex_unlock(&data);
+        pthread_mutex_unlock(&str);
     
     }
     
@@ -120,10 +120,11 @@ void *interruptConsumer(void *arg){
             
             spiSendCommandReadData(R_RX_PAYLOAD,COMMAND_WITHOUT_ADDRESS,&sr,rxPayload,(int)payloadWidth);
             rxPayload[payloadWidth]='\0';
+            
 //          printf("%s",rxPayload);
 //          if(payload_sender==podometro)podometro.messageforyou
-            if(strncmp((char*)rxPayload,"orange on",payloadWidth)==0)orangeLed::high();
-            if(strncmp((char*)rxPayload,"orange off",payloadWidth)==0)orangeLed::low();
+            if(strncmp((char*)rxPayload,"tre",payloadWidth)==0)orangeLed::high();
+            if(strncmp((char*)rxPayload,"orangeoff",payloadWidth)==0)orangeLed::low();
             if(strncmp((char*)rxPayload,"beep",payloadWidth)==0)beep();
   
         }
@@ -235,6 +236,10 @@ void init(){
 //aggiunge in dati nella coda delle trasmissioni
 void transmit(char* payload){
     
+    char* prova; 
+    int len;
+    strcpy(prova,payload);
+    
     //RX MODE
     
     chipDisable();
@@ -255,7 +260,7 @@ void transmit(char* payload){
     
     //copia i dati in tx_fifo
     spiSendCommandWriteData(W_TX_PAYLOAD_NOACK,COMMAND_WITHOUT_ADDRESS,&sr,(uint8_t*)payload,strlen(payload));
-
+	len=strlen(payload);
 //    uint8_t fifo_status_after=255;
 //    spiSendCommandReadData(R_REGISTER,FIFO_STATUS,&sr,&fifo_status_after,1);
     
@@ -268,7 +273,7 @@ void transmit(char* payload){
     
     //TX MODE
     
-    usleep(1000);//finished with one packet, ce=0
+    usleep(5000);//finished with one packet, ce=0
     
     //STBY1 MODE OR STBY2 MODE
     
@@ -289,13 +294,15 @@ void transmit(char* payload){
     usleep(150);//t>130us per raggiungere lo stato RX MODE. si resta in questo stato finchè CE=1 e CONFIG->PWR_UP=1
 
     //a questo punto il modulo è in RX MODE
+    
+    
         
 }
 
 void sendData(char* payload){
-    pthread_mutex_lock(&data);
+    pthread_mutex_lock(&str);
     int res=addData(payload, &queue);
-    pthread_mutex_unlock(&data);
+    pthread_mutex_unlock(&str);
     
 }
 

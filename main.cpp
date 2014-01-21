@@ -21,16 +21,16 @@ int main(){
         init();
 
 //      beep();
-        char* payload="orange on";
+        char payload[]="orangeoff";
         sendData(payload);
         
-        payload="beep";
+        char payload1[]="beep";
         sendData(payload);
         
-        payload="orange off";
+        char payload2[]="tre";
         sendData(payload);
         
-        payload="orange on";
+        char payload3[]="orangeon";
         sendData(payload);
         
 	

@@ -8,7 +8,7 @@ using namespace miosix;
 
 //definisco i gpio che usiamo
 typedef Gpio<GPIOA_BASE,1> interruptLine;//linea interrupt del modulo wireless
-typedef Gpio<GPIOA_BASE,2> powerLine;//linea per alimentare il modulo wireless(da chiedere al prof se compatibile con altri moduli)
+typedef Gpio<GPIOA_BASE,9> powerLine;//linea per alimentare il modulo wireless(da chiedere al prof se compatibile con altri moduli)
 typedef Gpio<GPIOB_BASE,11> cen;//linea enable del modulo wireless
 typedef Gpio<GPIOB_BASE,12> cs;//ss spi
 typedef Gpio<GPIOB_BASE,13> sck;//clock spi

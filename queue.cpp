@@ -39,7 +39,7 @@ int addData (char* data, queue_t* queue){
     return 0;
 }
 
-char* enqueue(queue_t* queue){
+char* enqueue(queue_t* queue, char* str){
     int dataSize = 1;
     char* pnt = queue->head;
     while(*(pnt) != SEPARATORE){
@@ -50,9 +50,9 @@ char* enqueue(queue_t* queue){
             pnt++;
         }
     }
-    char data[dataSize];
-    for (int i = 0; *(queue->head) != SEPARATORE; i++){
-        data[i] = *(queue->head);
+//    char data[dataSize];
+  for (int i = 0; *(queue->head) != SEPARATORE; i++){
+        str[i] = *(queue->head);
         queue->freeSpace++;
         if (queue->head +1 == &(queue->buffer[QUEUE_LENGHT])){
             queue->head = queue->buffer;
@@ -62,9 +62,9 @@ char* enqueue(queue_t* queue){
     }
     queue->head++;
     queue->freeSpace++;
-    data[dataSize - 1] = '\0';
+    str[dataSize - 1] = '\0';
     
-    return data;
+    return str;
 }
 
 bool queueIsEmpty(queue_t* queue){
