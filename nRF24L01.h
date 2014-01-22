@@ -67,21 +67,18 @@
 #define EN_AA_ENAA_P1				((uint8_t)0x02)		/*!<Enable auto acknowledgement data pipe 1 */
 #define EN_AA_ENAA_P0				((uint8_t)0x01)		/*!<Enable auto acknowledgement data pipe 0 */
 
-/********************  bit definition for EN_RXADDR register  ********************/
-
-
 /********************  DEFINIZIONE DATI PARTICOLARI  ********************/
 #define ACTIVATE_BYTE 				((uint8_t)0x73)		/*!<Dato da inviare dopo ACTIVATE per usare altre features */
 
 /*********************  CONFIGURAZIONE  ************************************/
-#define RF_SETUP_1MBPS                          ((uint8_t)0x07) /*!<Air Data 1mbps, TX Power 0dbm, LNA Gain Enabled*/
-#define FEATURE_EN_DPL                          ((uint8_t)0x05) /*!<EN_DPL 1, EN_ACK_PAY 0, EN_DYN_ACK 1*/
-#define DYNPD_DPL_P0                            ((uint8_t)0x01) /*!<DPL_P0 1: Enable dynamic payload on data pipe 0*/
-#define EN_AA_ENAA_P0                           ((uint8_t)0x01) /*!<Enable auto ack on data pipe 0*/
-#define SETUP_RETR_ARC0                         ((uint8_t)0x00) /*!<Automatic Retransmission Count 0*/
-#define EN_RXADDR_ERX_P0                        ((uint8_t)0x01) /*!<Activate only data pipe 0*/
-#define CONFIG_PWRUP_PRIM_RX                    ((uint8_t)0x0B) /*!<Power Up, Primary RX*/
-#define CONFIG_PWRUP_PRIM_TX                    ((uint8_t)0x0A) /*!<Power Up, Primary TX*/
-#define CONFIG_PWRDOWN_PRIM_RX                  ((uint8_t)0x09) /*!<Power Down, Primary TX*/
+#define RF_SETUP_1MBPS                          ((uint8_t)0x07) 	/*!<Air Data 1mbps, TX Power 0dbm, LNA Gain Enabled*/
+#define FEATURE_EN_DPL                          ((uint8_t)0x05) 	/*!<EN_DPL 1, EN_ACK_PAY 0, EN_DYN_ACK 1*/
+#define DYNPD_DPL_P0                            ((uint8_t)0x01) 	/*!<DPL_P0 1: Enable dynamic payload on data pipe 0*/
+#define EN_AA_ENAA_P0                           ((uint8_t)0x01) 	/*!<Enable auto ack on data pipe 0*/
+#define SETUP_RETR_ARC0                         ((uint8_t)0x00) 	/*!<Automatic Retransmission Count 0*/
+#define EN_RXADDR_ERX_P0                        ((uint8_t)0x01) 	/*!<Activate only data pipe 0*/
+#define CONFIG_PWRUP_PRIM_RX                    ((uint8_t)0x0B) 	/*!<Power Up, Primary RX*/
+#define CONFIG_PWRUP_PRIM_TX                    ((uint8_t)0x0A) 	/*!<Power Up, Primary TX*/
+#define CONFIG_PWRDOWN_PRIM_RX                  ((uint8_t)0x09) 	/*!<Power Down, Primary TX*/
 
-#endif /* NRF24L01_H */
+#endif //NRF24L01_H
