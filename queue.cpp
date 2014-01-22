@@ -39,7 +39,7 @@ int addData (char* data, queue_t* queue){
     return 0;
 }
 
-void enqueue(queue_t* queue, char* data){
+void enqueue(queue_t* queue, char* dest){
     int dataSize = 1;
     char* pnt = queue->head;
     //calcolo dimensione del dato da spilare
@@ -54,7 +54,7 @@ void enqueue(queue_t* queue, char* data){
     
    //copio il dato nella stringa di destinazione 
    for (int i = 0; *(queue->head) != SEPARATORE; i++){
-        data[i] = *(queue->head);
+        dest[i] = *(queue->head);
         queue->freeSpace++;
         if (queue->head + 1 == &(queue->buffer[QUEUE_LENGHT])){
             queue->head = queue->buffer;
@@ -64,7 +64,7 @@ void enqueue(queue_t* queue, char* data){
     }
     queue->head++;
     queue->freeSpace++;
-    data[dataSize - 1] = '\0';
+    dest[dataSize - 1] = '\0';
 }
 
 bool queueIsEmpty(queue_t* queue){

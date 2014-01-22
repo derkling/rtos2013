@@ -37,9 +37,9 @@ int addData(char* data, queue_t* queue);
 /*!@brief Serve la coda. Si consiglia di utilizzare prima la funzione 
  *        queueIsEmpty() per controllare se la coda ha elementi.
  * @param queue: coda da gestire.
- * @param data: stringa in cui si vuole copiare il dato preso dalla coda.
+ * @param dest: stringa in cui si vuole copiare il dato preso dalla coda.
  */
-void enqueue(queue_t* queue, char* data);
+void enqueue(queue_t* queue, char* dest);
 
 /*!@brief Controlla se la coda è vuota.
  * @param queue: coda da gestire.
