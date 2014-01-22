@@ -2,8 +2,6 @@
 #include <string.h>
 #define SEPARATORE '\0'
 
-//FUNZIONI
-
 void queueInizializer(queue_t* queue){
     //inizializzo l'head
     queue->head = queue->buffer;
@@ -17,8 +15,8 @@ void queueInizializer(queue_t* queue){
 int addData (char* data, queue_t* queue){
     
     int size = strlen(data);
+    
     if ((queue->freeSpace == 0) || (size + 1 > queue->freeSpace)){
-        //coda piena
         return -1;
     }
     
@@ -39,22 +37,22 @@ int addData (char* data, queue_t* queue){
     return 0;
 }
 
-char* enqueue(queue_t* queue, char* str){
+char* enqueue(queue_t* queue, char* data){
     int dataSize = 1;
     char* pnt = queue->head;
     while(*(pnt) != SEPARATORE){
         dataSize++;
-        if (pnt +1 == &(queue->buffer[QUEUE_LENGHT])){
+        if (pnt + 1 == &(queue->buffer[QUEUE_LENGHT])){
             pnt = queue->buffer;
         } else {
             pnt++;
         }
     }
-//    char data[dataSize];
+    
   for (int i = 0; *(queue->head) != SEPARATORE; i++){
-        str[i] = *(queue->head);
+        data[i] = *(queue->head);
         queue->freeSpace++;
-        if (queue->head +1 == &(queue->buffer[QUEUE_LENGHT])){
+        if (queue->head + 1 == &(queue->buffer[QUEUE_LENGHT])){
             queue->head = queue->buffer;
         } else {
             queue->head++;
@@ -62,9 +60,9 @@ char* enqueue(queue_t* queue, char* str){
     }
     queue->head++;
     queue->freeSpace++;
-    str[dataSize - 1] = '\0';
+    data[dataSize - 1] = '\0';
     
-    return str;
+    return data;
 }
 
 bool queueIsEmpty(queue_t* queue){

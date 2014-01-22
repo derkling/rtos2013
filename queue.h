@@ -1,14 +1,23 @@
 #ifndef QUEUE_H
 #define	QUEUE_H
-#define QUEUE_LENGHT 1024
+#define QUEUE_LENGHT 7
 
 //TYPEDEF
+
+/*!@brief Elemento che definisce una coda.
+ *        Se queue_t queue è la nostra variabile di tipo queue_t, allora:
+ *              -queue.buffer: indica gli elementi della coda gestiti come array circolare;
+ *              -queue.head: è il puntatore alla testa della coda;
+ *              -queue.next: è il puntatore al primo spazio dell'array in memoria libero;
+ *              -queue.freeSpace: indica quanto spazio è ancora disponibile nell'array della coda.
+ *        Per inizializzare correttamete la variabile è necessario utilizzare la funzione
+ *        queueInizializer().
+ */
 typedef struct{
-    char buffer[QUEUE_LENGHT]; //elementi della coda
-    char* head; //testa della coda.
-    char* next; //prossimo elemento libero della coda
-     //indica se la coda ha elementi
-    int freeSpace;
+    char buffer[QUEUE_LENGHT];
+    char* head;
+    char* next;   
+    int freeSpace; 
 }queue_t;
 
 //FUNZIONI
@@ -28,10 +37,11 @@ int addData(char* data, queue_t* queue);
 /*!@brief Serve la coda. Si consiglia di utilizzare prima la funzione 
  *        queueIsEmpty() per controllare se la coda ha elementi.
  * @param queue: coda da gestire.
+ * @param data: stringa in cui si vuole copiare il dato preso dalla coda.
  * @retval Ritorna il valore del primo dato da servire in coda, se non ci sono 
  *         elementi in coda ritorna NULL.
  */
-char* enqueue(queue_t* queue, char* str);
+char* enqueue(queue_t* queue, char* data);
 
 /*!@brief Controlla se la coda è vuota.
  * @param queue: coda da gestire.
