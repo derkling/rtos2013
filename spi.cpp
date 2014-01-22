@@ -5,6 +5,7 @@
 #include "miosix.h"
 
 using namespace miosix;
+using namespace std;
 
 //definizione gpio per l'uso della spi
 typedef Gpio<GPIOA_BASE,1> interruptLine;//linea interrupt del modulo wireless
@@ -78,12 +79,12 @@ void powerLineDown(){
 	powerLine::low();
 }
 
-//alza il bit CE
+//alza il pin CE
 void chipEnable(){
 	cen::high();
 }
 
-//abbassa il bit CE
+//abbassa il pin CE
 void chipDisable(){
 	cen::low();
 }
@@ -112,7 +113,7 @@ int spiSendCommandWriteData(uint8_t command, uint8_t addr,uint8_t* sr, uint8_t* 
 	while( ( SPI2->SR & SPI_SR_TXE ) == 0 ){}//aspetto che registro trasmissione sia vuoto(probabilmente istruzione inutile)
 	
 	cs::low();//attivo il cs(lo abbasso)
-	usleep(1);
+	usleep(1);//tempo da attendere prima che il modulo wireless sia attivo
 
 	SPI2->DR = temp;//inserisco comando nel data register
 	
@@ -138,7 +139,7 @@ int spiSendCommandWriteData(uint8_t command, uint8_t addr,uint8_t* sr, uint8_t* 
 		return 1;
 	}
 
-	while( i < lenght ){//c'è ancora da scrivere
+	while( i < lenght ){//c'è ancora da scrivere? se si entro nel loop
 
 		while( ( SPI2->SR & SPI_SR_TXE ) == 0 ){}//attendo che sia copiato il dato precedente dal DR allo shift register
 
