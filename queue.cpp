@@ -16,10 +16,12 @@ int addData (char* data, queue_t* queue){
     
     int size = strlen(data);
     
+    //controllo della dimensione del nuovo dato da inserire
     if ((queue->freeSpace == 0) || (size + 1 > queue->freeSpace)){
         return -1;
     }
     
+    //aggiunta del dato nella coda
     for (int i = 0; i < size; i++){
         *(queue->next) = data[i];
         queue->freeSpace--;
@@ -37,9 +39,10 @@ int addData (char* data, queue_t* queue){
     return 0;
 }
 
-char* enqueue(queue_t* queue, char* data){
+void enqueue(queue_t* queue, char* data){
     int dataSize = 1;
     char* pnt = queue->head;
+    //calcolo dimensione del dato da spilare
     while(*(pnt) != SEPARATORE){
         dataSize++;
         if (pnt + 1 == &(queue->buffer[QUEUE_LENGHT])){
@@ -49,7 +52,8 @@ char* enqueue(queue_t* queue, char* data){
         }
     }
     
-  for (int i = 0; *(queue->head) != SEPARATORE; i++){
+   //copio il dato nella stringa di destinazione 
+   for (int i = 0; *(queue->head) != SEPARATORE; i++){
         data[i] = *(queue->head);
         queue->freeSpace++;
         if (queue->head + 1 == &(queue->buffer[QUEUE_LENGHT])){
@@ -61,8 +65,6 @@ char* enqueue(queue_t* queue, char* data){
     queue->head++;
     queue->freeSpace++;
     data[dataSize - 1] = '\0';
-    
-    return data;
 }
 
 bool queueIsEmpty(queue_t* queue){
