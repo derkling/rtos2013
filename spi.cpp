@@ -6,7 +6,7 @@
 
 using namespace miosix;
 
-//definisco i gpio che usiamo
+//definizione gpio per l'uso della spi
 typedef Gpio<GPIOA_BASE,1> interruptLine;//linea interrupt del modulo wireless
 typedef Gpio<GPIOA_BASE,9> powerLine;//linea per alimentare il modulo wireless(da chiedere al prof se compatibile con altri moduli)
 typedef Gpio<GPIOB_BASE,11> cen;//linea enable del modulo wireless
@@ -16,8 +16,7 @@ typedef Gpio<GPIOB_BASE,14> miso;//miso spi
 typedef Gpio<GPIOB_BASE,15> mosi;//mosi spi
 
 
-/*! @brief configura la periferica spi2 e i gpio usati per la comunicazione con il modulo wireless
- */
+//abilita la spi configurando i registri
 void configureSpi(){
 
 	//Abilito i clock alle periferiche che uso(spi2, gpioa e gpiob)
@@ -35,7 +34,7 @@ void configureSpi(){
 	miso::alternateFunction(5);
 	mosi::alternateFunction(5);
 
-	//imposto gpioa 2 per l'alimentazione
+	//imposto gpioa 9 per l'alimentazione
 	powerLine::mode(Mode::OUTPUT);
 	powerLine::low();
 
@@ -54,12 +53,12 @@ void configureSpi(){
 
 	
 
-	//imposto il control register 1
-	SPI2->CR1 |= SPI_CR1_BR_0 | SPI_CR1_BR_1 | SPI_CR1_BR_2 ;//imposta a velocità di trasmissione a 0.65mbps
+	//imposto il control register 1 e 2 della spi
+	SPI2->CR1 |= SPI_CR1_BR_0 | SPI_CR1_BR_1 | SPI_CR1_BR_2 ;//imposta a velocità di trasmissione a 0.65mbps(più lenta possibile)
 	SPI2->CR1 &= ~SPI_CR1_CPHA;//impostato campionamento sul primo fronte di clock
 	SPI2->CR1 &= ~SPI_CR1_CPOL;//impostato clock idle basso
 	SPI2->CR1 &= ~SPI_CR1_DFF;//impostato frame da 8 bit
-	SPI2->CR1 &= ~SPI_CR1_LSBFIRST;//impostato così a 0 manda prima msb
+	SPI2->CR1 &= ~SPI_CR1_LSBFIRST;//impostato msb
 	SPI2->CR1 |= SPI_CR1_SSM;//il management del SS è software
 	SPI2->CR2 |= SPI_CR2_SSOE;//abilito l'uscita SS
 	SPI2->CR1 |= SPI_CR1_MSTR;//imposto come master
@@ -69,41 +68,27 @@ void configureSpi(){
 
 }
 
-/*! @brief alza il pin per l'alimentazione del modulo wireless
- */
+//alza il pin di alimentazione del modulo wireless
 void powerLineUp(){
 	powerLine::high();
 }
 
-/*! @brief abbassa il pin di alimentazione del modulo wireless
- */
+//abbassa il pin di alimentazione del modulo wireless
 void powerLineDown(){
 	powerLine::low();
 }
 
-/*! @brief alza il bit di enable del modulo wireless
- * 	   Così il modulo può passare a rx o tx mode
- */
+//alza il bit CE
 void chipEnable(){
 	cen::high();
 }
 
-/*! @brief abbassa il bit di CE
- *         Il modulo wireless non può entrare in stato di rx o tx, solo standy o power-down
- */
+//abbassa il bit CE
 void chipDisable(){
 	cen::low();
 }
 
-/*! @brief manda via spi comando e dati al modulo wireless. Primitiva bloccante, non torna finchè errore o invio completo
- *  @param command comando da inviare
- *  @param addr indirizzo del registro del modulo wireless(se comando senza indirizzo usare COMMAND_WITHOUT_ADDRESS)
- *  @param sr puntatore a uint8_t dove verrà scritto lo status register ricevuto dal modulo wireless
- *  @param data puntatore ai dati da inviare(se ci sono) dopo il comando. Verranno inviati da data[0] a data[lenght-1].
- *  	   ATTENZIONE i dati sono LSByte
- *  @param lenght numero di byte(di dati) da inviare dopo il comando
- *  @return -1 se errore, 1 se inviato
- */
+//manda via spi un comando e eventuali dati
 int spiSendCommandWriteData(uint8_t command, uint8_t addr,uint8_t* sr, uint8_t* data, int lenght){
 	
 	int i=0;
@@ -178,16 +163,7 @@ int spiSendCommandWriteData(uint8_t command, uint8_t addr,uint8_t* sr, uint8_t* 
 
 }
 
-/*! @brief manda via spi comando e legge dati forniti dal modulo wireless. Primitiva bloccante, non torna finchè errore o invio completo
- *  @param command comando da inviare
- *  @param addr indirizzo del registro nel modulo wireless(se comando senza indirizzo usare COMMAND_WITHOUT_ADDRESS)
- *  @param sr puntatore a uint8_t dove verrà scritto lo status register ricevuto dal modulo wireless
- *  @param data puntatore ai dati ricevuti dopo il comando. Verranno riempiti da data[0] a data[lenght-1] in ordine di ricezione.
- *  	   ATTENZIONE la funzione non controllerà se la zona di memoria non è stata allocata correttamente per contenere 
- *  	   tutti i dati attesi e si ricorda che come per la primitiva spiSendCommandWriteData i dati sono LSByte
- *  @param lenght numero di byte(di dati) da ricevere dopo aver inviato il comando
- *  @return -1 se errore, 1 se inviato
- */
+//manda via spi un comando e riceve dati
 int spiSendCommandReadData(uint8_t command, uint8_t addr,uint8_t* sr, uint8_t* data, int lenght){
 	
 	int i=0;
