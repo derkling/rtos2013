@@ -1,7 +1,5 @@
 #include "queue.h"
 #include <string.h>
-#define SEPARATORE '\0'                 /*! Definische il separatora nella coda*/
-#define MAX_LENGHT_PAYLOAD 32           /*! Definisce la lunghezza massima del payload*/
 
 void queueInizializer(queue_t* queue){
     //inizializzo l'head

@@ -30,7 +30,7 @@ void chipDisable(void);
  *  \param data: puntatore ai dati da inviare(se ci sono) dopo il comando. Verranno inviati da data[0] a data[lenght-1].
  *  	   ATTENZIONE i dati sono LSByte
  *  \param lenght: numero di byte(di dati) da inviare dopo il comando
- *  \retval -1 se errore, 1 se inviato
+ *  \retval int -1 se errore, 1 se inviato
  */
 int spiSendCommandWriteData(uint8_t command, uint8_t addr, uint8_t* sr, uint8_t* data, int lenght);
 
@@ -42,7 +42,7 @@ int spiSendCommandWriteData(uint8_t command, uint8_t addr, uint8_t* sr, uint8_t*
  *  	   ATTENZIONE la funzione non controllerà se la zona di memoria non è stata allocata correttamente per contenere 
  *  	   tutti i dati attesi e si ricorda che come per la primitiva spiSendCommandWriteData i dati sono LSByte
  *  \param lenght: numero di byte(di dati) da ricevere dopo aver inviato il comando
- *  \retval -1 se errore, 1 se inviato
+ *  \retval int -1 se errore, 1 se inviato
  */
 int spiSendCommandReadData(uint8_t command, uint8_t addr, uint8_t* sr, uint8_t* data, int lenght);
 
