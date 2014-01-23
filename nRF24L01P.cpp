@@ -49,6 +49,7 @@
 #define NRF24L01P_REG_AA                        0x01
 #define NRF24L01P_REG_SETUP_AW                  0x03
 #define NRF24L01P_REG_TX_ADDR                   0x10
+#define NRF24L01P_REG_RX_PW_P0                       0x11
 #define NRF24L01P_REG_RX_ADDR_P0            0x0a
 #define NRF24L01P_REG_SETUP_RETR            0x04
 #define NRF24L01P_REG_EN_RXADDR             0x02
@@ -137,21 +138,22 @@ nRF24L01P::nRF24L01P() {
     spi = new spi_driver();
     setup_Gpio();
     //power_down();
-    
     set_register(NRF24L01P_REG_STATUS, NRF24L01P_STATUS_TX_DS | NRF24L01P_STATUS_MAX_RT |
                                 NRF24L01P_STATUS_RX_DR);/*clear every pending interrupt bits*/
     set_register(NRF24L01P_REG_EN_RXADDR, NRF24L01P_EN_RXADDR_NONE);
+    set_register(NRF24L01P_REG_RX_PW_P0,1);
     set_tx_address(5);
-    set_frequency(NRF24L01P_MIN_RF_FREQUENCY+2);
-    set_power_output(NRF24L01P_TX_PWR_ZERO_DB);
-    set_air_data_rate(NRF24L01P_DATARATE_1MBPS);
+    //set_frequency(NRF24L01P_MIN_RF_FREQUENCY+2);
+   //set_power_output(NRF24L01P_TX_PWR_ZERO_DB);
+    //set_air_data_rate(NRF24L01P_DATARATE_1MBPS);
     set_crc_width(NRF24L01P_CRC_8_BIT);
-    setTxAddress(NRF24L01P_ADDRESS_DEFAULT, NRF24L01P_ADDRESS_DEFAULT_WIDTH);
-    setRxAddress(NRF24L01P_ADDRESS_DEFAULT, NRF24L01P_ADDRESS_DEFAULT_WIDTH,NRF24L01P_PIPE_NO_0);
+    //setTxAddress(NRF24L01P_ADDRESS_DEFAULT, NRF24L01P_ADDRESS_DEFAULT_WIDTH);
+    //setRxAddress(NRF24L01P_ADDRESS_DEFAULT, NRF24L01P_ADDRESS_DEFAULT_WIDTH,NRF24L01P_PIPE_NO_0);
     disable_auto_ack();
     disable_auto_retransmit();
-    setTransferSize(4,NRF24L01P_PIPE_NO_0);
+    setTransferSize(1,NRF24L01P_PIPE_NO_0);
     //set_register(NRF24L01P_REG_AA,NRF24L01P_ENAA_P0);
+    
     printf("Frequency %d\n",get_frequency());
     printf("Output power %d\n",get_output_power());
     printf("Air data rate %d\n",get_air_data_rate());
@@ -390,17 +392,17 @@ void nRF24L01P::test_receive(){
     char *data;
         showInternal();
 
-   /* while(true){
+   while(true){
     printf("Status register %d\n",get_register_status());
     printf("Config register %d\n",get_register(NRF24L01P_REG_CONF));
     printf("ricevuto da pipe 0 %d\n",receive(NRF24L01P_PIPE_NO_0,data,1));
     printf("ho ricevuto %s\n",data);    
     printf("ricevuto da pipe 1 %d\n",receive(NRF24L01P_PIPE_NO_1,data,1));
     printf("ho ricevuto %s\n",data);
-    usleep(3000000);
+    usleep(5000000);
         
 
-    }*/
+    }
 }
 
 void nRF24L01P::setup_Gpio(){
