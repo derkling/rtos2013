@@ -1,6 +1,7 @@
 #include "queue.h"
 #include <string.h>
-#define SEPARATORE '\0'
+#define SEPARATORE '\0'                 /*! Definische il separatora nella coda*/
+#define MAX_LENGHT_PAYLOAD 32           /*! Definisce la lunghezza massima del payload*/
 
 void queueInizializer(queue_t* queue){
     //inizializzo l'head
@@ -12,12 +13,12 @@ void queueInizializer(queue_t* queue){
     //ritorno queue inizializzato
 }
 
-int addData (char* data, queue_t* queue){
+int queuePush (char* data, queue_t* queue){
     
     int size = strlen(data);
     
     //controllo della dimensione del nuovo dato da inserire
-    if ((queue->freeSpace == 0) || (size + 1 > queue->freeSpace)){
+    if ((queue->freeSpace == 0) || (size + 1 > queue->freeSpace) || (size <= MAX_LENGHT_PAYLOAD)){
         return -1;
     }
     
@@ -39,7 +40,7 @@ int addData (char* data, queue_t* queue){
     return 0;
 }
 
-void enqueue(queue_t* queue, char* dest){
+void queuePop(queue_t* queue, char* dest){
     int dataSize = 1;
     char* pnt = queue->head;
     //calcolo dimensione del dato da spilare

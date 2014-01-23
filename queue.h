@@ -32,14 +32,14 @@ void queueInizializer(queue_t* queue);
  * \param queue: coda da gestire.
  * \retval Ritorna -1 se la coda è piena, 0 altrimenti.
  */
-int addData(char* data, queue_t* queue);
+int queuePush(char* data, queue_t* queue);
 
 /*!\brief Serve la coda. Si consiglia di utilizzare prima la funzione 
  *        queueIsEmpty() per controllare se la coda ha elementi.
  * \param queue: coda da gestire.
  * \param dest: stringa in cui si vuole copiare il dato preso dalla coda.
  */
-void enqueue(queue_t* queue, char* dest);
+void queuePop(queue_t* queue, char* dest);
 
 /*!\brief Controlla se la coda è vuota.
  * \param queue: coda da gestire.
