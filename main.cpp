@@ -12,35 +12,23 @@ typedef Gpio<GPIOD_BASE,15> blueLed;
 int main(){
     
 	blueLed::mode(Mode::OUTPUT);
-	
-     
-	uint8_t sr=255;
-        
-        uint8_t data;
        
         init();
 
-//      beep();
-        char payload[]="orangeoff";
+        char payload[]="orangeon";
         sendData(payload);
-        
-        char payload1[]="beep";
-        sendData(payload1);
-        
-        char payload2[]="tre";
-        sendData(payload2);
-        
-        char payload3[]="orangeon";
+
+        char payload3[]="orangeoff";
         sendData(payload3);
-        
-	
-//        spiSendCommandReadData(R_REGISTER,OBSERVE_TX,&sr,&data,1);
 	
 	blueLed::high();
 //        beep();
 
 	while(1){
-
+        	sendData(payload);
+		usleep(100000);
+        	sendData(payload3);
+		usleep(100000);
 	}
 }
 

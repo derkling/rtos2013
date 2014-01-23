@@ -16,7 +16,7 @@ int queuePush (char* data, queue_t* queue){
     int size = strlen(data);
     
     //controllo della dimensione del nuovo dato da inserire
-    if ((queue->freeSpace == 0) || (size + 1 > queue->freeSpace) || (size <= MAX_LENGHT_PAYLOAD)){
+    if ((queue->freeSpace == 0) || (size + 1 > queue->freeSpace) || (size > MAX_LENGHT_PAYLOAD)){
         return -1;
     }
     

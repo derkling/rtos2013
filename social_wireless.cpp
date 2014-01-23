@@ -65,7 +65,7 @@ void __attribute__((used)) EXTI1HandlerImpl(){
 void *transmitConsumer(void *arg){
 	char payload[MAX_LENGHT_PAYLOAD+1];
     for(;;){
-        sleep(5);
+        usleep(100000);
 
         pthread_mutex_lock(&str);
 
