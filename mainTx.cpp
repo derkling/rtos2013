@@ -9,9 +9,12 @@ using namespace miosix;
 int main()
 {
     NRF24L01P* module = new NRF24L01P();
-    int result; char data='f';
+    int result; char data='f', data2='a', data3='b' , data4='i' , data5='o';
     char* pointer;
-    
+    char* pointer2;
+    char* pointer3;
+    char* pointer4;
+    char* pointer5;
     
     module->powerUp();
     module->configureInterrupt();
@@ -29,10 +32,21 @@ int main()
     //printf("Dammi un carattere da trasmettere\n");
     //scanf("%c", &data);
     pointer = &data;
-    
+    pointer2 = &data2;
+    pointer3 = &data3;
+    pointer4= &data4;
+    pointer5 = &data5;
     while(1){
     module->TrasmitData(pointer , 1);
-    usleep(10000);
+    usleep(1000);
+    module->TrasmitData(pointer2,1);
+    usleep(1000);
+    module->TrasmitData(pointer3,1);
+    usleep(1000);
+    module->TrasmitData(pointer4,1);
+    usleep(1000);
+    module->TrasmitData(pointer5,1);
+    usleep(1000);
     }
     
     
