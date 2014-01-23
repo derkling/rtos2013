@@ -33,13 +33,14 @@ public:
     unsigned long long get_rx_address(int pipe);
     void showInternal();
     int readRegister(int regAddress);
+        int get_register_status();
+
 
 private:
     void CE_enable();
     void CE_disable();
     void set_register(int addr_registro,int data_registro);
     int get_register(int registro);
-    int get_register_status();
     void CE_restore(int old_ce);
     bool packet_in_pipe(int pipe);
     spi_driver *spi;

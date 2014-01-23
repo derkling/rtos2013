@@ -43,7 +43,7 @@ void spi_driver::spi_write(int command){
     command=SPI2->DR;/*dummy read viene usato perazzerare il bit RXNE */
 }
 
-int spi_driver::spi_Receive(){
+int  spi_driver::spi_Receive(){
      SPI2->DR = 0xff;             /*dummy write forza la ricezione di un byte*/
      while((SPI2->SR & SPI_SR_RXNE)==0);
      return SPI2->DR;  

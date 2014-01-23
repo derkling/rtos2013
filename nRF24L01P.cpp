@@ -147,8 +147,8 @@ nRF24L01P::nRF24L01P() {
    //set_power_output(NRF24L01P_TX_PWR_ZERO_DB);
     //set_air_data_rate(NRF24L01P_DATARATE_1MBPS);
     set_crc_width(NRF24L01P_CRC_8_BIT);
-    //setTxAddress(NRF24L01P_ADDRESS_DEFAULT, NRF24L01P_ADDRESS_DEFAULT_WIDTH);
-    //setRxAddress(NRF24L01P_ADDRESS_DEFAULT, NRF24L01P_ADDRESS_DEFAULT_WIDTH,NRF24L01P_PIPE_NO_0);
+    setTxAddress(NRF24L01P_ADDRESS_DEFAULT, NRF24L01P_ADDRESS_DEFAULT_WIDTH);
+    setRxAddress(NRF24L01P_ADDRESS_DEFAULT, NRF24L01P_ADDRESS_DEFAULT_WIDTH,NRF24L01P_PIPE_NO_0);
     disable_auto_ack();
     disable_auto_retransmit();
     setTransferSize(1,NRF24L01P_PIPE_NO_0);
@@ -290,14 +290,18 @@ int nRF24L01P::receive(int pipe,char *data,int count){
     if (count>NRF24L01P_RX_BUFFER_SIZE){
         count= NRF24L01P_RX_BUFFER_SIZE;
     }
+    printf("prima di packet in pipe\n");
     if(packet_in_pipe(pipe)){
         //NB----I skip the phase of check the lenght of the packet
-        
         CS::low();
         spi->spi_write(NRF24L01P_R_RX_PAY);
         
         for(int i=0;i<count;i++){
+                    printf("pria boo,m\n");
             *data = spi->spi_Receive();
+                                printf("dopo boo,m\n");
+
+            printf("in receive %c\n",*data);
             data++;
         }
         CS::low();
@@ -396,13 +400,15 @@ void nRF24L01P::test_receive(){
     printf("Status register %d\n",get_register_status());
     printf("Config register %d\n",get_register(NRF24L01P_REG_CONF));
     printf("ricevuto da pipe 0 %d\n",receive(NRF24L01P_PIPE_NO_0,data,1));
-    printf("ho ricevuto %s\n",data);    
-    printf("ricevuto da pipe 1 %d\n",receive(NRF24L01P_PIPE_NO_1,data,1));
-    printf("ho ricevuto %s\n",data);
-    usleep(5000000);
+   printf("ho ricevuto %c\n",*data);    
+    //printf("ho ricevuto %c\n",data);
+    showInternal();
+    usleep(10000000);
         
 
     }
+ 
+        
 }
 
 void nRF24L01P::setup_Gpio(){
