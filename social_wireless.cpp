@@ -8,7 +8,7 @@
 #include "queue.h"
 
 void beep(void);
-//void *transmitConsumer(void *arg);
+
 void transmit(char* payload);
 
 using namespace std;
@@ -44,23 +44,24 @@ void __attribute__((naked)) EXTI1_IRQHandler(){
 
 }
 
-/*! @brief routine di interrupt scatenato dal modulo wireless
- * 	   verrà chiamato quando arriva un pacchetto o finisce la trasmissione
- *      called from hardware, producer, modifica la condition variable interrupt
+/*!@brief routine di interrupt scatenato dal modulo wireless
+ * verrà chiamato quando arriva un pacchetto o finisce la trasmissione
+ * called from hardware, producer, modifica la condition variable interrupt
  */
 void __attribute__((used)) EXTI1HandlerImpl(){
     
     NVIC_DisableIRQ(EXTI1_IRQn);
     EXTI->PR = EXTI_PR_PR1;//era usato uguale (=) boh    
-//  pthread_mutex_lock(&mutex);
+	pthread_mutex_lock(&mutex);
+	interrupt=true;
     pthread_cond_broadcast(&cond);
-//  pthread_mutex_unlock(&mutex);
+	pthread_mutex_unlock(&mutex);
     greenLed::high();
 }
 
-//funzione privata
-//consumatore di trasmissione
-//magari un threat che si sveglia quando la coda delle trasmissioni non è vuota
+/*!@brief Funzione che rappresenta il thread di trasmissione
+ * @note Il thread non termina mai. Si sveglia ogni 5 secondi e se c'è un pacchetto in coda lo trasmette
+ */
 void *transmitConsumer(void *arg){
 	char payload[32];
     for(;;){
@@ -93,9 +94,11 @@ void *interruptConsumer(void *arg){
     
     for(;;){
         
+        pthread_mutex_lock(&mutex);
+        while(!interrupt)pthread_cond_wait(&cond,&mutex); //questo thread è in wait fino a che la var interrupt non diventa true
+        interrupt=false;
+        pthread_mutex_unlock(&mutex);
         pthread_mutex_lock(&spi);
-        pthread_cond_wait(&cond,&spi); //questo thread è in wait fino a che la var interrupt non diventa true
-        
         //mutex spi locked
         
         //gestione interrupt
@@ -108,7 +111,7 @@ void *interruptConsumer(void *arg){
 
         if(sr==32){
             //tx interrupt
-            beep();
+//            beep();
             
         }
         else if(sr==64 || sr==96 ){
@@ -127,7 +130,7 @@ void *interruptConsumer(void *arg){
             
 //          printf("%s",rxPayload);
 //          if(payload_sender==podometro)podometro.messageforyou
-            if(strncmp((char*)rxPayload,"tre",payloadWidth)==0)orangeLed::high();
+            if(strncmp((char*)rxPayload,"orangeon",payloadWidth)==0)orangeLed::high();
             if(strncmp((char*)rxPayload,"orangeoff",payloadWidth)==0)orangeLed::low();
             if(strncmp((char*)rxPayload,"beep",payloadWidth)==0)beep();
   
@@ -149,6 +152,9 @@ void *interruptConsumer(void *arg){
     }
 }
 
+
+/*!@brief Inizializza il modulo NRF24LR: configura SPI2, alloca la coda di trasmissione, crea il thread di trasmissione e il thread interrupt
+ */
 void init(){
     
     buzzer::mode(Mode::OUTPUT);
@@ -157,11 +163,6 @@ void init(){
     redLed::mode(Mode::OUTPUT);
     
     queueInizializer(&queue);
-    
-    //questa è ancora da capire dove metterla
-    pthread_create(&interrupt_thread,NULL,&interruptConsumer,NULL);
-    
-    pthread_create(&transmit_thread,NULL,&transmitConsumer,NULL);
     
     configureSpi();//0.65mbps, frame 8 bit, msbit first, lsbyte firts, ss software, stm32 master
     powerLineDown();//VDD=0V
@@ -233,16 +234,18 @@ void init(){
     usleep(150);//t>130us per raggiungere lo stato RX MODE. si resta in questo stato finchè CE=1 e CONFIG->PWR_UP=1
 
     //a questo punto il modulo è in RX MODE
+    
+    pthread_create(&interrupt_thread,NULL,&interruptConsumer,NULL);
+    
+    pthread_create(&transmit_thread,NULL,&transmitConsumer,NULL);
+    
 }
 
-//funzione visibile a tutti gli altri moduli
-//produttore
-//aggiunge in dati nella coda delle trasmissioni
+/*!@brief Trasmissione immediata della stringa passata come parametro
+ * @param payload: stringa da trasmettere
+ * @note La funzione deve essere chiamata quando il modulo NRF24LR è in stato di ricezione
+ */
 void transmit(char* payload){
-    
-    char* prova; 
-    int len;
-    strcpy(prova,payload);
     
     //RX MODE
     
@@ -258,33 +261,25 @@ void transmit(char* payload){
     data=CONFIG_PWRUP_PRIM_TX;
     spiSendCommandWriteData(W_REGISTER,CONFIG,&sr,&data,1);//power up, tx mode: write 0b00001010 in config (0, mask rxdr, mask txds, mask maxrt, encrc, crco=1byte, pwr_up, prim_rx)
     
-    
-//    uint8_t fifo_status_before=255;
-//    spiSendCommandReadData(R_REGISTER,FIFO_STATUS,&sr,&fifo_status_before,1);
-    
     //copia i dati in tx_fifo
     spiSendCommandWriteData(W_TX_PAYLOAD_NOACK,COMMAND_WITHOUT_ADDRESS,&sr,(uint8_t*)payload,strlen(payload));
-	len=strlen(payload);
-//    uint8_t fifo_status_after=255;
-//    spiSendCommandReadData(R_REGISTER,FIFO_STATUS,&sr,&fifo_status_after,1);
-    
     
     //chipenable for t > 10us to send one packet
     chipEnable();
-    usleep(10);
+    usleep(15);
     chipDisable();
-    usleep(130);//tx setting
+    usleep(130);
     
     //TX MODE
     
-    usleep(5000);//finished with one packet, ce=0
+    usleep(2000);//aspettare almeno 1ms per trasmettere un pacchetto
     
     //STBY1 MODE OR STBY2 MODE
     
     //CONFIG->PWR_UP=0 CONFIG->PRIM_RX=1
     //CONFIG=09
     data=CONFIG_PWRDOWN_PRIM_RX;
-    spiSendCommandWriteData(W_REGISTER,CONFIG,&sr,&data,1);//power up, rx mode: write 0b00001011 in config (0, mask rxdr, mask txds, mask maxrt, encrc, crco=1byte, pwr_up, prim_rx)
+    spiSendCommandWriteData(W_REGISTER,CONFIG,&sr,&data,1);//power down, rx mode: write 0b00001001 in config (0, mask rxdr, mask txds, mask maxrt, encrc, crco=1byte, pwr_up, prim_rx)
     
     //POWER DOWN MODE
     
@@ -303,6 +298,13 @@ void transmit(char* payload){
         
 }
 
+
+/*!@brief Trasmissione via radio della stringa passata come parametro
+ * @param payload: stringa da trasmettere
+ * @retval Ritorna -1 se c'è stato un errore, 0 altrimenti
+ * @note La trasmissione non è istantanea. Il payload è inserito in una coda e trasmesso appena possibile.
+ * @note La funzione si blocca fino a quando non ottiene il permesso di scrittura in coda
+ */
 int sendData(char* payload){
     pthread_mutex_lock(&str);
     int res=addData(payload, &queue);
