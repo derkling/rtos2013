@@ -1,6 +1,5 @@
 #include "miosix.h"
 #include "spi.h"
-#include "nRF24L01.h"
 #include <cstdio>
 #include <unistd.h>
 #include <pthread.h>
@@ -21,17 +20,18 @@ typedef Gpio<GPIOD_BASE,13> orangeLed;
 typedef Gpio<GPIOD_BASE,14> redLed;
 
 //var globali
-uint8_t rxPayload[33]={0};
+static uint8_t rxPayload[MAX_LENGHT_PAYLOAD+1]={0};
 
-pthread_cond_t cond=PTHREAD_COND_INITIALIZER;
-pthread_mutex_t str=PTHREAD_MUTEX_INITIALIZER;
-pthread_mutex_t spi=PTHREAD_MUTEX_INITIALIZER;
-queue_t queue;
+static pthread_cond_t cond=PTHREAD_COND_INITIALIZER;
+static pthread_mutex_t str=PTHREAD_MUTEX_INITIALIZER;
+static pthread_mutex_t spi=PTHREAD_MUTEX_INITIALIZER;
+static pthread_mutex_t mutex=PTHREAD_MUTEX_INITIALIZER;
+static queue_t queue;
 
 
-pthread_t interrupt_thread;
-pthread_t transmit_thread;
-bool interrupt=false;
+static pthread_t interrupt_thread;
+static pthread_t transmit_thread;
+static bool interrupt=false;
 
 
 //INTERRUPT
@@ -63,7 +63,7 @@ void __attribute__((used)) EXTI1HandlerImpl(){
  * @note Il thread non termina mai. Si sveglia ogni 5 secondi e se c'è un pacchetto in coda lo trasmette
  */
 void *transmitConsumer(void *arg){
-	char payload[32];
+	char payload[MAX_LENGHT_PAYLOAD+1];
     for(;;){
         sleep(5);
 
@@ -73,7 +73,7 @@ void *transmitConsumer(void *arg){
         if(!queueIsEmpty(&queue)){
 
             
-            enqueue(&queue,payload);
+            queuePop(&queue,payload);
             pthread_mutex_unlock(&str);
             pthread_mutex_lock(&spi);
             transmit(payload);
@@ -307,7 +307,7 @@ void transmit(char* payload){
  */
 int sendData(char* payload){
     pthread_mutex_lock(&str);
-    int res=addData(payload, &queue);
+    int res=queuePush(payload, &queue);
     pthread_mutex_unlock(&str);
     return res;
 }
