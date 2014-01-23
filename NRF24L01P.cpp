@@ -216,12 +216,20 @@ void NRF24L01P::powerUp()
    
    usleep(_NRF24L01P_TIMING_Tpd2stby_us);
    
-   configureTxAddress(3); //3 byte of transmit address
-   writeRegister(_NRF24L01P_REG_TX_ADDR , 10); //customize the two register with same data
-   writeRegister(_NRF24L01P_REG_RX_ADDR_P0 ,10);
+   //writeRegister(_NRF24L01P_REG_TX_ADDR , 10); //customize the two register with same data
+   //writeRegister(_NRF24L01P_REG_RX_ADDR_P0 ,20);
    
    
    nrf24l01p_mode = _NRF24L01P_MODE_STANDBY; // now we are in standby mode 
+   
+   
+   //DEBUG TRANSMISSION
+   
+   //this->writeRegister(_NRF24L01P_REG_RX_PW_P0, 1);
+   //this->writeRegister(_NRF24L01P_REG_RX_PW_P1, 1);
+   //this->writeRegister( _NRF24L01P_REG_SETUP_AW,1);
+   
+   //DEBUG TRANSMISSION
    bluLed::high();
 }
 
@@ -321,6 +329,9 @@ void NRF24L01P::setAirDataRate(int air_rate)
     else
         printf("Wrong air_rate value\n");
 }
+
+
+
 /**
  In order to call this function you have to call power_up, PWR_UP MUST be 1! 
  */
@@ -343,9 +354,11 @@ void NRF24L01P::setReceiveMode()
    
    usleep(_NRF24L01P_TIMING_Tstby2a_us);
    
+   usleep(40); // sleeping to activate RPD
+   
+   
    nrf24l01p_mode = _NRF24L01P_MODE_RX_MODE;
    
-   redLed::high();
 }
 
 /**
@@ -651,7 +664,7 @@ void __attribute__((used)) EXTI1HandlerImpl()
     
     //DEBUG
     redLed::high();
-   
+    
 }
 
 

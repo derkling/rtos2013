@@ -9,7 +9,7 @@ using namespace miosix;
 int main()
 {
     NRF24L01P* module = new NRF24L01P();
-    int result; char data;
+    int result; char data='f';
     char* pointer;
     
     
@@ -17,14 +17,23 @@ int main()
     module->configureInterrupt();
     
     module->writeRegister(1,0); //disabilito su tutti i canali l'auto ack ( TEMPORANEO )
+    //module->setAirDataRate(38);
+    //module->setRfChannel(2);
+    
+    
+    /*DEBUGGING THE TRASMISSION*/
+    
     
     module->showInternal();
     
-    printf("Dammi un carattere da trasmettere\n");
-    scanf("%c", &data);
+    //printf("Dammi un carattere da trasmettere\n");
+    //scanf("%c", &data);
     pointer = &data;
     
-    module->TrasmitData(pointer , sizeof(data));
+    while(1){
+    module->TrasmitData(pointer , 1);
+    usleep(10000);
+    }
     
     
    /*
