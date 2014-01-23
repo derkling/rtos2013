@@ -1,6 +1,6 @@
 #ifndef QUEUE_H
 #define	QUEUE_H
-#define QUEUE_LENGHT 7
+#define QUEUE_LENGHT 1024
 
 //TYPEDEF
 
