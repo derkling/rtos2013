@@ -2,8 +2,6 @@
 #include <string.h>
 #define SEPARATORE '\0'
 
-//FUNZIONI
-
 void queueInizializer(queue_t* queue){
     //inizializzo l'head
     queue->head = queue->buffer;
@@ -17,11 +15,13 @@ void queueInizializer(queue_t* queue){
 int addData (char* data, queue_t* queue){
     
     int size = strlen(data);
+    
+    //controllo della dimensione del nuovo dato da inserire
     if ((queue->freeSpace == 0) || (size + 1 > queue->freeSpace)){
-        //coda piena
         return -1;
     }
     
+    //aggiunta del dato nella coda
     for (int i = 0; i < size; i++){
         *(queue->next) = data[i];
         queue->freeSpace--;
@@ -39,22 +39,24 @@ int addData (char* data, queue_t* queue){
     return 0;
 }
 
-char* enqueue(queue_t* queue, char* str){
+void enqueue(queue_t* queue, char* dest){
     int dataSize = 1;
     char* pnt = queue->head;
+    //calcolo dimensione del dato da spilare
     while(*(pnt) != SEPARATORE){
         dataSize++;
-        if (pnt +1 == &(queue->buffer[QUEUE_LENGHT])){
+        if (pnt + 1 == &(queue->buffer[QUEUE_LENGHT])){
             pnt = queue->buffer;
         } else {
             pnt++;
         }
     }
-//    char data[dataSize];
-  for (int i = 0; *(queue->head) != SEPARATORE; i++){
-        str[i] = *(queue->head);
+    
+   //copio il dato nella stringa di destinazione 
+   for (int i = 0; *(queue->head) != SEPARATORE; i++){
+        dest[i] = *(queue->head);
         queue->freeSpace++;
-        if (queue->head +1 == &(queue->buffer[QUEUE_LENGHT])){
+        if (queue->head + 1 == &(queue->buffer[QUEUE_LENGHT])){
             queue->head = queue->buffer;
         } else {
             queue->head++;
@@ -62,9 +64,7 @@ char* enqueue(queue_t* queue, char* str){
     }
     queue->head++;
     queue->freeSpace++;
-    str[dataSize - 1] = '\0';
-    
-    return str;
+    dest[dataSize - 1] = '\0';
 }
 
 bool queueIsEmpty(queue_t* queue){
