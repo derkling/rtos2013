@@ -1,39 +1,35 @@
 #include "miosix.h"
+#include "spi.h"
+#include "social_wireless.h"
 #include <cstdio>
 #include <unistd.h>
-#include "queue.h"
 
 using namespace std;
 using namespace miosix;
 
-//typedef Gpio<GPIOD_BASE,14> red_led;
-//typedef Gpio<GPIOD_BASE,12> green_led;
+typedef Gpio<GPIOD_BASE,15> blueLed;
 
 int main(){
     
-//	red_led::mode(Mode::OUTPUT);
-//        green_led::mode(Mode::OUTPUT);
+	blueLed::mode(Mode::OUTPUT);
+       
+        init();
 
-        char payload[]="qwerty";
-        queue_t queue;
-        queueInizializer(&queue);
-        int result;
-        char str[33];
-        int push = 0;
-        int pop = 0;
-        for (int k = 0; k < 300; k++){
-            for (int i = 0; i < 2; i++){
-                result = queuePush(payload, &queue);
-                if (result == 0)
-                    push++;
-            }
-            
-            if (!queueIsEmpty(&queue)){
-                queuePop(&queue, str);
-                pop++;
-            }
-        }
-        printf(" ");
+        char payload[]="orangeon";
+        sendData(payload);
+
+        char payload3[]="orangeoff";
+        sendData(payload3);
+	
+	blueLed::high();
+//        beep();
+
+	while(1){
+        	sendData(payload);
+		usleep(100000);
+        	sendData(payload3);
+		usleep(100000);
+	}
 }
 
 
