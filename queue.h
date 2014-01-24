@@ -1,7 +1,7 @@
 #ifndef QUEUE_H
 #define	QUEUE_H
 
-#define QUEUE_LENGHT 1024		/*!<Dimensione della coda in byte */
+#define QUEUE_LENGHT 50		/*!<Dimensione della coda in byte */
 #define SEPARATORE '\0'                 /*!<Definische il separatora nella coda */
 #define MAX_LENGHT_PAYLOAD 32           /*!<Definisce la lunghezza massima in byte del payload */
 
