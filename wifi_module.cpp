@@ -27,7 +27,11 @@ typedef Gpio<GPIOD_BASE,14> redLed;
 
 
 
-
+/**
+ * La funzione permette di caricare nel buffer di trasmissione un payload di dimensione
+ * 32 in modo che possa essere inviato.
+ * @param payload - il payload che deve essere inserito nel buffer
+ */
 void invia(char* payload){
     pthread_mutex_lock(&buff);
     int i=0;
