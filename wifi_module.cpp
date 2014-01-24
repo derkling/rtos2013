@@ -5,17 +5,19 @@
 #include "arch/cortexM4_stm32f4/common/CMSIS/stm32f4xx.h"
 #include <miosix/kernel/scheduler/scheduler.h>
 
+#define BUFFER_TRANSMIT_SIZE            96
+#define BUFFER_CELL_SIZE                32
+#define BUFFER_NUMBER_CELLS             3
+
+
 using namespace std;
 using namespace miosix;
 
-bool trasmission;
-int num_step=0;
+
 static Thread *waiting=0;
-char bufferTransmit[96];
+char bufferTransmit[BUFFER_TRANSMIT_SIZE];
 int counter = 0;
 
-
-pthread_cond_t cond=PTHREAD_COND_INITIALIZER;
 pthread_mutex_t buff=PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t spi=PTHREAD_MUTEX_INITIALIZER;
 
@@ -23,19 +25,21 @@ typedef Gpio<GPIOD_BASE,12> greenLed;
 typedef Gpio<GPIOA_BASE,1> IRQ;
 typedef Gpio<GPIOD_BASE,14> redLed;
 
+
+
+
 void invia(char* payload){
     pthread_mutex_lock(&buff);
-    //trasmission=true;
     int i=0;
      
-    for(;i<32;i++){
+    for(;i<BUFFER_CELL_SIZE;i++){
         bufferTransmit[i+counter] = payload[i];
     }
     
     printf("payload %s\n",payload);
     printf("bufferTrasmit %s\n",bufferTransmit+counter);
     
-    counter = counter + 32;
+    counter = counter + BUFFER_CELL_SIZE;
     pthread_mutex_unlock(&buff);
 }
 
@@ -47,7 +51,6 @@ void __attribute__((naked)) EXTI1_IRQHandler(){
 }
 
 void __attribute__((used))EXTI1HandlerImpl(){
-    //NVIC_DisableIRQ(EXTI1_IRQn);
     EXTI->PR=EXTI_PR_PR1;
     redLed::high();
     printf("Sono nell'interrupt");
@@ -80,9 +83,10 @@ void configureModuleInterrupt()
     NVIC_SetPriority(EXTI1_IRQn,15); //Low priority
     
 }
+
 void *wifi_start(void *arg)
 {
-    char a[32];
+    char a[BUFFER_CELL_SIZE];
     nRF24L01P *wifi;
     wifi = new nRF24L01P();
     greenLed::mode(Mode::OUTPUT);
@@ -94,34 +98,19 @@ void *wifi_start(void *arg)
     greenLed::low();
     for(;;){
         greenLed::high();
-         printf("Dammi un stringa da trasmettere\n");
+        printf("Dammi un stringa da trasmettere\n");
         scanf("%s", a);
-        wifi->transmit(32,a);
+        pthread_mutex_lock(&spi);
+        wifi->transmit(BUFFER_CELL_SIZE,a);
+        pthread_mutex_unlock(&spi);
         printf("Ho trasmesso\n");
         greenLed::low();
         usleep(7000000);
-        /*wifi->receive(0,data,1);
-        printf("Received data: %d",*data);
-        greenLed::high();
-        usleep(1000000);
-        greenLed::low();
-        num_step = wifi->receive();
-        if (trasmission){
-            wifi->transmit(num_step);
-        }
-        else{
-            wifi->receive();
-        }
-    */
-    }
-    
-   
-    printf("Hello world, write your application here\n");
-    
+    } 
 }
 
 void *wifi_receive(void *arg){
-    char data[32];
+    char data[BUFFER_CELL_SIZE];
     nRF24L01P *wifi;
     greenLed::mode(Mode::OUTPUT);
     redLed::mode(Mode::OUTPUT);
@@ -132,48 +121,46 @@ void *wifi_receive(void *arg){
     for(;;){
        printf("sto aspettando il carattere\n");
        waitForModule();
+       pthread_mutex_lock(&spi);
        wifi->get_register_status();
         if(wifi->packet_in_pipe(0)){
                  wifi->reset_interrupt();
                  printf("Status register %d\n",wifi->get_register_status());
                  printf("ho ricevuto qualcosa\n");
-                 printf("ricevuto da pipe 0 %d\n",wifi->receive(0,data,32));
+                 printf("ricevuto da pipe 0 %d\n",wifi->receive(0,data,BUFFER_CELL_SIZE));
                  printf("ho ricevuto %s\n",data);
                  redLed::low();
         }
+       pthread_mutex_unlock(&spi);
               
     }
     
 }  
-    void *wifi_transmit(void *arg){
-        nRF24L01P *wifi;
-        wifi = new nRF24L01P();
-        wifi->power_up();
-        wifi->set_transmit_mode();
-        char payload[32];
-        for(;;){
-              usleep(5000000);
-              printf("Mi sono svegliato\n");
-              pthread_mutex_lock(&buff);
-              if(counter == 0){
-                   pthread_cond_wait(&cond,&buff); 
-              }
-              for(int j=0;j<counter/32;j++){
-                for(int i = 0;i< 32;i++){
-                  payload[i]=bufferTransmit[i+counter*j];
+   
+void *wifi_transmit(void *arg){
+    nRF24L01P *wifi;
+    wifi = new nRF24L01P();
+    wifi->power_up();
+    wifi->set_transmit_mode();
+    char payload[BUFFER_CELL_SIZE];
+    for(;;){
+        usleep(5000000);
+        printf("Mi sono svegliato\n");
+        pthread_mutex_lock(&buff);
+        if(counter != 0){
+            for(int j=0;j<BUFFER_NUMBER_CELLS;j++){
+                for(int i = 0;i< BUFFER_CELL_SIZE;i++){
+                    payload[i]=bufferTransmit[i+BUFFER_CELL_SIZE*j];
                 }
                 printf("payload %s\n",payload);
-                printf("bufferTrasmit %s\n",bufferTransmit+counter*j);
+                printf("bufferTrasmit %s\n",bufferTransmit+BUFFER_CELL_SIZE*j);
                 pthread_mutex_lock(&spi);
-                  wifi->transmit(32,payload);
-                  pthread_mutex_unlock(&spi);
-              }
-              counter = 0;
-              
-              pthread_mutex_unlock(&buff);
-              
-            
+                wifi->transmit(BUFFER_CELL_SIZE,payload);
+                pthread_mutex_unlock(&spi);
+            }
+            counter = 0;
         }
-        
-    }
+        pthread_mutex_unlock(&buff);
+    }      
+}
 
