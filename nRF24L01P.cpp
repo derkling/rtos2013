@@ -71,6 +71,7 @@
 #define NRF24L01P_STATUS_DR_RX                  (1<<6)         //set if data register full write 1 to clear
 #define NRF24L01P_STATUS_RX_P_NO                (0x7<<1)
 #define NRF24L01P_ENAA_P0                       (1<<0)
+#define NRF24L01P_RX_FIFO_EMPTY                 (7<<1)
 //CRC
 #define NRF24L01P_CONFIG_CRC0                   (1<<2)
 #define NRF24L01P_CONFIG_EN_CRC                 (1<<3)
@@ -291,7 +292,7 @@ int nRF24L01P::receive(int pipe,char *data,int count){
         count= NRF24L01P_RX_BUFFER_SIZE;
     }
     printf("prima di packet in pipe\n");
-    if(packet_in_pipe(pipe)){
+    //if(packet_in_pipe(pipe)){
         //NB----I skip the phase of check the lenght of the packet
         CS::low();
         spi->spi_write(NRF24L01P_R_RX_PAY);
@@ -306,13 +307,13 @@ int nRF24L01P::receive(int pipe,char *data,int count){
         }
         CS::low();
         //clear RX_DR status bit
-        set_register(NRF24L01P_REG_STATUS,NRF24L01P_STATUS_DR_RX);
+        //set_register(NRF24L01P_REG_STATUS,NRF24L01P_STATUS_DR_RX);
         return count;
-    }
-    else{
-        printf("Pipe chosen is empty\n");
-        return 0;
-    }
+   // }
+    //else{
+     //   printf("Pipe chosen is empty\n");
+        //return 0;
+    //}
     return 0;
 }
 
@@ -397,13 +398,17 @@ void nRF24L01P::test_receive(){
         showInternal();
 
    while(true){
+     reset_interrupt();
     printf("Status register %d\n",get_register_status());
     printf("Config register %d\n",get_register(NRF24L01P_REG_CONF));
     printf("ricevuto da pipe 0 %d\n",receive(NRF24L01P_PIPE_NO_0,data,1));
+    while((get_register_status() & NRF24L01P_STATUS_RX_P_NO) == 14){
+         printf("ricevuto da pipe 0 %d\n",receive(NRF24L01P_PIPE_NO_0,data,1));
+    }
    printf("ho ricevuto %c\n",*data);    
     //printf("ho ricevuto %c\n",data);
     showInternal();
-    usleep(10000000);
+    usleep(1000000);
         
 
     }
@@ -970,4 +975,10 @@ void nRF24L01P::showInternal()
     result = this->readRegister(29);
     printf("FEATURE REGISTER è: %d\n" , result);
 
+}
+
+void nRF24L01P::reset_interrupt(){
+    set_register(NRF24L01P_REG_STATUS, NRF24L01P_STATUS_TX_DS | NRF24L01P_STATUS_MAX_RT |
+                                NRF24L01P_STATUS_RX_DR);
+    
 }

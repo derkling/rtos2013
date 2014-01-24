@@ -11,14 +11,28 @@ using namespace miosix;
 bool trasmission;
 int num_step=0;
 static Thread *waiting=0;
-char *data; //data received from air
+char bufferTransmit[96];
+int counter = 0;
+char *data;
+
+pthread_cond_t cond=PTHREAD_COND_INITIALIZER;
+pthread_mutex_t buff=PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t spi=PTHREAD_MUTEX_INITIALIZER;
 
 typedef Gpio<GPIOD_BASE,12> greenLed;
 typedef Gpio<GPIOA_BASE,1> IRQ;
 typedef Gpio<GPIOD_BASE,14> redLed;
 
-void invia(int num_passi){
-    trasmission=true;
+void invia(char* payload){
+    pthread_mutex_lock(&buff);
+    //trasmission=true;
+    int i=0;
+    for(;i<31;i++){
+        bufferTransmit[i+counter] = payload[i];
+    }
+    bufferTransmit[i]='\0';
+    counter = counter + 32;
+    pthread_mutex_unlock(&buff);
 }
 
 
@@ -29,6 +43,7 @@ void __attribute__((naked)) EXTI1_IRQHandler(){
 }
 
 void __attribute__((used))EXTI1HandlerImpl(){
+    NVIC_DisableIRQ(EXTI1_IRQn);
     EXTI->PR=EXTI_PR_PR1;
     redLed::high();
     printf("Sono nell'interrupt");
@@ -63,7 +78,7 @@ void configureModuleInterrupt()
 }
 void *wifi_start(void *arg)
 {
-    char a = 'a';
+    char a;
     nRF24L01P *wifi;
     wifi = new nRF24L01P();
     greenLed::mode(Mode::OUTPUT);
@@ -75,8 +90,8 @@ void *wifi_start(void *arg)
     greenLed::low();
     for(;;){
         greenLed::high();
-         /*printf("Dammi un stringa da trasmettere\n");
-        scanf("%s", data);*/
+         printf("Dammi un stringa da trasmettere\n");
+        scanf("%c", &a);
         wifi->transmit(1,&a);
         printf("Ho trasmesso\n");
         greenLed::low();
@@ -102,9 +117,11 @@ void *wifi_start(void *arg)
 }
 
 void *wifi_receive(void *arg){
-    char *data;
+
     nRF24L01P *wifi;
     wifi = new nRF24L01P();
+       wifi->test_receive();
+
         wifi->power_up();
 
         wifi->set_receive_mode();
@@ -112,7 +129,6 @@ void *wifi_receive(void *arg){
     greenLed::mode(Mode::OUTPUT);
     redLed::mode(Mode::OUTPUT);
     configureModuleInterrupt();
-    wifi->test_receive();
     greenLed::high();
     greenLed::low();
     for(;;){
@@ -120,13 +136,17 @@ void *wifi_receive(void *arg){
   
         printf("sto aspettando che l'interrupt forse funziona\n");
         waitForModule();
-            printf("Status register %d\n",wifi->get_register_status());
-        printf("ho ricevuto qualcosa\n");
-        printf("ricevuto da pipe 0 %d\n",wifi->receive(0,data,1));
+       // int status = wifi->get_register_status();
+        if(wifi->packet_in_pipe(0)){
+                 wifi->reset_interrupt();
+                 printf("Status register %d\n",wifi->get_register_status());
+                 printf("ho ricevuto qualcosa\n");
+                 printf("ricevuto da pipe 0 %d\n",wifi->receive(0,data,1));
+                 NVIC_EnableIRQ(EXTI1_IRQn);
+        }
         //printf("ho ricevuto %c\n",*data);  
         greenLed::high();
         greenLed::low();
-        usleep(2000000);
         /*wifi->receive(0,data,1);
         printf("Received data: %d",*data);
         greenLed::high();
@@ -142,7 +162,31 @@ void *wifi_receive(void *arg){
     */
     }
     
-   
-    printf("Hello world, write your application here\n");
-    
-}
+}  
+    void *wifi_transmit(void *arg){
+        nRF24L01P *wifi;
+        wifi = new nRF24L01P();
+        wifi->power_up();
+        wifi->set_transmit_mode();
+        char payload[32];
+        for(;;){
+              usleep(5000000);
+              pthread_mutex_lock(&buff);
+              if(counter == 0){
+                   pthread_cond_wait(&cond,&buff); 
+              }
+              for(int i = 0;i< 31;i++){
+                  payload[i]=bufferTransmit[i];
+                  
+              }
+              counter = counter -32;
+              pthread_mutex_lock(&spi);
+              wifi->transmit(32,payload);
+              pthread_mutex_unlock(&spi);
+              pthread_mutex_unlock(&buff);
+              
+            
+        }
+        
+    }
+

@@ -11,6 +11,7 @@
 void invia(int num_passi);
 void *wifi_start(void *arg);
 void *wifi_receive(void *arg);
+void *wifi_transmit(void *arg);
 
 #endif	/* WIFI_MODULE_H */
 

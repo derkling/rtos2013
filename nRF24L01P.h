@@ -34,6 +34,9 @@ public:
     void showInternal();
     int readRegister(int regAddress);
         int get_register_status();
+        void reset_interrupt();
+        bool packet_in_pipe(int pipe);
+
 
 
 private:
@@ -42,7 +45,7 @@ private:
     void set_register(int addr_registro,int data_registro);
     int get_register(int registro);
     void CE_restore(int old_ce);
-    bool packet_in_pipe(int pipe);
+    
     spi_driver *spi;
     void setup_Gpio();
     void set_frequency(int frequency);
