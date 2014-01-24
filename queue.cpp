@@ -33,7 +33,12 @@ int queuePush (char* data, queue_t* queue){
     
     *(queue->next) = SEPARATORE;
     queue->freeSpace--;
-    queue->next++;
+    
+    if (queue->next + 1 == &(queue->buffer[QUEUE_LENGHT])){
+        queue->next = queue->buffer;
+    } else {
+        queue->next++;
+    }    
     
     return 0;
 }
@@ -61,7 +66,13 @@ void queuePop(queue_t* queue, char* dest){
             queue->head++;
         }
     }
-    queue->head++;
+    
+    if (queue->head + 1 == &(queue->buffer[QUEUE_LENGHT])){
+        queue->head = queue->buffer;
+    } else {
+        queue->head++;
+    }
+    
     queue->freeSpace++;
     dest[dataSize - 1] = '\0';
 }
