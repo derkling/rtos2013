@@ -6,29 +6,32 @@
 using namespace std;
 using namespace miosix;
 
-typedef Gpio<GPIOD_BASE,14> red_led;
-typedef Gpio<GPIOD_BASE,12> green_led;
+//typedef Gpio<GPIOD_BASE,14> red_led;
+//typedef Gpio<GPIOD_BASE,12> green_led;
 
 int main(){
     
-	red_led::mode(Mode::OUTPUT);
-        green_led::mode(Mode::OUTPUT);
+//	red_led::mode(Mode::OUTPUT);
+//        green_led::mode(Mode::OUTPUT);
 
         char payload[]="qwerty";
         queue_t queue;
         queueInizializer(&queue);
-        int result = 0;
-        int push = -1; //l'ultimo push non si deve contare perchè result=-1
-	while(result == 0){
-            result = queuePush(payload, &queue);
-            push++;
-	}
-        printf("\n");
-        char str[32];
+        int result;
+        char str[33];
+        int push = 0;
         int pop = 0;
-        while(!queueIsEmpty(&queue)){
-            queuePop(&queue, str);
-            pop++;
+        for (int k = 0; k < 300; k++){
+            for (int i = 0; i < 2; i++){
+                result = queuePush(payload, &queue);
+                if (result == 0)
+                    push++;
+            }
+            
+            if (!queueIsEmpty(&queue)){
+                queuePop(&queue, str);
+                pop++;
+            }
         }
         printf(" ");
 }
