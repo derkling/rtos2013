@@ -35,7 +35,8 @@ static bool interrupt=false;
 
 
 //INTERRUPT
-
+/*!@fn void __attribute__((naked)) EXTI1_IRQHandler()
+ */
 void __attribute__((naked)) EXTI1_IRQHandler(){
 
 	saveContext();
@@ -44,9 +45,11 @@ void __attribute__((naked)) EXTI1_IRQHandler(){
 
 }
 
-/*!@brief routine di interrupt scatenato dal modulo wireless
+/*!@fn void __attribute__((used)) EXTI1HandlerImpl()
+ * @brief routine di interrupt scatenato dal modulo wireless
  * verrà chiamato quando arriva un pacchetto o finisce la trasmissione
  * called from hardware, producer, modifica la condition variable interrupt
+ * 
  */
 void __attribute__((used)) EXTI1HandlerImpl(){
     
@@ -54,18 +57,22 @@ void __attribute__((used)) EXTI1HandlerImpl(){
     EXTI->PR = EXTI_PR_PR1;//era usato uguale (=) boh    
 	pthread_mutex_lock(&mutex);
 	interrupt=true;
-    pthread_cond_broadcast(&cond);
 	pthread_mutex_unlock(&mutex);
+	pthread_cond_broadcast(&cond);
     greenLed::high();
 }
 
-/*!@brief Funzione che rappresenta il thread di trasmissione
+/*!
+ * @brief Funzione che rappresenta il thread di trasmissione
  * @note Il thread non termina mai. Si sveglia ogni 5 secondi e se c'è un pacchetto in coda lo trasmette
  */
 void *transmitConsumer(void *arg){
 	char payload[MAX_LENGHT_PAYLOAD+1];
+	
     for(;;){
-        usleep(100000);
+
+        usleep(50000);
+
 
         pthread_mutex_lock(&str);
 
@@ -89,8 +96,6 @@ void *transmitConsumer(void *arg){
 }
 
 void *interruptConsumer(void *arg){
-    
-    
     
     for(;;){
         
@@ -130,8 +135,8 @@ void *interruptConsumer(void *arg){
             
 //          printf("%s",rxPayload);
 //          if(payload_sender==podometro)podometro.messageforyou
-            if(strncmp((char*)rxPayload,"orangeon",payloadWidth)==0)orangeLed::high();
-            if(strncmp((char*)rxPayload,"orangeoff",payloadWidth)==0)orangeLed::low();
+            if(strncmp((char*)rxPayload,"orangeon",payloadWidth)==0)buzzer::high();
+            if(strncmp((char*)rxPayload,"orangeoff",payloadWidth)==0)buzzer::low();
             if(strncmp((char*)rxPayload,"beep",payloadWidth)==0)beep();
   
         }
@@ -301,7 +306,7 @@ void transmit(char* payload){
 
 /*!@brief Trasmissione via radio della stringa passata come parametro
  * @param payload: stringa da trasmettere
- * @retval Ritorna -1 se c'è stato un errore, 0 altrimenti
+ * @retval int -1 se c'è stato un errore, 0 altrimenti
  * @note La trasmissione non è istantanea. Il payload è inserito in una coda e trasmesso appena possibile.
  * @note La funzione si blocca fino a quando non ottiene il permesso di scrittura in coda
  */
