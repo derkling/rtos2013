@@ -35,7 +35,11 @@ typedef Gpio<GPIOD_BASE,14> redLed;
 void invia(char* payload){
     pthread_mutex_lock(&buff);
     int i=0;
-     
+    if(counter == BUFFER_TRANSMIT_SIZE){
+        printf("Buffer transmit pieno\n");
+        pthread_mutex_unlock(&buff);
+        return;
+    }
     for(;i<BUFFER_CELL_SIZE;i++){
         bufferTransmit[i+counter] = payload[i];
     }
@@ -113,6 +117,11 @@ void *wifi_start(void *arg)
     } 
 }
 
+/**
+ * Il metodo costituisce la funzione che verrà svolta dal thread per la ricezione
+ * @param arg
+ * @return void
+ */
 void *wifi_receive(void *arg){
     char data[BUFFER_CELL_SIZE];
     nRF24L01P *wifi;
@@ -126,6 +135,7 @@ void *wifi_receive(void *arg){
        printf("sto aspettando il carattere\n");
        waitForModule();
        pthread_mutex_lock(&spi);
+       wifi->set_receive_mode();
        wifi->get_register_status();
         if(wifi->packet_in_pipe(0)){
                  wifi->reset_interrupt();
@@ -140,7 +150,12 @@ void *wifi_receive(void *arg){
     }
     
 }  
-   
+/**
+ * Il metodo implementa la funzione che viene svolta dal thread di trasmissione. Ogni 5 secondi verifica
+ * se nel buffer è presente qualcosa da trasmettere: se è così lo svuota completamente.
+ * @param arg
+ * @return 
+ */
 void *wifi_transmit(void *arg){
     nRF24L01P *wifi;
     wifi = new nRF24L01P();
@@ -152,7 +167,7 @@ void *wifi_transmit(void *arg){
         printf("Mi sono svegliato\n");
         pthread_mutex_lock(&buff);
         if(counter != 0){
-            for(int j=0;j<BUFFER_NUMBER_CELLS;j++){
+            for(int j=0;j<counter/BUFFER_CELL_SIZE;j++){
                 for(int i = 0;i< BUFFER_CELL_SIZE;i++){
                     payload[i]=bufferTransmit[i+BUFFER_CELL_SIZE*j];
                 }

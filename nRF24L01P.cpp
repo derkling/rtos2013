@@ -238,7 +238,7 @@ int nRF24L01P::transmit(int count, char* data){
     CS::low();
     spi->spi_write(NRF24L01P_CMD_WR_TX_PAYLOAD); //command to start write from payload TX
     for( int i=0; i<count; i++){
-        printf("char %c\n",*data);
+        //printf("char %c\n",*data);
         spi->spi_write(*data++);
     }
     //spi->spi_write(12);
