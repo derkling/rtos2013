@@ -24,16 +24,13 @@ typedef Gpio<GPIOD_BASE,14> redLed;
 static uint8_t rxPayload[MAX_LENGHT_PAYLOAD+1]={0};
 static Thread *waiting=0;
 
-static pthread_cond_t cond=PTHREAD_COND_INITIALIZER;
 static pthread_mutex_t str=PTHREAD_MUTEX_INITIALIZER;
 static pthread_mutex_t spi=PTHREAD_MUTEX_INITIALIZER;
-static pthread_mutex_t mutex=PTHREAD_MUTEX_INITIALIZER;
 static queue_t queue;
 
 
 static pthread_t interrupt_thread;
 static pthread_t transmit_thread;
-static bool interrupt=false;
 
 
 //INTERRUPT
@@ -62,10 +59,6 @@ void __attribute__((used)) EXTI1HandlerImpl(){
     if(waiting->IRQgetPriority()>Thread::IRQgetCurrentThread()->IRQgetPriority()) Scheduler::IRQfindNextThread();
     waiting=0;
      
-//	pthread_mutex_lock(&mutex);
-//	interrupt=true;
-//	pthread_mutex_unlock(&mutex);
-//	pthread_cond_broadcast(&cond);
     greenLed::high();
 }
 
@@ -78,7 +71,7 @@ void *transmitConsumer(void *arg){
 	
     for(;;){
 
-        sleep(1);
+        usleep(50000);
 
 
         pthread_mutex_lock(&str);
@@ -109,20 +102,16 @@ void *interruptConsumer(void *arg){
     
     for(;;){
 		
-		
-		FastInterruptDisableLock dLock;
-		waiting=Thread::IRQgetCurrentThread();
-		while(waiting)
-		{
-			Thread::IRQwait();
-			FastInterruptEnableLock eLock(dLock);
-			Thread::yield();
-		}
+	//attendo che arrivi l'interrupt		
+	FastInterruptDisableLock dLock;
+	waiting=Thread::IRQgetCurrentThread();
+	while(waiting)
+	{
+		Thread::IRQwait();
+		FastInterruptEnableLock eLock(dLock);
+		Thread::yield();
+	}
         
-//        pthread_mutex_lock(&mutex);
-//        while(!interrupt)pthread_cond_wait(&cond,&mutex); //questo thread è in wait fino a che la var interrupt non diventa true
-//        interrupt=false;
-//        pthread_mutex_unlock(&mutex);
         pthread_mutex_lock(&spi);
         //mutex spi locked
         
@@ -136,13 +125,10 @@ void *interruptConsumer(void *arg){
 
         if(sr==32){
             //tx interrupt
-//            beep();
-            
         }
         else if(sr==64 || sr==96 ){
             //rx interrupt
             redLed::high();
-//            beep();
             
             uint8_t payloadWidth;
             
@@ -151,13 +137,9 @@ void *interruptConsumer(void *arg){
             
             
             spiSendCommandReadData(R_RX_PAYLOAD,COMMAND_WITHOUT_ADDRESS,&sr,rxPayload,(int)payloadWidth);
-            rxPayload[payloadWidth]='\0';
+            rxPayload[payloadWidth]='\n';
             
           printf("%s",rxPayload);
-//          if(payload_sender==podometro)podometro.messageforyou
-            if(strncmp((char*)rxPayload,"orangeon",payloadWidth)==0)orangeLed::high();
-            if(strncmp((char*)rxPayload,"orangeoff",payloadWidth)==0)orangeLed::low();
-            if(strncmp((char*)rxPayload,"beep",payloadWidth)==0)beep();
   
         }
 
@@ -169,8 +151,6 @@ void *interruptConsumer(void *arg){
         //101 80 rx-max
         //110 96 rx tx
         //111 112 rx tx max    
-        
-        NVIC_EnableIRQ(EXTI1_IRQn);
         
         pthread_mutex_unlock(&spi);
         
@@ -336,11 +316,3 @@ int sendData(char* payload){
     pthread_mutex_unlock(&str);
     return res;
 }
-
-void beep(){
-    buzzer::high();
-    sleep(1);
-    buzzer::low();
-    sleep(1);
-}
-

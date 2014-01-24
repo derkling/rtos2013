@@ -10,7 +10,9 @@ using namespace miosix;
 typedef Gpio<GPIOD_BASE,15> blueLed;
 
 int main(){
-    
+   
+	char payload[33];
+
 	blueLed::mode(Mode::OUTPUT);
        
         init();
@@ -19,18 +21,14 @@ int main(){
 
         char orangeoff[]="orangeoff";
         
-        char beep[]="beep";
-        
-	
 	blueLed::high();
-//        beep();
 
 	while(1){
-		
-		sendData(orangeon);
-		sendData(orangeoff);
-//		sendData(beep);
-		sleep(2);
+		scanf("%s",payload);
+		sendData(payload);		
+//		sendData(orangeon);
+//		sendData(orangeoff);
+//		usleep(50000);
 	}
 }
 
