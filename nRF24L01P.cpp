@@ -137,33 +137,27 @@ typedef Gpio<GPIOA_BASE,1> IRQ;
 
 nRF24L01P::nRF24L01P() {
     spi = new spi_driver();
+    power_down();
     setup_Gpio();
-    //power_down();
     set_register(NRF24L01P_REG_STATUS, NRF24L01P_STATUS_TX_DS | NRF24L01P_STATUS_MAX_RT |
                                 NRF24L01P_STATUS_RX_DR);/*clear every pending interrupt bits*/
     set_register(NRF24L01P_REG_EN_RXADDR, NRF24L01P_EN_RXADDR_NONE);
-    set_register(NRF24L01P_REG_RX_PW_P0,1);
+    set_register(NRF24L01P_REG_RX_PW_P0,4);
     set_tx_address(5);
-    //set_frequency(NRF24L01P_MIN_RF_FREQUENCY+2);
-   //set_power_output(NRF24L01P_TX_PWR_ZERO_DB);
-    //set_air_data_rate(NRF24L01P_DATARATE_1MBPS);
     set_crc_width(NRF24L01P_CRC_8_BIT);
     setTxAddress(NRF24L01P_ADDRESS_DEFAULT, NRF24L01P_ADDRESS_DEFAULT_WIDTH);
     setRxAddress(NRF24L01P_ADDRESS_DEFAULT, NRF24L01P_ADDRESS_DEFAULT_WIDTH,NRF24L01P_PIPE_NO_0);
     disable_auto_ack();
     disable_auto_retransmit();
-    setTransferSize(1,NRF24L01P_PIPE_NO_0);
-    //set_register(NRF24L01P_REG_AA,NRF24L01P_ENAA_P0);
-    
-    printf("Frequency %d\n",get_frequency());
+    setTransferSize(4,NRF24L01P_PIPE_NO_0);
+    printf("Status %d\n",get_register_status());
     printf("Output power %d\n",get_output_power());
     printf("Air data rate %d\n",get_air_data_rate());
     printf("Crc %d\n",get_crc_width());
     printf("SETUP_AW %d\n",get_register(NRF24L01P_REG_SETUP_AW));
     printf("tx register 0x%010llX\n",get_tx_address());
     printf("rx address 0x%010llX\n",get_rx_address(NRF24L01P_PIPE_NO_0));
-    showInternal();
-      
+        
 }
 
 nRF24L01P::nRF24L01P(const nRF24L01P& orig) {
@@ -182,15 +176,8 @@ void nRF24L01P::power_up() {
     current_config |= NRF24L01P_PWR_UP;
     set_register(NRF24L01P_REG_CONF,current_config);
     usleep(NRF24L01P_TPD2STBY);
-    //set_tx_address(5);
-    //set_register(NRF24L01P_REG_TX_ADDR , 0xE7E7E7E701);
-    //set_register(NRF24L01P_REG_RX_ADDR_P0 ,0xE7E7E7E7E7);
-    printf("SETUP_AW %d\n",get_register(NRF24L01P_REG_SETUP_AW));
-    printf("tx register 0x%010llX\n",get_tx_address());
-    printf("rx address 0x%010llX\n",get_rx_address(NRF24L01P_PIPE_NO_0));
     mode=NRF24L01P_STANDBY_MODE;
     flushTx();
-    showInternal();
 }
 
 void nRF24L01P::power_down() {
@@ -209,10 +196,10 @@ void nRF24L01P::set_receive_mode(){
     int cur_config = get_register(NRF24L01P_REG_CONF);
     cur_config |= NRF24L01P_PRIM_RX;
     set_register(NRF24L01P_REG_CONF,cur_config);
-    /*if (CE::value()==0){
+    if (CE::value()==0){
     CE_enable();
-    }*/
-    CE::high();
+     }
+   
     usleep(NRF24L01P_TPRCV);    
     
     mode = NRF24L01P_RX_MODE;
@@ -291,29 +278,18 @@ int nRF24L01P::receive(int pipe,char *data,int count){
     if (count>NRF24L01P_RX_BUFFER_SIZE){
         count= NRF24L01P_RX_BUFFER_SIZE;
     }
+    
     printf("prima di packet in pipe\n");
-    //if(packet_in_pipe(pipe)){
-        //NB----I skip the phase of check the lenght of the packet
         CS::low();
         spi->spi_write(NRF24L01P_R_RX_PAY);
         
         for(int i=0;i<count;i++){
-                    printf("pria boo,m\n");
-            *data = spi->spi_Receive();
-                                printf("dopo boo,m\n");
-
-            printf("in receive %c\n",*data);
-            data++;
+             *data = spi->spi_Receive();
+              data++;
         }
         CS::low();
-        //clear RX_DR status bit
-        //set_register(NRF24L01P_REG_STATUS,NRF24L01P_STATUS_DR_RX);
         return count;
-   // }
-    //else{
-     //   printf("Pipe chosen is empty\n");
-        //return 0;
-    //}
+  
     return 0;
 }
 

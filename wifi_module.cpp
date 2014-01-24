@@ -78,7 +78,7 @@ void configureModuleInterrupt()
 }
 void *wifi_start(void *arg)
 {
-    char a;
+    char a[4];
     nRF24L01P *wifi;
     wifi = new nRF24L01P();
     greenLed::mode(Mode::OUTPUT);
@@ -91,11 +91,11 @@ void *wifi_start(void *arg)
     for(;;){
         greenLed::high();
          printf("Dammi un stringa da trasmettere\n");
-        scanf("%c", &a);
-        wifi->transmit(1,&a);
+        scanf("%s", a);
+        wifi->transmit(4,a);
         printf("Ho trasmesso\n");
         greenLed::low();
-        usleep(2000000);
+        usleep(7000000);
         /*wifi->receive(0,data,1);
         printf("Received data: %d",*data);
         greenLed::high();
@@ -117,31 +117,27 @@ void *wifi_start(void *arg)
 }
 
 void *wifi_receive(void *arg){
-    char data;
+    char data[4];
     nRF24L01P *wifi;
     greenLed::mode(Mode::OUTPUT);
     redLed::mode(Mode::OUTPUT);
     wifi = new nRF24L01P();
-       //wifi->test_receive()
     wifi->power_up();
     wifi->set_receive_mode();
     configureModuleInterrupt();
     for(;;){
-        wifi->showInternal();
-  
-        printf("sto aspettando che l'interrupt forse funziona\n");
-        waitForModule();
+       printf("sto aspettando il carattere\n");
+       waitForModule();
+       wifi->get_register_status();
         if(wifi->packet_in_pipe(0)){
                  wifi->reset_interrupt();
                  printf("Status register %d\n",wifi->get_register_status());
                  printf("ho ricevuto qualcosa\n");
-                 printf("ricevuto da pipe 0 %d\n",wifi->receive(0,&data,1));
-                 printf("ho ricevuto %c\n",data);  
+                 printf("ricevuto da pipe 0 %d\n",wifi->receive(0,data,1));
+                 printf("ho ricevuto %s\n",data);
                  redLed::low();
         }
-        greenLed::high();
-        greenLed::low();
-        
+              
     }
     
 }  
