@@ -71,7 +71,7 @@ void *transmitConsumer(void *arg){
 	
     for(;;){
 
-        usleep(50000);
+        usleep(10000);
 
 
         pthread_mutex_lock(&str);
@@ -135,8 +135,8 @@ void *interruptConsumer(void *arg){
             
 //          printf("%s",rxPayload);
 //          if(payload_sender==podometro)podometro.messageforyou
-            if(strncmp((char*)rxPayload,"orangeon",payloadWidth)==0)buzzer::high();
-            if(strncmp((char*)rxPayload,"orangeoff",payloadWidth)==0)buzzer::low();
+            if(strncmp((char*)rxPayload,"orangeon",payloadWidth)==0)orangeLed::high();
+            if(strncmp((char*)rxPayload,"orangeoff",payloadWidth)==0)orangeLed::low();
             if(strncmp((char*)rxPayload,"beep",payloadWidth)==0)beep();
   
         }

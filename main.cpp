@@ -15,20 +15,21 @@ int main(){
        
         init();
 
-        char payload[]="orangeon";
-        sendData(payload);
+        char orangeon[]="orangeon";
 
-        char payload3[]="orangeoff";
-        sendData(payload3);
+        char orangeoff[]="orangeoff";
+        
+        char beep[]="beep";
+        
 	
 	blueLed::high();
 //        beep();
 
 	while(1){
-        	sendData(payload);
-		usleep(100000);
-        	sendData(payload3);
-		usleep(100000);
+		sendData(orangeon);
+		sendData(orangeoff);
+		sendData(beep);
+		usleep(20000);
 	}
 }
 
