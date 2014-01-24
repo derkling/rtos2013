@@ -8,7 +8,7 @@
 #ifndef WIFI_MODULE_H
 #define	WIFI_MODULE_H
 
-void invia(int num_passi);
+void invia(char *payload);
 void *wifi_start(void *arg);
 void *wifi_receive(void *arg);
 void *wifi_transmit(void *arg);

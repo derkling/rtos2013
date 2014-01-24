@@ -27,10 +27,14 @@ void invia(char* payload){
     pthread_mutex_lock(&buff);
     //trasmission=true;
     int i=0;
-    for(;i<31;i++){
+     
+    for(;i<32;i++){
         bufferTransmit[i+counter] = payload[i];
     }
-    bufferTransmit[i]='\0';
+    
+    printf("payload %s\n",payload);
+    printf("bufferTrasmit %s\n",bufferTransmit+counter);
+    
     counter = counter + 32;
     pthread_mutex_unlock(&buff);
 }
@@ -78,7 +82,7 @@ void configureModuleInterrupt()
 }
 void *wifi_start(void *arg)
 {
-    char a[4];
+    char a[32];
     nRF24L01P *wifi;
     wifi = new nRF24L01P();
     greenLed::mode(Mode::OUTPUT);
@@ -92,7 +96,7 @@ void *wifi_start(void *arg)
         greenLed::high();
          printf("Dammi un stringa da trasmettere\n");
         scanf("%s", a);
-        wifi->transmit(4,a);
+        wifi->transmit(32,a);
         printf("Ho trasmesso\n");
         greenLed::low();
         usleep(7000000);
@@ -117,7 +121,7 @@ void *wifi_start(void *arg)
 }
 
 void *wifi_receive(void *arg){
-    char data[4];
+    char data[32];
     nRF24L01P *wifi;
     greenLed::mode(Mode::OUTPUT);
     redLed::mode(Mode::OUTPUT);
@@ -133,7 +137,7 @@ void *wifi_receive(void *arg){
                  wifi->reset_interrupt();
                  printf("Status register %d\n",wifi->get_register_status());
                  printf("ho ricevuto qualcosa\n");
-                 printf("ricevuto da pipe 0 %d\n",wifi->receive(0,data,1));
+                 printf("ricevuto da pipe 0 %d\n",wifi->receive(0,data,32));
                  printf("ho ricevuto %s\n",data);
                  redLed::low();
         }
@@ -149,18 +153,23 @@ void *wifi_receive(void *arg){
         char payload[32];
         for(;;){
               usleep(5000000);
+              printf("Mi sono svegliato\n");
               pthread_mutex_lock(&buff);
               if(counter == 0){
                    pthread_cond_wait(&cond,&buff); 
               }
-              for(int i = 0;i< 31;i++){
-                  payload[i]=bufferTransmit[i];
-                  
+              for(int j=0;j<counter/32;j++){
+                for(int i = 0;i< 32;i++){
+                  payload[i]=bufferTransmit[i+counter*j];
+                }
+                printf("payload %s\n",payload);
+                printf("bufferTrasmit %s\n",bufferTransmit+counter*j);
+                pthread_mutex_lock(&spi);
+                  wifi->transmit(32,payload);
+                  pthread_mutex_unlock(&spi);
               }
-              counter = counter -32;
-              pthread_mutex_lock(&spi);
-              wifi->transmit(32,payload);
-              pthread_mutex_unlock(&spi);
+              counter = 0;
+              
               pthread_mutex_unlock(&buff);
               
             

@@ -142,14 +142,14 @@ nRF24L01P::nRF24L01P() {
     set_register(NRF24L01P_REG_STATUS, NRF24L01P_STATUS_TX_DS | NRF24L01P_STATUS_MAX_RT |
                                 NRF24L01P_STATUS_RX_DR);/*clear every pending interrupt bits*/
     set_register(NRF24L01P_REG_EN_RXADDR, NRF24L01P_EN_RXADDR_NONE);
-    set_register(NRF24L01P_REG_RX_PW_P0,4);
+    set_register(NRF24L01P_REG_RX_PW_P0,32);
     set_tx_address(5);
     set_crc_width(NRF24L01P_CRC_8_BIT);
     setTxAddress(NRF24L01P_ADDRESS_DEFAULT, NRF24L01P_ADDRESS_DEFAULT_WIDTH);
     setRxAddress(NRF24L01P_ADDRESS_DEFAULT, NRF24L01P_ADDRESS_DEFAULT_WIDTH,NRF24L01P_PIPE_NO_0);
     disable_auto_ack();
     disable_auto_retransmit();
-    setTransferSize(4,NRF24L01P_PIPE_NO_0);
+    setTransferSize(32,NRF24L01P_PIPE_NO_0);
     printf("Status %d\n",get_register_status());
     printf("Output power %d\n",get_output_power());
     printf("Air data rate %d\n",get_air_data_rate());
