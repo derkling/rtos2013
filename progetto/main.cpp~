@@ -34,7 +34,7 @@ int main()
       
 	  ADPCMSound sound2(prova_16_bin,prova_16_bin_len);
 	Player::instance().play(sound2, -20);
-	Player::instance().play(sound2, -20);
-	Player::instance().play(sound2, -20);
+	Player::instance().play(sound3, -20);
+	Player::instance().play(sound3, -20);
 
 }
