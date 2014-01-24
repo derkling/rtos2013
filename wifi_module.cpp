@@ -13,7 +13,7 @@ int num_step=0;
 static Thread *waiting=0;
 char bufferTransmit[96];
 int counter = 0;
-char *data;
+
 
 pthread_cond_t cond=PTHREAD_COND_INITIALIZER;
 pthread_mutex_t buff=PTHREAD_MUTEX_INITIALIZER;
@@ -43,7 +43,7 @@ void __attribute__((naked)) EXTI1_IRQHandler(){
 }
 
 void __attribute__((used))EXTI1HandlerImpl(){
-    NVIC_DisableIRQ(EXTI1_IRQn);
+    //NVIC_DisableIRQ(EXTI1_IRQn);
     EXTI->PR=EXTI_PR_PR1;
     redLed::high();
     printf("Sono nell'interrupt");
@@ -117,49 +117,31 @@ void *wifi_start(void *arg)
 }
 
 void *wifi_receive(void *arg){
-
+    char data;
     nRF24L01P *wifi;
-    wifi = new nRF24L01P();
-       wifi->test_receive();
-
-        wifi->power_up();
-
-        wifi->set_receive_mode();
-
     greenLed::mode(Mode::OUTPUT);
     redLed::mode(Mode::OUTPUT);
+    wifi = new nRF24L01P();
+       //wifi->test_receive()
+    wifi->power_up();
+    wifi->set_receive_mode();
     configureModuleInterrupt();
-    greenLed::high();
-    greenLed::low();
     for(;;){
         wifi->showInternal();
   
         printf("sto aspettando che l'interrupt forse funziona\n");
         waitForModule();
-       // int status = wifi->get_register_status();
         if(wifi->packet_in_pipe(0)){
                  wifi->reset_interrupt();
                  printf("Status register %d\n",wifi->get_register_status());
                  printf("ho ricevuto qualcosa\n");
-                 printf("ricevuto da pipe 0 %d\n",wifi->receive(0,data,1));
-                 NVIC_EnableIRQ(EXTI1_IRQn);
+                 printf("ricevuto da pipe 0 %d\n",wifi->receive(0,&data,1));
+                 printf("ho ricevuto %c\n",data);  
+                 redLed::low();
         }
-        //printf("ho ricevuto %c\n",*data);  
         greenLed::high();
         greenLed::low();
-        /*wifi->receive(0,data,1);
-        printf("Received data: %d",*data);
-        greenLed::high();
-        usleep(1000000);
-        greenLed::low();
-        num_step = wifi->receive();
-        if (trasmission){
-            wifi->transmit(num_step);
-        }
-        else{
-            wifi->receive();
-        }
-    */
+        
     }
     
 }  
