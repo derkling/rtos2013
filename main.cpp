@@ -18,7 +18,7 @@ int main(){
         queue_t queue;
         queueInizializer(&queue);
         int result = 0;
-        int push = 0;
+        int push = -1; //l'ultimo push non si deve contare perchè result=-1
 	while(result == 0){
             result = queuePush(payload, &queue);
             push++;
