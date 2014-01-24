@@ -26,10 +26,11 @@ int main(){
 //        beep();
 
 	while(1){
+		
 		sendData(orangeon);
 		sendData(orangeoff);
-		sendData(beep);
-		usleep(20000);
+//		sendData(beep);
+		sleep(2);
 	}
 }
 
