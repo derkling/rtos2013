@@ -5,6 +5,7 @@
 #include <pthread.h>
 #include <string.h>
 #include "queue.h"
+#include <miosix/kernel/scheduler/scheduler.h>
 
 void beep(void);
 
