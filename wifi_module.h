@@ -13,6 +13,7 @@ void invia(char *payload);
 void *wifi_start(void *arg);
 void *wifi_receive(void *arg);
 void *wifi_transmit(void *arg);
+void ricevi(char *payload);
 
 #endif	/* WIFI_MODULE_H */
 

@@ -11,15 +11,18 @@ using namespace miosix;
 
 int main()
 {
-    char a[32];
+    char transmit[32];
+    char receive[96];
     pthread_t wifi_thread;
     pthread_t thread_receive;
     pthread_create(&wifi_thread,NULL,&wifi_transmit,NULL);
     pthread_create(&thread_receive,NULL,&wifi_receive,NULL);
     while(1){
     printf("Dammi un stringa da trasmettere\n");
-        scanf("%s", a);
-        invia(a);
+        scanf("%s", transmit);
+        invia(transmit);
+        ricevi(receive);
+        printf("Ho ricevuto nel main %s\n",receive);
     }
     pthread_join(wifi_thread,NULL);
     pthread_join(thread_receive,NULL);

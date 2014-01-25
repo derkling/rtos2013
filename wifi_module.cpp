@@ -8,18 +8,21 @@
 #define BUFFER_TRANSMIT_SIZE            96
 #define BUFFER_CELL_SIZE                32
 #define BUFFER_NUMBER_CELLS             3
-
+#define BUFFER_RECEIVE_SIZE             96
 
 using namespace std;
 using namespace miosix;
 
 
 static Thread *waiting=0;
-char bufferTransmit[BUFFER_TRANSMIT_SIZE];
-int counter = 0;
+char buffer_transmit[BUFFER_TRANSMIT_SIZE];
+char buffer_receive[BUFFER_RECEIVE_SIZE];
+int counter_tx = 0;
+int counter_rx = 0;
 
-pthread_mutex_t buff=PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t buff_tx=PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t spi=PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t buff_rx=PTHREAD_MUTEX_INITIALIZER;
 
 typedef Gpio<GPIOD_BASE,12> greenLed;
 typedef Gpio<GPIOA_BASE,1> IRQ;
@@ -34,22 +37,22 @@ typedef Gpio<GPIOD_BASE,13> orangeLed;
  * @param payload - il payload che deve essere inserito nel buffer
  */
 void invia(char* payload){
-    pthread_mutex_lock(&buff);
+    pthread_mutex_lock(&buff_tx);
     int i=0;
-    if(counter == BUFFER_TRANSMIT_SIZE){
+    if(counter_tx == BUFFER_TRANSMIT_SIZE){
         printf("Buffer transmit pieno\n");
-        pthread_mutex_unlock(&buff);
+        pthread_mutex_unlock(&buff_tx);
         return;
     }
     for(;i<BUFFER_CELL_SIZE-1;i++){
-        bufferTransmit[i+counter] = payload[i];
+        buffer_transmit[i+counter_tx] = payload[i];
     }
-    bufferTransmit[i+counter]='\0';
+    buffer_transmit[i+counter_tx]='\0';
     printf("payload %s\n",payload);
-    printf("bufferTrasmit %s\n",bufferTransmit+counter);
+    printf("bufferTrasmit %s\n",buffer_transmit+counter_tx);
     
-    counter = counter + BUFFER_CELL_SIZE;
-    pthread_mutex_unlock(&buff);
+    counter_tx = counter_tx + BUFFER_CELL_SIZE;
+    pthread_mutex_unlock(&buff_tx);
 }
 
 
@@ -141,13 +144,19 @@ void *wifi_receive(void *arg){
        pthread_mutex_lock(&spi);
        wifi->set_receive_mode();
        wifi->get_register_status();
-       if(wifi->packet_in_pipe(0)){
+       while(wifi->packet_in_pipe(0)){
                  orangeLed::low();
                  wifi->reset_interrupt();
                  printf("Status register %d\n",wifi->get_register_status());
                  printf("ho ricevuto qualcosa\n");
-                 printf("ricevuto da pipe 0 %d\n",wifi->receive(0,data,BUFFER_CELL_SIZE));
+                 printf("ricevuto da pipe 0 %d\n",wifi->receive(0,data,BUFFER_CELL_SIZE));//mettere controllo su altro da leggere
                  printf("ho ricevuto %s\n",data);
+                 pthread_mutex_lock(&buff_rx);
+                 for(int i=0;i<BUFFER_CELL_SIZE;i++){
+                     buffer_receive[i+counter_rx] = data[i];
+                 }
+                 counter_rx += BUFFER_CELL_SIZE;
+                 pthread_mutex_unlock(&buff_rx);
                  redLed::low();
        }
        pthread_mutex_unlock(&spi);
@@ -175,14 +184,14 @@ void *wifi_transmit(void *arg){
         greenLed::high();
         usleep(5000000);
         printf("Mi sono svegliato\n");
-        pthread_mutex_lock(&buff);
-        if(counter != 0){
-            for(int j=0;j<counter/BUFFER_CELL_SIZE;j++){
+        pthread_mutex_lock(&buff_tx);
+        if(counter_tx != 0){
+            for(int j=0;j<counter_tx/BUFFER_CELL_SIZE;j++){
                 for(int i = 0;i< BUFFER_CELL_SIZE;i++){
-                    payload[i]=bufferTransmit[i+BUFFER_CELL_SIZE*j];
+                    payload[i]=buffer_transmit[i+BUFFER_CELL_SIZE*j];
                 }
                 printf("payload %s\n",payload);
-                printf("bufferTrasmit %s\n",bufferTransmit+BUFFER_CELL_SIZE*j);
+                printf("bufferTrasmit %s\n",buffer_transmit+BUFFER_CELL_SIZE*j);
                 pthread_mutex_lock(&spi);
                 wifi->transmit(BUFFER_CELL_SIZE,payload);
                 pthread_mutex_unlock(&spi);
@@ -190,10 +199,26 @@ void *wifi_transmit(void *arg){
                 usleep(100000);
                 greenLed::high();
             }
-            counter = 0;
+            counter_tx = 0;
            
         }
-        pthread_mutex_unlock(&buff);
+        pthread_mutex_unlock(&buff_tx);
     }      
+}
+
+void ricevi(char *payload){
+    pthread_mutex_lock(&buff_rx);
+    if(counter_rx == 0){
+        pthread_mutex_unlock(&buff_rx);
+        printf("Non ho nulla da darti\n");
+        return;
+    }
+    for(int i=0;i<counter_rx/BUFFER_CELL_SIZE;i++){
+        for(int j=0;j<BUFFER_CELL_SIZE;j++){
+            payload[j] = buffer_receive[j];
+        }
+    }
+    counter_rx=0;
+    pthread_mutex_unlock(&buff_rx);
 }
 

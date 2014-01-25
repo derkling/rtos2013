@@ -12,33 +12,33 @@
 //NRF24L01P Macro 
 //rf register 
  
-#define NRF24L01P_RF_HIGH_BIT       (1 << 3)
-#define NRF24L01P_RF_LOW_BIT        (1 << 5)
-#define NRF24L01P_RF_MASK           (NRF24L01P_RF_LOW_BIT| NRF24L01P_RF_HIGH_BIT)
-#define NRF24L01P_RF_250KBPS        (NRF24L01P_RF_LOW_BIT)
-#define NRF24L01P_RF_1MBPS          (0)
-#define NRF24L01P_RF_2MBPS          (NRF24L01P_RF_HIGH_BIT)
+#define NRF24L01P_RF_HIGH_BIT                   (1 << 3)
+#define NRF24L01P_RF_LOW_BIT                    (1 << 5)
+#define NRF24L01P_RF_MASK                       (NRF24L01P_RF_LOW_BIT| NRF24L01P_RF_HIGH_BIT)
+#define NRF24L01P_RF_250KBPS                    (NRF24L01P_RF_LOW_BIT)
+#define NRF24L01P_RF_1MBPS                      (0)
+#define NRF24L01P_RF_2MBPS                      (NRF24L01P_RF_HIGH_BIT)
 
 //pipe number for multiceiver
-#define NRF24L01P_PIPE_NO_0     0
-#define NRF24L01P_PIPE_NO_1     1
-#define NRF24L01P_PIPE_NO_2     2
-#define NRF24L01P_PIPE_NO_3     3
-#define NRF24L01P_PIPE_NO_4     4
-#define NRF24L01P_PIPE_NO_5     5
-#define NRF24L01P_REG_RX_PW_P0              0x11
+#define NRF24L01P_PIPE_NO_0                     0
+#define NRF24L01P_PIPE_NO_1                     1
+#define NRF24L01P_PIPE_NO_2                     2
+#define NRF24L01P_PIPE_NO_3                     3
+#define NRF24L01P_PIPE_NO_4                     4
+#define NRF24L01P_PIPE_NO_5                     5
+#define NRF24L01P_REG_RX_PW_P0                  0x11
 
 //size buffers
-#define NRF24L01P_RX_BUFFER_SIZE       32
+#define NRF24L01P_RX_BUFFER_SIZE                32
 
 
 //Command
 #define NRF24L01P_CMD_RD_REG                    0x00
 #define NRF24L01P_CMD_WT_REG                    0x20
 #define NRF24L01P_CMD_WR_TX_PAYLOAD             0xa0
-#define NRF24L01P_CMD_NOP        0xff
-#define NRF24L01P_R_RX_PAY       0x61
-#define NRF24L01P_SPI_CMD_FLUSH_TX          0xe1
+#define NRF24L01P_CMD_NOP                       0xff
+#define NRF24L01P_R_RX_PAY                      0x61
+#define NRF24L01P_SPI_CMD_FLUSH_TX              0xe1
 
 //bitmask and register address
 #define NRF24LO1P_REG_ADDR_BITMASK              0x1f
@@ -49,10 +49,10 @@
 #define NRF24L01P_REG_AA                        0x01
 #define NRF24L01P_REG_SETUP_AW                  0x03
 #define NRF24L01P_REG_TX_ADDR                   0x10
-#define NRF24L01P_REG_RX_PW_P0                       0x11
-#define NRF24L01P_REG_RX_ADDR_P0            0x0a
-#define NRF24L01P_REG_SETUP_RETR            0x04
-#define NRF24L01P_REG_EN_RXADDR             0x02
+#define NRF24L01P_REG_RX_PW_P0                  0x11
+#define NRF24L01P_REG_RX_ADDR_P0                0x0a
+#define NRF24L01P_REG_SETUP_RETR                0x04
+#define NRF24L01P_REG_EN_RXADDR                 0x02
 
 #define NRF24L01P_PRIM_RX                       (1<<0)
 #define NRF24L01P_PWR_UP                        (1<<1)
@@ -76,18 +76,18 @@
 #define NRF24L01P_CONFIG_CRC0                   (1<<2)
 #define NRF24L01P_CONFIG_EN_CRC                 (1<<3)
 #define NRF24L01P_CONFIG_CRC_MASK       (NRF24L01P_CONFIG_EN_CRC| NRF24L01P_CONFIG_CRC0)
-#define NRF24L01P_CONFIG_CRC_NONE       (0)
+#define NRF24L01P_CONFIG_CRC_NONE               (0)
 #define NRF24L01P_CONFIG_CRC_8BIT       (NRF24L01P_CONFIG_EN_CRC)
 #define NRF24L01P_CONFIG_CRC_16BIT      (NRF24L01P_CONFIG_EN_CRC|NRF24L01P_CONFIG_CRC0)
-#define NRF24L01P_CRC_NONE               0
-#define NRF24L01P_CRC_8_BIT              8
-#define NRF24L01P_CRC_16_BIT            16
+#define NRF24L01P_CRC_NONE                      0
+#define NRF24L01P_CRC_8_BIT                     8
+#define NRF24L01P_CRC_16_BIT                    16
 
 // SETUP_AW register:
-#define NRF24L01P_SETUP_AW_AW_MASK      (0x3<<0)
-#define NRF24L01P_SETUP_AW_AW_3BYTE     (0x1<<0)
-#define NRF24L01P_SETUP_AW_AW_4BYTE     (0x2<<0)
-#define NRF24L01P_SETUP_AW_AW_5BYTE     (0x3<<0)
+#define NRF24L01P_SETUP_AW_AW_MASK              (0x3<<0)
+#define NRF24L01P_SETUP_AW_AW_3BYTE             (0x1<<0)
+#define NRF24L01P_SETUP_AW_AW_4BYTE             (0x2<<0)
+#define NRF24L01P_SETUP_AW_AW_5BYTE             (0x3<<0)
 //time
 #define NRF24L01P_TPD2STBY                      2000  //2mS
 #define NRF24L01P_TPECE2CSN                     4  //4uS
@@ -106,13 +106,13 @@
 #define NRF24L01P_DATARATE_250KBPS              250
 #define NRF24L01P_DATARATE_1MBPS                1000
 #define NRF24L01P_DATARATE_2MBPS                2000
-#define NRF24L01P_EN_AA_NONE                   0
-#define NRF24L01P_EN_RXADDR_NONE        0
-#define NRF24L01P_SETUP_RETR_NONE       0
-#define NRF24L01P_ADDRESS_DEFAULT   ((unsigned long long) 0xE7E7E7E7E7 )
-#define NRF24L01P_ADDRESS_DEFAULT_WIDTH  5
+#define NRF24L01P_EN_AA_NONE                    0
+#define NRF24L01P_EN_RXADDR_NONE                0
+#define NRF24L01P_SETUP_RETR_NONE               0
+#define NRF24L01P_ADDRESS_DEFAULT       ((unsigned long long) 0xE7E7E7E7E7 )
+#define NRF24L01P_ADDRESS_DEFAULT_WIDTH         5
 
-#define NRF24L01P_RX_PW_Px_MASK         0x3F
+#define NRF24L01P_RX_PW_Px_MASK                 0x3F
 
 
 typedef enum {
