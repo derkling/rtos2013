@@ -14,6 +14,6 @@ void *wifi_start(void *arg);
 void *wifi_receive(void *arg);
 void *wifi_transmit(void *arg);
 void ricevi(char *payload);
-
+void init();
 #endif	/* WIFI_MODULE_H */
 

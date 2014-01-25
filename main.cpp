@@ -15,6 +15,7 @@ int main()
     char receive[96];
     pthread_t wifi_thread;
     pthread_t thread_receive;
+    init();
     pthread_create(&wifi_thread,NULL,&wifi_transmit,NULL);
     pthread_create(&thread_receive,NULL,&wifi_receive,NULL);
     while(1){

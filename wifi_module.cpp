@@ -19,7 +19,7 @@ char buffer_transmit[BUFFER_TRANSMIT_SIZE];
 char buffer_receive[BUFFER_RECEIVE_SIZE];
 int counter_tx = 0;
 int counter_rx = 0;
-
+nRF24L01P *wifi;
 pthread_mutex_t buff_tx=PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t spi=PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t buff_rx=PTHREAD_MUTEX_INITIALIZER;
@@ -99,11 +99,11 @@ void configureModuleInterrupt()
 void *wifi_start(void *arg)
 {
     char a[BUFFER_CELL_SIZE];
-    nRF24L01P *wifi;
+    /*nRF24L01P *wifi;
     wifi = new nRF24L01P();
     greenLed::mode(Mode::OUTPUT);
     redLed::mode(Mode::OUTPUT);
-    configureModuleInterrupt();
+    configureModuleInterrupt();*/
     wifi->test_transmit();
     greenLed::high();
     usleep(1000000);
@@ -128,15 +128,15 @@ void *wifi_start(void *arg)
  */
 void *wifi_receive(void *arg){
     char data[BUFFER_CELL_SIZE];
-    nRF24L01P *wifi;
+    /*nRF24L01P *wifi;
     orangeLed::mode(Mode::OUTPUT);
     redLed::mode(Mode::OUTPUT);
     blueLed::mode(Mode::OUTPUT);
     wifi = new nRF24L01P();
     wifi->power_up();
-    wifi->set_receive_mode();
+    wifi->set_receive_mode();*/
     blueLed::high();
-    configureModuleInterrupt();
+    //configureModuleInterrupt();
     for(;;){
        printf("sto aspettando il carattere\n");
        orangeLed::high();
@@ -171,13 +171,13 @@ void *wifi_receive(void *arg){
  * @return 
  */
 void *wifi_transmit(void *arg){
-    nRF24L01P *wifi;
+    /*nRF24L01P *wifi;
     wifi = new nRF24L01P();
     greenLed::mode(Mode::OUTPUT);
     redLed::mode(Mode::OUTPUT);
     blueLed::mode(Mode::OUTPUT);
     wifi->power_up();
-    wifi->set_transmit_mode();
+    wifi->set_transmit_mode();*/
     blueLed::high();
     char payload[BUFFER_CELL_SIZE];
     for(;;){
@@ -222,3 +222,13 @@ void ricevi(char *payload){
     pthread_mutex_unlock(&buff_rx);
 }
 
+void init(){
+    orangeLed::mode(Mode::OUTPUT);
+    redLed::mode(Mode::OUTPUT);
+    blueLed::mode(Mode::OUTPUT);
+    greenLed::mode(Mode::OUTPUT);
+    wifi = new nRF24L01P();
+    wifi->power_up();
+    wifi->set_receive_mode();
+    configureModuleInterrupt();
+}
