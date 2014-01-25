@@ -24,7 +24,8 @@ pthread_mutex_t spi=PTHREAD_MUTEX_INITIALIZER;
 typedef Gpio<GPIOD_BASE,12> greenLed;
 typedef Gpio<GPIOA_BASE,1> IRQ;
 typedef Gpio<GPIOD_BASE,14> redLed;
-
+typedef Gpio<GPIOD_BASE,15> blueLed;
+typedef Gpio<GPIOD_BASE,13> orangeLed;
 
 
 /**
@@ -40,10 +41,10 @@ void invia(char* payload){
         pthread_mutex_unlock(&buff);
         return;
     }
-    for(;i<BUFFER_CELL_SIZE;i++){
+    for(;i<BUFFER_CELL_SIZE-1;i++){
         bufferTransmit[i+counter] = payload[i];
     }
-    
+    bufferTransmit[i+counter]='\0';
     printf("payload %s\n",payload);
     printf("bufferTrasmit %s\n",bufferTransmit+counter);
     
@@ -125,26 +126,30 @@ void *wifi_start(void *arg)
 void *wifi_receive(void *arg){
     char data[BUFFER_CELL_SIZE];
     nRF24L01P *wifi;
-    greenLed::mode(Mode::OUTPUT);
+    orangeLed::mode(Mode::OUTPUT);
     redLed::mode(Mode::OUTPUT);
+    blueLed::mode(Mode::OUTPUT);
     wifi = new nRF24L01P();
     wifi->power_up();
     wifi->set_receive_mode();
+    blueLed::high();
     configureModuleInterrupt();
     for(;;){
        printf("sto aspettando il carattere\n");
+       orangeLed::high();
        waitForModule();
        pthread_mutex_lock(&spi);
        wifi->set_receive_mode();
        wifi->get_register_status();
-        if(wifi->packet_in_pipe(0)){
+       if(wifi->packet_in_pipe(0)){
+                 orangeLed::low();
                  wifi->reset_interrupt();
                  printf("Status register %d\n",wifi->get_register_status());
                  printf("ho ricevuto qualcosa\n");
                  printf("ricevuto da pipe 0 %d\n",wifi->receive(0,data,BUFFER_CELL_SIZE));
                  printf("ho ricevuto %s\n",data);
                  redLed::low();
-        }
+       }
        pthread_mutex_unlock(&spi);
               
     }
@@ -159,10 +164,15 @@ void *wifi_receive(void *arg){
 void *wifi_transmit(void *arg){
     nRF24L01P *wifi;
     wifi = new nRF24L01P();
+    greenLed::mode(Mode::OUTPUT);
+    redLed::mode(Mode::OUTPUT);
+    blueLed::mode(Mode::OUTPUT);
     wifi->power_up();
     wifi->set_transmit_mode();
+    blueLed::high();
     char payload[BUFFER_CELL_SIZE];
     for(;;){
+        greenLed::high();
         usleep(5000000);
         printf("Mi sono svegliato\n");
         pthread_mutex_lock(&buff);
@@ -176,8 +186,12 @@ void *wifi_transmit(void *arg){
                 pthread_mutex_lock(&spi);
                 wifi->transmit(BUFFER_CELL_SIZE,payload);
                 pthread_mutex_unlock(&spi);
+                greenLed::low();
+                usleep(100000);
+                greenLed::high();
             }
             counter = 0;
+           
         }
         pthread_mutex_unlock(&buff);
     }      
