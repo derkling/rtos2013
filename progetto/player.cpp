@@ -457,7 +457,7 @@ void Player::play(Sound& sound,int vol)
     delete bq;
 }
 
-void Player::play_V(ADPCMSound *sound[11],int size,int vol)
+void Player::play_V(ADPCMSound *sound[13],int size,int vol)
 {
 	Lock<Mutex> l(mutex);
     bq=new BufferQueue<unsigned short,bufferSize>();

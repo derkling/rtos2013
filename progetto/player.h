@@ -149,7 +149,7 @@ public:
 	 * \param sound sound file to play
 	 */
 	void play(Sound& sound,int vol);
-	void play_V(ADPCMSound *sound[11],int size,int vol);
+	void play_V(ADPCMSound *sound[13],int size,int vol);
 	/**
 	 * \return true if the resource is busy
 	 */
