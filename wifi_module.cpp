@@ -2,7 +2,7 @@
 #include "miosix.h"
 #include "spi_driver.h"
 #include "nRF24L01P.h"
-#include "arch/cortexM4_stm32f4/common/CMSIS/stm32f4xx.h"
+
 #include <miosix/kernel/scheduler/scheduler.h>
 
 #define BUFFER_TRANSMIT_SIZE            96
@@ -15,14 +15,14 @@ using namespace miosix;
 
 
 static Thread *waiting=0;
-char buffer_transmit[BUFFER_TRANSMIT_SIZE];
-char buffer_receive[BUFFER_RECEIVE_SIZE];
-int counter_tx = 0;
-int counter_rx = 0;
-nRF24L01P *wifi;
-pthread_mutex_t buff_tx=PTHREAD_MUTEX_INITIALIZER;
-pthread_mutex_t spi=PTHREAD_MUTEX_INITIALIZER;
-pthread_mutex_t buff_rx=PTHREAD_MUTEX_INITIALIZER;
+static char buffer_transmit[BUFFER_TRANSMIT_SIZE];
+static char buffer_receive[BUFFER_RECEIVE_SIZE];
+static int counter_tx = 0;
+static int counter_rx = 0;
+static nRF24L01P *wifi;
+static pthread_mutex_t buff_tx=PTHREAD_MUTEX_INITIALIZER;
+static pthread_mutex_t spi=PTHREAD_MUTEX_INITIALIZER;
+static pthread_mutex_t buff_rx=PTHREAD_MUTEX_INITIALIZER;
 
 typedef Gpio<GPIOD_BASE,12> greenLed;
 typedef Gpio<GPIOA_BASE,1> IRQ;
@@ -48,8 +48,8 @@ void invia(char* payload){
         buffer_transmit[i+counter_tx] = payload[i];
     }
     buffer_transmit[i+counter_tx]='\0';
-    printf("payload %s\n",payload);
-    printf("bufferTrasmit %s\n",buffer_transmit+counter_tx);
+    //printf("payload %s\n",payload);
+    //printf("bufferTrasmit %s\n",buffer_transmit+counter_tx);
     
     counter_tx = counter_tx + BUFFER_CELL_SIZE;
     pthread_mutex_unlock(&buff_tx);
@@ -64,8 +64,6 @@ void __attribute__((naked)) EXTI1_IRQHandler(){
 
 void __attribute__((used))EXTI1HandlerImpl(){
     EXTI->PR=EXTI_PR_PR1;
-    redLed::high();
-    printf("Sono nell'interrupt");
     if(waiting==0) return;
     waiting->IRQwakeup(); 
     if(waiting->IRQgetPriority()>Thread::IRQgetCurrentThread()->IRQgetPriority())
@@ -144,11 +142,11 @@ void *wifi_receive(void *arg){
        pthread_mutex_lock(&spi);
        wifi->set_receive_mode();
        wifi->get_register_status();
-       while(wifi->packet_in_pipe(0)){
+       if(wifi->packet_in_pipe(0)){
                  orangeLed::low();
                  wifi->reset_interrupt();
-                 printf("Status register %d\n",wifi->get_register_status());
-                 printf("ho ricevuto qualcosa\n");
+                 //printf("Status register %d\n",wifi->get_register_status());
+                 //printf("ho ricevuto qualcosa\n");
                  printf("ricevuto da pipe 0 %d\n",wifi->receive(0,data,BUFFER_CELL_SIZE));//mettere controllo su altro da leggere
                  printf("ho ricevuto %s\n",data);
                  pthread_mutex_lock(&buff_rx);
@@ -183,20 +181,21 @@ void *wifi_transmit(void *arg){
     for(;;){
         greenLed::high();
         usleep(5000000);
-        printf("Mi sono svegliato\n");
+        //printf("Mi sono svegliato\n");
         pthread_mutex_lock(&buff_tx);
         if(counter_tx != 0){
             for(int j=0;j<counter_tx/BUFFER_CELL_SIZE;j++){
                 for(int i = 0;i< BUFFER_CELL_SIZE;i++){
                     payload[i]=buffer_transmit[i+BUFFER_CELL_SIZE*j];
+                    buffer_transmit[i+BUFFER_CELL_SIZE*j] = 0;
                 }
-                printf("payload %s\n",payload);
-                printf("bufferTrasmit %s\n",buffer_transmit+BUFFER_CELL_SIZE*j);
+                //printf("payload %s\n",payload);
+                //printf("bufferTrasmit %s\n",buffer_transmit+BUFFER_CELL_SIZE*j);
                 pthread_mutex_lock(&spi);
                 wifi->transmit(BUFFER_CELL_SIZE,payload);
                 pthread_mutex_unlock(&spi);
                 greenLed::low();
-                usleep(100000);
+                usleep(400000);
                 greenLed::high();
             }
             counter_tx = 0;
@@ -215,7 +214,8 @@ void ricevi(char *payload){
     }
     for(int i=0;i<counter_rx/BUFFER_CELL_SIZE;i++){
         for(int j=0;j<BUFFER_CELL_SIZE;j++){
-            payload[j] = buffer_receive[j];
+            payload[j] = buffer_receive[j+BUFFER_CELL_SIZE*i];
+            buffer_receive[j+counter_rx*i] = 0;
         }
     }
     counter_rx=0;
