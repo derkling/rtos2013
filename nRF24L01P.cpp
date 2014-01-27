@@ -168,11 +168,33 @@ nRF24L01P::nRF24L01P(const nRF24L01P& orig) {
 nRF24L01P::~nRF24L01P() {
      
 }
+
+
 void nRF24L01P::disableTXInterrupt(){
      int current_config = get_register(NRF24L01P_REG_CONF); 
     current_config |= NRF24L01P_CONFIG_MASK_TX;
     set_register(NRF24L01P_REG_CONF,current_config);
 
+}
+
+
+
+void nRF24L01P::set_receive_mode(){
+    
+    if (mode==NRF24L01P_POWER_DOWN_MODE){
+        power_up();
+    }
+    int cur_config = get_register(NRF24L01P_REG_CONF);
+    cur_config |= NRF24L01P_PRIM_RX;
+    set_register(NRF24L01P_REG_CONF,cur_config);
+    if (CE::value()==0){
+    CE_enable();
+     }
+   
+    usleep(NRF24L01P_TPRCV);    
+    
+    mode = NRF24L01P_RX_MODE;
+   
 }
 
 /**
@@ -196,26 +218,9 @@ void nRF24L01P::power_down() {
     mode = NRF24L01P_POWER_DOWN_MODE;
 }
 
-void nRF24L01P::set_receive_mode(){
-    
-    if (mode==NRF24L01P_POWER_DOWN_MODE){
-        power_up();
-    }
-    int cur_config = get_register(NRF24L01P_REG_CONF);
-    cur_config |= NRF24L01P_PRIM_RX;
-    set_register(NRF24L01P_REG_CONF,cur_config);
-    if (CE::value()==0){
-    CE_enable();
-     }
-   
-    usleep(NRF24L01P_TPRCV);    
-    
-    mode = NRF24L01P_RX_MODE;
-   
-}
+
 
 void nRF24L01P::set_transmit_mode(){
-    printf("Inizio transmit \n");
     if (mode==NRF24L01P_POWER_DOWN_MODE){
         power_up();
     }
@@ -226,7 +231,6 @@ void nRF24L01P::set_transmit_mode(){
         CE_enable();
     
     mode = NRF24L01P_TX_MODE;
-    printf("Fine transmit \n");
     
 }
 /**
@@ -256,12 +260,9 @@ int nRF24L01P::transmit(int count, char* data){
     CE::high();
     usleep(NRF24L01P_TPECETR);  
     CE_disable();
-    printf("Before polling \n");
-    printf("Get register status %d\n",get_register_status());
     while( !( get_register_status() & NRF24L01P_STATUS_TX_DS)){
         
     } //polling waiting for transfert complete
-    printf("After polling\n");
     set_register(NRF24L01P_REG_STATUS, NRF24L01P_STATUS_TX_DS); /*clear bit data sent tx fifo*/
     if( old_mode == NRF24L01P_RX_MODE){              //reset the state before
         set_receive_mode();
@@ -287,7 +288,6 @@ int nRF24L01P::receive(int pipe,char *data,int count){
         count= NRF24L01P_RX_BUFFER_SIZE;
     }
     
-    printf("prima di packet in pipe\n");
         CS::low();
         spi->spi_write(NRF24L01P_R_RX_PAY);
         
@@ -563,7 +563,6 @@ void nRF24L01P::set_tx_address(int number){
 
 void nRF24L01P::flushTx()
 {
-    printf("ORA FLUSH TX\n");
   CS::low();
   spi->spi_write( NRF24L01P_SPI_CMD_FLUSH_TX  );  //svuoto coda TX
   CS::high();

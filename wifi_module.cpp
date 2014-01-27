@@ -5,10 +5,10 @@
 
 #include <miosix/kernel/scheduler/scheduler.h>
 
-#define BUFFER_TRANSMIT_SIZE            96
+#define BUFFER_TRANSMIT_SIZE            960
 #define BUFFER_CELL_SIZE                32
 #define BUFFER_NUMBER_CELLS             3
-#define BUFFER_RECEIVE_SIZE             96
+#define BUFFER_RECEIVE_SIZE             960
 
 using namespace std;
 using namespace miosix;
@@ -48,9 +48,6 @@ void invia(char* payload){
         buffer_transmit[i+counter_tx] = payload[i];
     }
     buffer_transmit[i+counter_tx]='\0';
-    //printf("payload %s\n",payload);
-    //printf("bufferTrasmit %s\n",buffer_transmit+counter_tx);
-    
     counter_tx = counter_tx + BUFFER_CELL_SIZE;
     pthread_mutex_unlock(&buff_tx);
 }
@@ -126,42 +123,22 @@ void *wifi_start(void *arg)
  */
 void *wifi_receive(void *arg){
     char data[BUFFER_CELL_SIZE];
-    /*nRF24L01P *wifi;
-    orangeLed::mode(Mode::OUTPUT);
-    redLed::mode(Mode::OUTPUT);
-    blueLed::mode(Mode::OUTPUT);
-    wifi = new nRF24L01P();
-    wifi->power_up();
-    wifi->set_receive_mode();*/
-    blueLed::high();
-    //configureModuleInterrupt();
     for(;;){
-       printf("sto aspettando il carattere\n");
        orangeLed::high();
-       printf("status prima di wait for module %d\n",wifi->get_register_status());
        waitForModule();
        pthread_mutex_lock(&spi);
        wifi->set_receive_mode();
-       printf("status dopo wait for module %d\n",wifi->get_register_status());
-       printf("Status register dopo dopo wait for in %d\n",wifi->get_register_status());
 
        while(wifi->packet_in_pipe(0)){
-                            printf("Status register dopo packet in %d\n",wifi->get_register_status());
-
                  orangeLed::low();
                  wifi->reset_interrupt();
-                 
-                 printf("Status register dopo reseet %d\n",wifi->get_register_status());
-                 //printf("ho ricevuto qualcosa\n");
-                 printf("ricevuto da pipe 0 %d\n",wifi->receive(0,data,BUFFER_CELL_SIZE));//mettere controllo su altro da leggere
-                 printf("ho ricevuto %s\n",data);
+                // printf("ricevuto da pipe 0 %d\n",);//mettere controllo su altro da leggere
+                 wifi->receive(0,data,BUFFER_CELL_SIZE);
+                 printf("<RECEIVE> %s\n",data);
                  pthread_mutex_lock(&buff_rx);
                  if(counter_rx<BUFFER_RECEIVE_SIZE){
                         for(int i=0;i<BUFFER_CELL_SIZE;i++){
-                                printf("%c",data[i]);
-                                printf("prima\n");
                                 buffer_receive[i+counter_rx] = data[i];
-                                printf("%c",data[i]);
                         }
                         counter_rx += BUFFER_CELL_SIZE;
                  }
@@ -183,19 +160,10 @@ void *wifi_receive(void *arg){
  * @return 
  */
 void *wifi_transmit(void *arg){
-    /*nRF24L01P *wifi;
-    wifi = new nRF24L01P();
-    greenLed::mode(Mode::OUTPUT);
-    redLed::mode(Mode::OUTPUT);
-    blueLed::mode(Mode::OUTPUT);
-    wifi->power_up();
-    wifi->set_transmit_mode();*/
-    blueLed::high();
-    char payload[BUFFER_CELL_SIZE];
+     char payload[BUFFER_CELL_SIZE];
     for(;;){
         greenLed::high();
         usleep(5000000);
-        //printf("Mi sono svegliato\n");
         pthread_mutex_lock(&buff_tx);
         if(counter_tx != 0){
             for(int j=0;j<counter_tx/BUFFER_CELL_SIZE;j++){
@@ -203,8 +171,6 @@ void *wifi_transmit(void *arg){
                     payload[i]=buffer_transmit[i+BUFFER_CELL_SIZE*j];
                     buffer_transmit[i+BUFFER_CELL_SIZE*j] = 0;
                 }
-                //printf("payload %s\n",payload);
-                //printf("bufferTrasmit %s\n",buffer_transmit+BUFFER_CELL_SIZE*j);
                 pthread_mutex_lock(&spi);
                 wifi->transmit(BUFFER_CELL_SIZE,payload);
                 pthread_mutex_unlock(&spi);
@@ -223,7 +189,7 @@ void ricevi(char *payload){
     pthread_mutex_lock(&buff_rx);
     if(counter_rx == 0){
         pthread_mutex_unlock(&buff_rx);
-        printf("Non ho nulla da darti\n");
+        printf("Buffer ricezione vuoto\n");
         return;
     }
     for(int i=0;i<counter_rx/BUFFER_CELL_SIZE;i++){
@@ -245,4 +211,6 @@ void init(){
     wifi->power_up();
     wifi->set_receive_mode();
     configureModuleInterrupt();
+    blueLed::high();
+
 }
