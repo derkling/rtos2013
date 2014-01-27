@@ -145,7 +145,7 @@ void *wifi_receive(void *arg){
        printf("status dopo wait for module %d\n",wifi->get_register_status());
        printf("Status register dopo dopo wait for in %d\n",wifi->get_register_status());
 
-       if(wifi->packet_in_pipe(0)){
+       while(wifi->packet_in_pipe(0)){
                             printf("Status register dopo packet in %d\n",wifi->get_register_status());
 
                  orangeLed::low();
@@ -156,10 +156,18 @@ void *wifi_receive(void *arg){
                  printf("ricevuto da pipe 0 %d\n",wifi->receive(0,data,BUFFER_CELL_SIZE));//mettere controllo su altro da leggere
                  printf("ho ricevuto %s\n",data);
                  pthread_mutex_lock(&buff_rx);
-                 for(int i=0;i<BUFFER_CELL_SIZE;i++){
-                     buffer_receive[i+counter_rx] = data[i];
+                 if(counter_rx<BUFFER_RECEIVE_SIZE){
+                        for(int i=0;i<BUFFER_CELL_SIZE;i++){
+                                printf("%c",data[i]);
+                                printf("prima\n");
+                                buffer_receive[i+counter_rx] = data[i];
+                                printf("%c",data[i]);
+                        }
+                        counter_rx += BUFFER_CELL_SIZE;
                  }
-                 counter_rx += BUFFER_CELL_SIZE;
+                 else{
+                     printf("Buffer di ricezione pieno\n");
+                 }
                  pthread_mutex_unlock(&buff_rx);
                  redLed::low();
        }
@@ -221,7 +229,7 @@ void ricevi(char *payload){
     for(int i=0;i<counter_rx/BUFFER_CELL_SIZE;i++){
         for(int j=0;j<BUFFER_CELL_SIZE;j++){
             payload[j] = buffer_receive[j+BUFFER_CELL_SIZE*i];
-            buffer_receive[j+counter_rx*i] = 0;
+            buffer_receive[j+BUFFER_CELL_SIZE*i] = 0;
         }
     }
     counter_rx=0;

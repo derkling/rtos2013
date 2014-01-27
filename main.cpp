@@ -23,7 +23,9 @@ int main()
         scanf("%s", transmit);
         invia(transmit);
         ricevi(receive);
-        printf("Ho ricevuto nel main %s\n",receive);
+        for(int i=0;i<96;i++){
+            printf("%c",receive[i]);
+        }
     }
     pthread_join(wifi_thread,NULL);
     pthread_join(thread_receive,NULL);
