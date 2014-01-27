@@ -34,6 +34,7 @@
 #include "adpcm.h"
 #include "player.h"
 
+
 using namespace std;
 using namespace miosix;
 
@@ -85,7 +86,7 @@ static void IRQdmaRefill()
 	DMA1_Stream5->M0AR=reinterpret_cast<unsigned int>(buffer);
 	DMA1_Stream5->NDTR=size;
 	DMA1_Stream5->CR=DMA_SxCR_PL_1    | //High priority DMA stream
-                     DMA_SxCR_MSIZE_0 | //Read  16bit at a time from RAM
+                     DMA_SxCR_MSIZE_0 | //Read  16bit at a time from RAM  
 					 DMA_SxCR_PSIZE_0 | //Write 16bit at a time to SPI
 				     DMA_SxCR_MINC    | //Increment RAM pointer
 			         DMA_SxCR_DIR_0   | //Memory to peripheral direction
@@ -160,6 +161,7 @@ static void cs43l22send(unsigned char index, unsigned char data)
     i2c::send(index);
     i2c::send(data);
     i2c::sendStop();
+    
 }
 
 /**
@@ -271,7 +273,17 @@ bool ADPCMSound::fillStereoBuffer(unsigned short *buffer, int size)
 }
 
 void ADPCMSound::rewind() { index=0; }
+//setter del file audio
+void ADPCMSound::setFileAudio(const unsigned char *file ){
 
+		this->soundData = file;
+
+}
+//setter della lunghezza del file audio
+void ADPCMSound::setAudioSize(unsigned int length){
+		this->soundSize = length;
+
+}
 //
 // class Player
 //
@@ -281,8 +293,6 @@ Player& Player::instance()
 	static Player singleton;
 	return singleton;
 }
-
-
 
 #ifdef _BOARD_STM32VLDISCOVERY
 void Player::play(Sound& sound)
@@ -312,9 +322,7 @@ void Player::play(Sound& sound)
 	TIM6->CR1=0; //Upcounter, not started, no special options
 	TIM6->CR2=TIM_CR2_MMS_1; //Update evant is output as TRGO, used by the DAC
 	TIM6->PSC=0;
-        //TIM6->ARR=(24000000/44100)-1;
-        TIM6->ARR=(24000000/8000)-1;
-        
+	TIM6->ARR=(24000000/44100)-1;
 	TIM6->CR1|=TIM_CR1_CEN;
     
     //Antibump, rise slowly to 0x8000
@@ -352,10 +360,7 @@ void Player::play(Sound& sound)
     delete bq;
 }
 #else //Assuming stm32f4discovery
-
-
-
-void Player::play(Sound& sound, int db)
+void Player::play(Sound& sound,int vol)
 {
 	Lock<Mutex> l(mutex);
     bq=new BufferQueue<unsigned short,bufferSize>();
@@ -376,16 +381,8 @@ void Player::play(Sound& sound, int db)
         lrck::mode(Mode::ALTERNATE);
         lrck::alternateFunction(6);
         reset::mode(Mode::OUTPUT);
-        
-        //SETTING DELLA FREQUENZA DI CAMPIONAMENTO!!
-        
         //Enable audio PLL (settings for 44100Hz audio)
-        //RCC->PLLI2SCFGR=(2<<28) | (271<<6);
-        
         RCC->PLLI2SCFGR=(5<<28) | (256<<6);
-        
-      
-        
         RCC->CR |= RCC_CR_PLLI2SON;
     }
     //Wait for PLL to lock
@@ -404,21 +401,10 @@ void Player::play(Sound& sound, int db)
     cs43l22send(0x05,0x20); //AUTO=0, SPEED=01, 32K=0, VIDEO=0, RATIO=0, MCLK=0
     cs43l22send(0x04,0xaf); //Headphone always ON, Speaker always OFF
     cs43l22send(0x06,0x04); //I2S Mode
-    
-    //Controllo che i db siano nel range -102 : 0
-    if(db > -103 && db < 1)
-        cs43l22volume(db);
-    else
-        cs43l22volume(-20);
-    
+    cs43l22volume(vol);
     
     SPI3->CR2=SPI_CR2_TXDMAEN;
-    //44100
-    //SPI3->I2SPR=  SPI_I2SPR_MCKOE | 6;
-    
-    //8000
     SPI3->I2SPR=  SPI_I2SPR_MCKOE | 12;
-    
 	SPI3->I2SCFGR=SPI_I2SCFGR_I2SMOD    //I2S mode selected
                 | SPI_I2SCFGR_I2SE      //I2S Enabled
                 | SPI_I2SCFGR_I2SCFG_1; //Master transmit
@@ -470,6 +456,105 @@ void Player::play(Sound& sound, int db)
     }
     delete bq;
 }
+
+void Player::play_V(ADPCMSound *sound[11],int size,int vol)
+{
+	Lock<Mutex> l(mutex);
+    bq=new BufferQueue<unsigned short,bufferSize>();
+
+    {
+		FastInterruptDisableLock dLock;
+        //Enable DMA1 and SPI3/I2S3
+        RCC->AHB1ENR |= RCC_AHB1ENR_DMA1EN;
+        RCC->APB1ENR |= RCC_APB1ENR_SPI3EN;   
+        //Configure GPIOs
+        i2c::init();
+        mclk::mode(Mode::ALTERNATE);
+        mclk::alternateFunction(6);
+        sclk::mode(Mode::ALTERNATE);
+        sclk::alternateFunction(6);
+        sdin::mode(Mode::ALTERNATE);
+        sdin::alternateFunction(6);
+        lrck::mode(Mode::ALTERNATE);
+        lrck::alternateFunction(6);
+        reset::mode(Mode::OUTPUT);
+        //Enable audio PLL (settings for 44100Hz audio)
+        RCC->PLLI2SCFGR=(5<<28) | (256<<6);
+        RCC->CR |= RCC_CR_PLLI2SON;
+    }
+    //Wait for PLL to lock
+    while((RCC->CR & RCC_CR_PLLI2SRDY)==0) ;
+    
+    reset::low(); //Keep in reset state
+    delayUs(5);
+    reset::high();
+    delayUs(5);
+    cs43l22send(0x00,0x99); //These five command are the "magic" initialization
+    cs43l22send(0x47,0x80);
+    cs43l22send(0x32,0xbb);
+    cs43l22send(0x32,0x3b);
+    cs43l22send(0x00,0x00);
+    
+    cs43l22send(0x05,0x20); //AUTO=0, SPEED=01, 32K=0, VIDEO=0, RATIO=0, MCLK=0
+    cs43l22send(0x04,0xaf); //Headphone always ON, Speaker always OFF
+    cs43l22send(0x06,0x04); //I2S Mode
+    cs43l22volume(vol);
+    
+    SPI3->CR2=SPI_CR2_TXDMAEN;
+    SPI3->I2SPR=  SPI_I2SPR_MCKOE | 12;
+	SPI3->I2SCFGR=SPI_I2SCFGR_I2SMOD    //I2S mode selected
+                | SPI_I2SCFGR_I2SE      //I2S Enabled
+                | SPI_I2SCFGR_I2SCFG_1; //Master transmit
+
+    NVIC_SetPriority(DMA1_Stream5_IRQn,2);//High priority for DMA
+	NVIC_EnableIRQ(DMA1_Stream5_IRQn);    
+
+    //Leading blank audio, so as to be sure audio is played from the start
+    memset(getWritableBuffer(),0,bufferSize*sizeof(unsigned short));
+	bufferFilled();
+    
+	//Start playing
+	for (int i =0; i<size;i++){
+		(*sound[i]).rewind();
+	    bool first=true;
+		waiting=Thread::getCurrentThread();
+		for(;;)
+		{
+			if(enobuf)
+			{
+				enobuf=false;
+				dmaRefill();
+	            if(first)
+	            {
+	                first=false;
+	                cs43l22send(0x02,0x9e);
+	            }
+			}
+			if((*sound[i]).fillStereoBuffer(getWritableBuffer(),bufferSize)) break;
+			bufferFilled();
+		}
+	    
+	    //Trailing blank audio, so as to be sure audio is played to the end
+	    memset(getWritableBuffer(),0,bufferSize*sizeof(unsigned short));
+		bufferFilled();
+	    memset(getWritableBuffer(),0,bufferSize*sizeof(unsigned short));
+		bufferFilled();
+    }
+    cs43l22send(0x0f,0xf0); //Mute all channels
+    cs43l22send(0x02,0x9f); //Audio shutdown
+    
+	atomicTestAndWaitUntil(enobuf,true); //Continue sending MCLK for some time
+
+    reset::low(); //Keep in reset state
+    NVIC_DisableIRQ(DMA1_Stream5_IRQn);
+    SPI3->I2SCFGR=0;
+    {
+		FastInterruptDisableLock dLock;
+        RCC->CR &= ~RCC_CR_PLLI2SON;
+    }
+    delete bq;
+}
+
 #endif
 
 bool Player::isPlaying() const

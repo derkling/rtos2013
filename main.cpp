@@ -1,11 +1,12 @@
 
-#include <cstdio>
-#include "miosix.h"
-
-using namespace std;
-using namespace miosix;
+#include "progetto/slice-and-play.h"
 
 int main()
 {
-    //iprintf("Hello world, write your application here\n");
+  
+  ring::instance().play_n_of_step(1023,90);
+    ring::instance().looser_Song(90);
+	ring::instance().victory_Song(90);
+   
+    return 0;
 }

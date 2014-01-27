@@ -14,7 +14,7 @@ SUBDIRS := miosix
 ## List here your source files (both .s, .c and .cpp)
 ##
 SRC :=                                  \
-progetto/main.cpp progetto/player.cpp progetto/adpcm.c
+main.cpp progetto/player.cpp progetto/adpcm.c progetto/slice-and-play.cpp
 
 
 

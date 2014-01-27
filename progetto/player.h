@@ -87,6 +87,12 @@ public:
 	ADPCMSound(const unsigned char *data, int size)
 			: soundData(data), soundSize(size), index(0) {}
 
+
+	/**
+	*costruttore vuoto
+	*/
+	ADPCMSound();
+
 	/**
 	 * Fill a buffer with audio samples
 	 * \param buffer a buffer where audio samples (16bit unsigned, 44100Hz)
@@ -114,10 +120,13 @@ public:
 	 * fillBuffer() start brom the beginning of the sound.
 	 */
 	virtual void rewind();
+	
+	void setFileAudio(const unsigned char *file );
+	void setAudioSize(unsigned int length);
 
 private:
 	ADPCMSound(const ADPCMSound&);
-	ADPCMSound& operator= (const ADPCMSound&);
+	ADPCMSound& operator= (const ADPCMSound&);	
 
 	const unsigned char *soundData;
 	int soundSize;
@@ -139,11 +148,8 @@ public:
 	 * Play an audio file, returning after the file has coompleted playing
 	 * \param sound sound file to play
 	 */
-	void play(Sound& sound, int db);
-
-
-        
-        
+	void play(Sound& sound,int vol);
+	void play_V(ADPCMSound *sound[11],int size,int vol);
 	/**
 	 * \return true if the resource is busy
 	 */
