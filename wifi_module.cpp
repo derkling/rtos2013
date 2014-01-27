@@ -138,14 +138,20 @@ void *wifi_receive(void *arg){
     for(;;){
        printf("sto aspettando il carattere\n");
        orangeLed::high();
+       printf("status prima di wait for module %d\n",wifi->get_register_status());
        waitForModule();
        pthread_mutex_lock(&spi);
        wifi->set_receive_mode();
-       wifi->get_register_status();
+       printf("status dopo wait for module %d\n",wifi->get_register_status());
+       printf("Status register dopo dopo wait for in %d\n",wifi->get_register_status());
+
        if(wifi->packet_in_pipe(0)){
+                            printf("Status register dopo packet in %d\n",wifi->get_register_status());
+
                  orangeLed::low();
                  wifi->reset_interrupt();
-                 //printf("Status register %d\n",wifi->get_register_status());
+                 
+                 printf("Status register dopo reseet %d\n",wifi->get_register_status());
                  //printf("ho ricevuto qualcosa\n");
                  printf("ricevuto da pipe 0 %d\n",wifi->receive(0,data,BUFFER_CELL_SIZE));//mettere controllo su altro da leggere
                  printf("ho ricevuto %s\n",data);

@@ -53,6 +53,7 @@
 #define NRF24L01P_REG_RX_ADDR_P0                0x0a
 #define NRF24L01P_REG_SETUP_RETR                0x04
 #define NRF24L01P_REG_EN_RXADDR                 0x02
+#define NRF24L01P_CONFIG_MASK_TX                (1<<5)
 
 #define NRF24L01P_PRIM_RX                       (1<<0)
 #define NRF24L01P_PWR_UP                        (1<<1)
@@ -144,6 +145,7 @@ nRF24L01P::nRF24L01P() {
     set_register(NRF24L01P_REG_EN_RXADDR, NRF24L01P_EN_RXADDR_NONE);
     set_register(NRF24L01P_REG_RX_PW_P0,32);
     set_tx_address(5);
+    disableTXInterrupt();
     set_crc_width(NRF24L01P_CRC_8_BIT);
     setTxAddress(NRF24L01P_ADDRESS_DEFAULT, NRF24L01P_ADDRESS_DEFAULT_WIDTH);
     setRxAddress(NRF24L01P_ADDRESS_DEFAULT, NRF24L01P_ADDRESS_DEFAULT_WIDTH,NRF24L01P_PIPE_NO_0);
@@ -165,6 +167,12 @@ nRF24L01P::nRF24L01P(const nRF24L01P& orig) {
 
 nRF24L01P::~nRF24L01P() {
      
+}
+void nRF24L01P::disableTXInterrupt(){
+     int current_config = get_register(NRF24L01P_REG_CONF); 
+    current_config |= NRF24L01P_CONFIG_MASK_TX;
+    set_register(NRF24L01P_REG_CONF,current_config);
+
 }
 
 /**
@@ -954,7 +962,8 @@ void nRF24L01P::showInternal()
 }
 
 void nRF24L01P::reset_interrupt(){
-    set_register(NRF24L01P_REG_STATUS, NRF24L01P_STATUS_TX_DS | NRF24L01P_STATUS_MAX_RT |
-                                NRF24L01P_STATUS_RX_DR);
+    int status = get_register_status();
+    status |= NRF24L01P_STATUS_RX_DR;
+    set_register(NRF24L01P_REG_STATUS, status);
     
 }

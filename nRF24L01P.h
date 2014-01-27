@@ -40,6 +40,7 @@ public:
 
 
 private:
+    void disableTXInterrupt();
     void CE_enable();
     void CE_disable();
     void set_register(int addr_registro,int data_registro);
