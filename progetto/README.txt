@@ -4,9 +4,9 @@ This is the audio feedback for the pedometer.
 
 It'll work only if 
 	>you insert into the Makefile, 
-	 in the variable SRC this: sound/player.cpp sound/slice-and-play.cpp sound/adpcm.c  .
+	 in the variable SRC this files: "<path>/player.cpp" "<path>/slice-and-play.cpp" "<path>/adpcm.c"  .
 
-	>you include "slice-and-play.h" in your main file
+	>you include "<path>/slice-and-play.h" in your main file
 
 	>you use miosix
 	
@@ -16,14 +16,14 @@ The class to call all the different functionalities is "ring".
 
 This are the functionalities:
 
-> void play_n_of_step(int)
+> void play_n_of_step(int,int)
 
-	it gets an int variable and it will play "Hai fatto"-number of step-"passi"
+	it gets an int variable and it will play "fatto"-number of step-"passi", the second int is for the volume (from 0 to 100)
 
-> void looserSong()
+> void looserSong(int)
 
-	it will play "Hai perso"
+	it will play "perso" -the int parameter is for the volume (from 0 to 100)
 
->void victorySong()
+>void victorySong(int)
 	
-	it will play "Hai vinto"
+	it will play " vinto" -the int parameter is for the volume (from 0 to 100)
