@@ -19,7 +19,7 @@ int main()
     pthread_create(&wifi_thread,NULL,&wifi_transmit,NULL);
     pthread_create(&thread_receive,NULL,&wifi_receive,NULL);
     while(1){
-    printf("<TRASMIT> ");
+    
         scanf("%s", transmit);
         invia(transmit);
         ricevi(receive);

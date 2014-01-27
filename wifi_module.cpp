@@ -171,6 +171,7 @@ void *wifi_transmit(void *arg){
                     payload[i]=buffer_transmit[i+BUFFER_CELL_SIZE*j];
                     buffer_transmit[i+BUFFER_CELL_SIZE*j] = 0;
                 }
+                printf("<TRASMIT> %s\n",payload);
                 pthread_mutex_lock(&spi);
                 wifi->transmit(BUFFER_CELL_SIZE,payload);
                 pthread_mutex_unlock(&spi);
@@ -189,7 +190,7 @@ void ricevi(char *payload){
     pthread_mutex_lock(&buff_rx);
     if(counter_rx == 0){
         pthread_mutex_unlock(&buff_rx);
-        printf("Buffer ricezione vuoto\n");
+        //printf("Buffer ricezione vuoto\n");
         return;
     }
     for(int i=0;i<counter_rx/BUFFER_CELL_SIZE;i++){
