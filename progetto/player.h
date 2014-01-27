@@ -139,11 +139,8 @@ public:
 	 * Play an audio file, returning after the file has coompleted playing
 	 * \param sound sound file to play
 	 */
-	void play(Sound& sound, int db);
+	void play(Sound& sound);
 
-
-        
-        
 	/**
 	 * \return true if the resource is busy
 	 */
