@@ -19,6 +19,7 @@
 #define LIMIT   155
 #define R       3
 #define RANGE   256
+#define PAUSE   20000
 
 using namespace std;
 using namespace miosix;
@@ -109,8 +110,11 @@ void Pedometer::start(){
     while(true){
         
         takeAverage();
-        
+
         stepCounter();
+        
+        usleep(PAUSE);
+        
         }
 }
 
@@ -162,7 +166,7 @@ void Pedometer::stepCounter(){
                 zt=z;
                 }
         
-        utility_p->test(x,y,z,step,accelleration,aMax,limit);
+        //utility_p->test(dx,dy,dz,step,accelleration,aMax,limit);
         
 }
 
