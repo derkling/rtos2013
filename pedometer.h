@@ -16,13 +16,24 @@ class Pedometer
 {
 public:
     
-   Pedometer();
+   static Pedometer* getInstance();
     
    void start();
    
    int getStep();
    
+   ~Pedometer()
+    {
+        instanceFlag = false;
+    }
+   
 private:
+    
+   Pedometer();
+    
+   static Pedometer *pedometer;
+    
+   static bool instanceFlag;
     
    struct Average
         {

@@ -38,8 +38,11 @@ Lis302dl lis302dl;
 tState currentState= onPause;
 Utility* utility_p;
 
+bool Pedometer::instanceFlag = false;
+Pedometer* Pedometer::pedometer = NULL;
+
 /**
- * Class constructor
+ * Private class constructor
  */
 Pedometer::Pedometer(){
     utility_p=Utility::getInstance();
@@ -63,6 +66,28 @@ Pedometer::Pedometer(){
     aMax=LIMIT+15;
     accelleration=0;
     limit=LIMIT;
+}
+
+/**
+ * \brief Factory patten 
+ * \details Factory pattern guarantees that in all the program only one object
+ *          with type Utility exists. To make this the constructor is private
+ *          and is substituted by this method
+ * @param void
+ * @returns the only existing instance of Pedometer 
+ */
+Pedometer* Pedometer::getInstance(){
+        if(! instanceFlag)
+    {
+        pedometer = new Pedometer();
+        instanceFlag = true;
+        return pedometer;
+    }
+    else
+    {
+        return pedometer;
+    }
+    
 }
 
 /**
