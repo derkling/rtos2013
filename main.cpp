@@ -8,18 +8,42 @@
  */
 
 #include <cstdlib>
-#include <cstdio>
 #include "pedometer.h"
+#include "statistics.h"
+#include <pthread.h>
+#include "miosix.h"
 
-using namespace std;
+Pedometer* pedometerApp;
+Statistics* statistics;
+#define PRIORITY_MAX 2
 
-Pedometer pedometer;
+void *startPedometer(void *arg){
+    miosix::Thread::getCurrentThread()->setPriority(PRIORITY_MAX-1);
+    pedometerApp->start();
+}
+
+void *startStatistics(void *arg){
+    miosix::Thread::getCurrentThread()->setPriority(PRIORITY_MAX-2);
+    statistics->start();
+}
 
 /*
  * Main method, starts the pedometer
  */
 int main(int argc, char** argv) {
-    pedometer.start();
+    
+    pedometerApp = Pedometer::getInstance();
+    statistics = Statistics::getInstance();
+    
+    pthread_t statisticsThread;
+    pthread_create(&statisticsThread,NULL,&startStatistics,NULL);
+    
+    pthread_t pedometerThread;
+    pthread_create(&pedometerThread,NULL,&startPedometer,NULL);
+    
+    pthread_join(pedometerThread,NULL);
+    pthread_join(statisticsThread,NULL);
+    
     return 0;
 }
 
