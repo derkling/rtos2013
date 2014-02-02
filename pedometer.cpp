@@ -16,8 +16,8 @@
 #include "utility.h"
 #include <math.h>
 
-#define LIMIT   90
-#define R       2
+#define LIMIT   155
+#define R       3
 #define RANGE   256
 
 using namespace std;
@@ -60,7 +60,7 @@ Pedometer::Pedometer(){
     yt=0;
     zt=0;
     step=0;
-    aMax=16;
+    aMax=LIMIT+15;
     accelleration=0;
     limit=LIMIT;
 }
@@ -110,8 +110,8 @@ void Pedometer::stepCounter(){
                     
         //Ogni 100 valori ricalcolo il limite. Limite dinamico
         if(dataLimit==100){
-                        limit=aMax/2;
-                        aMax=200;
+                        limit=aMax-15;
+                        aMax=LIMIT+15;
                         dataLimit=0;
                     }
         
