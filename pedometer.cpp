@@ -32,7 +32,7 @@ typedef enum
    onMove  = 1
     } tState ;
 
-int step,xt,yt,zt,limit,accelleration,aMax,dataLimit;
+int step,xt,yt,zt,limit,accelleration,aMax,dataLimit,dx,dy,dz;
 int16_t x, y, z;
 Lis302dl lis302dl;
 tState currentState= onPause;
@@ -62,6 +62,9 @@ Pedometer::Pedometer(){
     xt=0;
     yt=0;
     zt=0;
+    dx=0;
+    dy=0;
+    dz=0;
     step=0;
     aMax=LIMIT+15;
     accelleration=0;
@@ -119,9 +122,10 @@ void Pedometer::stepCounter(){
         //values given by the MEMS to an 'older' value, in fact another average value 
         //done with more value (longer time constant).
         //delta_x = average on last 4 value, minus average done on last 16 value
-        unsigned dx =  average4.x - average16.x ; 
-        unsigned dy =  average4.y - average16.y ; 
-        unsigned dz =  average4.z - average16.z ; 
+        
+        dx =  fabs(average4.x - average16.x); 
+        dy =  fabs(average4.y - average16.y) ; 
+        dz =  fabs(average4.z - average16.z) ; 
         
         //Calcolo il modulo dell'accellerazione
         float accellerationF = sqrt( (float)(dx*dx + dy*dy + dz*dz )) ;  
