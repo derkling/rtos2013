@@ -24,6 +24,7 @@ public:
     void ledRed();
     void ledGreen();
     void test(int16_t x,int16_t y,int16_t z,int step,int accelleration,int aMax, int limit);
+    void test2(int seconds,int oldSteps,float distance,int height,float multiParam,float avg);
     ~Utility()
     {
         instanceFlag = false;

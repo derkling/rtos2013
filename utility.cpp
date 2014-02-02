@@ -104,14 +104,25 @@ void Utility::ledGreen(){
  * @param test
  * @return void
  */
-void Utility::test(int16_t x,int16_t y,int16_t z,int step,int accelleration,int aMax, int limit){
+void Utility::test(int16_t x,int16_t y,int16_t z, int step,int accelleration,int aMax, int limit){
     
-    printf("\ndx: %d\t",x);
-    printf("dy: %d\t",y);
-    printf("dz: %d\t",z);
+    printf("\nx: %d\t",x);
+    printf("y: %d\t",y);
+    printf("z: %d\t",z);
     printf("aMax: %i\t",aMax);
     printf("limit: %i\t",limit);
     printf("accelleration: %i\t",accelleration);
     printf("step: %i",step);
+    
+}
+
+void Utility::test2(int stepsInInterval,int oldSteps,float distance,int height,float multiParam,float avg){
+    
+    printf("\nstepsInt: %i\t",stepsInInterval);
+    printf("oldSteps: %i\t",oldSteps);
+    printf("dist[cm]: %f\t",distance);
+    printf("height: %i\t",height);
+    printf("multiParam: %f\t",multiParam);
+    printf("avg[cm/sec]: %f",avg);
     
 }
