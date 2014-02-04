@@ -457,7 +457,7 @@ void Player::play(Sound& sound,int vol)
     delete bq;
 }
 
-void Player::play_V(ADPCMSound *sound[13],int size,int vol)
+void Player::play_V(ADPCMSound *sound[13],int *size,int vol)
 {
 	Lock<Mutex> l(mutex);
     bq=new BufferQueue<unsigned short,bufferSize>();
@@ -514,7 +514,7 @@ void Player::play_V(ADPCMSound *sound[13],int size,int vol)
 	bufferFilled();
     
 	//Start playing
-	for (int i =0; i<size;i++){
+	for (int i =0; i<(*size);i++){
 		(*sound[i]).rewind();
 	    bool first=true;
 		waiting=Thread::getCurrentThread();
@@ -553,6 +553,16 @@ void Player::play_V(ADPCMSound *sound[13],int size,int vol)
         RCC->CR &= ~RCC_CR_PLLI2SON;
     }
     delete bq;
+	
+	// pulisco il buffer di suoni
+	for(int j = 0; j<(*size); j++){
+		
+		free(sound[j]);
+
+	}
+
+	(*size)=0;
+
 }
 
 #endif

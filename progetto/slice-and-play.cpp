@@ -398,7 +398,7 @@ void ring::play_n_of_step(int num,int volume){
        
 
 		
-		Player::instance().play_V(neue,cont,volume);
+		Player::instance().play_V(neue,&cont,volume);
 	
 	
       
