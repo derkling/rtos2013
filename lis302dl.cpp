@@ -58,14 +58,3 @@ void  Lis302dl::getMemsData(int16_t* x, int16_t* y, int16_t* z)
         *y = spi.singleRead(OUT_Y);
         *z = spi.singleRead(OUT_Z);
 }
-/*
-void setRange(int8_t range)
-{
-	uint8_t regval;
-	assert_param(range == RANGE_2G || range == RANGE_4G || range == RANGE_8G || range == RANGE_16G);
-	regval = spiRead(CTRL_REG4, &regval, 1);
-	regval &= ~(3 << 4);
-	regval |= range;
-	spiWrite(CTRL_REG4, &regval, 1);
-}
-*/

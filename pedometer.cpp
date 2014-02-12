@@ -135,17 +135,17 @@ void Pedometer::stepCounter(){
         dy =  fabs(average4.y - average16.y) ; 
         dz =  fabs(average4.z - average16.z) ; 
         
-        //Calcolo il modulo dell'accellerazione
+        //Accelleration
         float accellerationF = sqrt( (float)(dx*dx + dy*dy + dz*dz )) ;  
         accelleration=(int)(accellerationF+0.5);
         
-        //Setto il valore massimo ed il minimo dell'accellerazione
+        //max value of the accelleration
         accMax();
         
         
         dataLimit++;
                     
-        //Ogni 100 valori ricalcolo il limite. Limite dinamico
+        //Reset limit
         if(dataLimit==100){
                         limit=aMax-15;
                         aMax=LIMIT+15;
@@ -170,7 +170,7 @@ void Pedometer::stepCounter(){
                 zt=z;
                 }
         
-        //utility_p->test(dx,dy,dz,step,accelleration,aMax,limit);
+        //utility_p->test(x,y,z,step,accelleration,aMax,limit);
         
 }
 
@@ -183,14 +183,14 @@ void Pedometer::takeAverage(){
 
 void Pedometer::updateData(){
     
-    /*Shift a destra*/
+    /*Shift right*/
     for(int i=15;i>0;i--){
         data.lastDataX[i]=data.lastDataX[i-1];
         data.lastDataY[i]=data.lastDataY[i-1];
         data.lastDataZ[i]=data.lastDataZ[i-1];
     }
     
-    /*Aggiunta nuovo dato*/
+     /*Add new data*/
     data.lastDataX[0]=x;
     data.lastDataY[0]=y;
     data.lastDataZ[0]=z;
@@ -199,14 +199,14 @@ void Pedometer::updateData(){
 void Pedometer::average(Average* average,int num){
     int sumX=0,sumY=0,sumZ=0;
     
-    /*Somma*/
+    /*Sum*/
     for(int i=0;i<num;i++){
         sumX +=data.lastDataX[i];
         sumY +=data.lastDataY[i];
         sumZ +=data.lastDataZ[i];
     }
     
-    /*Media*/
+    /*Average*/
     float averageXf=(float)sumX/(float)num;
     float averageYf=(float)sumY/(float)num;
     float averageZf=(float)sumZ/(float)num;

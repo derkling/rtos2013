@@ -19,9 +19,6 @@ public:
     void memsConfig(void);
     
     void getMemsData(int16_t* x, int16_t* y, int16_t* z);
-    
-    //void lis3dlSetRange(int8_t range);
-    
 };
 
 #endif	/* LIS302DL_H */

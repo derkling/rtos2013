@@ -15,8 +15,8 @@
 class Pedometer
 {
 public:
-    
-   static Pedometer* getInstance();
+ 
+    static Pedometer* getInstance();
     
    void start();
    
