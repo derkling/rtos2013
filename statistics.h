@@ -19,8 +19,6 @@ public:
     
     float getAvg();
     
-    float getCal();
-    
     int getTime();
     
     float getDistance();

@@ -130,10 +130,9 @@ void Pedometer::stepCounter(){
         //values given by the MEMS to an 'older' value, in fact another average value 
         //done with more value (longer time constant).
         //delta_x = average on last 4 value, minus average done on last 16 value
-        
         dx =  fabs(average4.x - average16.x); 
-        dy =  fabs(average4.y - average16.y) ; 
-        dz =  fabs(average4.z - average16.z) ; 
+        dy =  fabs(average4.y - average16.y); 
+        dz =  fabs(average4.z - average16.z); 
         
         //Accelleration
         float accellerationF = sqrt( (float)(dx*dx + dy*dy + dz*dz )) ;  

@@ -21,6 +21,8 @@ public:
    void start();
    
    int getStep();
+
+   void compareSteps(int otherSteps);
    
    ~Pedometer()
     {
