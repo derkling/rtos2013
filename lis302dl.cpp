@@ -26,13 +26,13 @@ Spi spi;
 Utility* utility_l;
 
 /**
- * Class constructor
+ * \brief Class constructor
  */
 Lis302dl::Lis302dl(){
     utility_l=Utility::getInstance();
 }
 /**
- * this function configure the SPI and write on it the configuration parameters
+ * \brief this function configure the SPI and write on it the configuration parameters
  * for the accelerometer
  * @param void
  * @returns void
@@ -45,7 +45,7 @@ void Lis302dl::memsConfig(){
     spi.write(CTRL_REG1, &val, 1);
 }
 /**
- * This function perform a read for the accelerations for x,y,z axes
+ * \brief This function perform a read for the accelerations for x,y,z axes
  * @param x pointer to x variable
  * @param y pointer to y variable
  * @param z pointer to z variable

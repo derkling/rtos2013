@@ -10,11 +10,13 @@
  */
 
 #include <cstdio>
+#include <pthread.h>
 #include "miosix.h"
 #include "lis302dl.h"
 #include "pedometer.h"
 #include "utility.h"
 #include <math.h>
+#include "slice-and-play.h"
 
 #define LIMIT   155
 #define R       3
@@ -25,7 +27,7 @@ using namespace std;
 using namespace miosix;
 
 /**
- * Defines the state of the counter
+ * \brief Defines the state of the counter
  */
 typedef enum
    {
@@ -38,12 +40,14 @@ int16_t x, y, z;
 Lis302dl lis302dl;
 tState currentState= onPause;
 Utility* utility_p;
+pthread_t player;
+pthread_t wifiPlayer;
 
 bool Pedometer::instanceFlag = false;
 Pedometer* Pedometer::pedometer = NULL;
 
 /**
- * Private class constructor
+ * \brief Private class constructor
  */
 Pedometer::Pedometer(){
     utility_p=Utility::getInstance();
@@ -95,7 +99,7 @@ Pedometer* Pedometer::getInstance(){
 }
 
 /**
- * Starts the step counting
+ * \brief Starts the step counting
  * @param void
  * @returns void
  */
@@ -216,13 +220,21 @@ void Pedometer::accMax(){
     if(accelleration>aMax) aMax=accelleration;
 }
 
-void Pedometer::incrementStep(){
-    step++;
-    //if(!(step%50)) evviva(step);
+void *playSteps(void *args){
+    ring::instance().play_n_of_step(step,100);
 }
 
+void Pedometer::incrementStep(){
+    step++;
+    if(step%2 == 0){
+        pthread_create(&player, NULL, &playSteps, NULL);
+    }
+}
+
+
+
 /**
- * getter of actual steps number
+ * \brief getter of actual steps number
  * @param void
  * @returns int number of steps
  */
@@ -231,7 +243,7 @@ int Pedometer::getStep(){
 }
 
 /**
- * print on serial peripheral the values of the average acceleration on the 3 axes
+ * \brief print on serial peripheral the values of the average acceleration on the 3 axes
  * debug only
  */
 void Pedometer::mediaPrint(){
@@ -244,7 +256,7 @@ void Pedometer::mediaPrint(){
 }
 
 /**
- * print on serial peripheral the acceleration for the x axe
+ * \brief print on serial peripheral the acceleration for the x axe
  * debug only
  */
 void Pedometer::dataXPrint(){
@@ -256,7 +268,7 @@ void Pedometer::dataXPrint(){
 }
 
 /**
- * print on serial peripheral the acceleration for the y axe
+ * \brief print on serial peripheral the acceleration for the y axe
  * debug only
  */
 void Pedometer::dataYPrint(){
@@ -268,7 +280,7 @@ void Pedometer::dataYPrint(){
 }
 
 /**
- * print on serial peripheral the acceleration for the z axe
+ * \brief print on serial peripheral the acceleration for the z axe
  * debug only
  */
 void Pedometer::dataZPrint(){
@@ -277,4 +289,29 @@ void Pedometer::dataZPrint(){
         printf("%i",data.lastDataZ[i]);
     }
     printf("\n");
+}
+
+void *playTrombone(void *args){
+    ring::instance().looser_Song(100);
+}
+
+void *playVittoria(void *args){    
+	ring::instance().victory_Song(100);
+}
+
+/**
+* \brief Plays winning sound if actual step is grater than oterSteps, otherwise plays a lose sound.
+*@param otherSteps: int
+*@return void
+*/
+void Pedometer::compareSteps(int otherSteps){
+    
+    if(step<=otherSteps){
+        pthread_create(&wifiPlayer, NULL, &playTrombone, NULL);
+    }
+    
+    else{
+        pthread_create(&wifiPlayer, NULL, &playVittoria, NULL);
+    }
+    
 }

@@ -2,8 +2,8 @@
  * File: statistics.cpp
  * \brief this class calculates the statistics of the training
  * 
- *        This class calculate the average speed, the consumed calories and 
- *        the time in seconds for the training
+ * \details  This class calculate the average speed, the consumed calories and 
+ *                     the time in seconds for the training
  * \author Omar Scotti
  * \author Diego Rondelli
  * \date 21/01/2014
@@ -43,7 +43,7 @@ Statistics* Statistics::statistics = NULL;
 Utility* utility_st;
 
 /**
- * Private class constructor
+ * \brief Private class constructor
  */
 Statistics::Statistics(){
     utility_st=Utility::getInstance();
@@ -90,8 +90,9 @@ Statistics* Statistics::getInstance()
  * \brief starts the statistic calc
  * \details calculates the activity time in seconds, the average speed and the 
  *          distance.
+ * @param void
+ * @return void
  */
-
 void Statistics::start(){
     while(true){
     
@@ -155,41 +156,51 @@ void Statistics::start(){
         avg=distance/seconds;
     } 
     oldSteps=newSteps;
-    
     utility_st->test2(stepsInInterval,newSteps,distance,height,multParam,avg);
    }
 }
 
 /**
- * getter of average speed
+ *\brief  getter of average speed
+ *@param void
  * @return the average speed 
  */
 float Statistics::getAvg(){
     return avg;
 }
 /**
- * getter of distance traveled
+ * \brief getter of distance traveled
+ *@param void
  * @return distance traveled
  */
 float Statistics::getDistance(){
     return distance;
 }
 /**
- * getter of walking time
- * @return time of walking in seconds
+ * \brief getter of total moving time
+ * @return time of moving in seconds
  */
 int Statistics::getTime(){
     return seconds;
 }
-
+/**
+ * \brief getter of walking time
+ * @return time of walking in seconds
+ */
 int Statistics::getWalkTime(){
     return walkTime;
 }
-
+/**
+ * \brief getter of run time
+ * @return time of run in seconds
+ */
 int Statistics::getRunTime(){
     return runTime;
 }
-
+/**
+ * \brief getter of pause time
+ * @return time of pause in seconds
+ */
 int Statistics::getStopTime(){
     return stopTime;
 }

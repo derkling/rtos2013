@@ -60,7 +60,7 @@ Utility* Utility::getInstance()
 }
 
 /**
- * make the blue led blink one time
+ * \brief make the blue led blink one time
  * @param void
  * @return void
  */
@@ -72,7 +72,7 @@ void Utility::ledBlue(){
 }
 
 /**
- * make the red led blink one time
+ * \brief make the red led blink one time
  * @param void
  * @return void
  */
@@ -84,7 +84,7 @@ void Utility::ledRed(){
 }
 
 /**
- * make the green led blink one time
+ * \brief make the green led blink one time
  * @param void
  * @return void
  */
@@ -96,7 +96,7 @@ void Utility::ledGreen(){
 }
 
 /**
- * print the program variables on serial interface
+ * \brief print the program variables on serial interface
  * @param x the x-axe acceleration
  * @param y the y-axe acceleration
  * @param z the z-axe acceleration

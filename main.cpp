@@ -28,7 +28,7 @@ void *startStatistics(void *arg){
 }
 
 /*
- * Main method, starts the pedometer
+ * \brief Main method, starts the pedometer
  */
 int main(int argc, char** argv) {
     

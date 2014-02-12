@@ -36,13 +36,13 @@ typedef Gpio<GPIOE_BASE, 3> CS;
 Utility* utility_s;
 
 /**
- * class constructor
+ * \brief class constructor
  */
 Spi::Spi(){
     utility_s=Utility::getInstance();
 }
 /**
- *  This function sets up all the CPU register to enable the SPI1 interface;
+ *  \brief This function sets up all the CPU register to enable the SPI1 interface;
  *  @param void
  *  @return void
  */
@@ -141,7 +141,7 @@ uint16_t Spi::isBusy(int reg){
 }
 
 /**
- * this function perform a single read on SPI
+ * \brief this function perform a single read on SPI
  *  @param addr the address where the read have to be performed
  *  @return the value of the information at required address
  */
@@ -178,7 +178,7 @@ int16_t Spi::singleRead(uint8_t addr){
 }
 
 /**
- * This function perform the needed write on SPI
+ * \brief This function perform the needed write on SPI
  * @param addr the address where information must be written
  * @param buffer the information that have to be sent on SPI
  * @param len the number of write that have to be performed

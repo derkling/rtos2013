@@ -1,7 +1,7 @@
 /**
  *  File:      spi1.h
  *  \brief     This is the header file for the spi1 class
- *  \details   
+ *  
  *  \author    Omar Scotti
  *  \author    Diego Rondelli
  *  \version   1.0
