@@ -19,7 +19,6 @@
 #include "spi1.h"
 #include "spi1_constant.h"
 #include "utility.h"
-#include "stm32f4xx.h"
 
 #define ALTERNATE_FUNCTION_SPI1 5
 #define SPIg SPI1

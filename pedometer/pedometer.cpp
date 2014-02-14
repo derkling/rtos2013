@@ -16,7 +16,7 @@
 #include "pedometer.h"
 #include "utility.h"
 #include <math.h>
-#include "slice-and-play.h"
+#include "../ring/slice-and-play.h"
 
 #define LIMIT   155
 #define R       3
