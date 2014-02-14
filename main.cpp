@@ -17,6 +17,7 @@
 #include "social_wireless.h"
 #include <cstdio>
 #include <unistd.h>
+#include "button.h"
 
 using namespace std;
 using namespace miosix;
@@ -71,6 +72,22 @@ int main(int argc, char** argv) {
     
     pthread_join(pedometerThread,NULL);
     pthread_join(statisticsThread,NULL);
+    
+    configureButtonInterrupt();
+	for(;;)
+	{
+		waitForButton();
+		printf("Pulsante premuto\n");
+
+	   
+		int dati_pedometro_int=pedometerApp::getStep();
+		char dati_pedometro_string[3];
+		sprintf(dati_pedometro_string, "%d", dati_pedometro_int);
+		printf("%s",dati_pedometro_string);
+		sendData(dati_pedometro_string);
+		
+	}
+    
     
     return 0;
 }

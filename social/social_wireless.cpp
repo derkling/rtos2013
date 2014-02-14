@@ -137,9 +137,14 @@ void *interruptConsumer(void *arg){
             
             
             spiSendCommandReadData(R_RX_PAYLOAD,COMMAND_WITHOUT_ADDRESS,&sr,rxPayload,(int)payloadWidth);
-            rxPayload[payloadWidth]='\n';
-            
-          printf("%s",rxPayload);
+			
+			rxPayload[payloadWidth]='\0';
+						
+			printf("%s",rxPayload);
+					  
+			int dati_pedometro_int = atoi(rxPayload);
+
+			Pedometer::getInstance()->compareSteps(dati_pedometro_int);
   
         }
 
