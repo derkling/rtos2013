@@ -70,9 +70,6 @@ int main(int argc, char** argv) {
     pthread_t pedometerThread;
     pthread_create(&pedometerThread,NULL,&startPedometer,NULL);
     
-    pthread_join(pedometerThread,NULL);
-    pthread_join(statisticsThread,NULL);
-    
     configureButtonInterrupt();
 	for(;;)
 	{

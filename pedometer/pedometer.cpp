@@ -225,7 +225,7 @@ void *playSteps(void *args){
 
 void Pedometer::incrementStep(){
     step++;
-    if(step%2 == 0){
+    if(step%20 == 0){
         pthread_create(&player, NULL, &playSteps, NULL);
     }
 }
