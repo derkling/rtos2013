@@ -15,15 +15,18 @@ SUBDIRS := miosix
 ##
 SRC :=                                  \
 main.cpp\
-pedometer\
-lis302dl.cpp\
-spi1.cpp\
-utility.cpp\
-statistics.cpp\
-main.cpp\
-spi.cpp\
-social_wireless.cpp\
-queue.cpp
+pedometer/pedometer.cpp\
+pedometer/lis302dl.cpp\
+pedometer/spi1.cpp\
+pedometer/utility.cpp\
+pedometer/statistics.cpp\
+social/spi.cpp\
+social/social_wireless.cpp\
+social/queue.cpp\
+ring/slice-and-play.cpp\
+ring/convert.cpp\
+ring/adpcm.c\
+ring/demo.cpp
 
 ##
 ## List here additional static libraries with relative path
