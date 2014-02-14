@@ -18,6 +18,9 @@
 #include <cstdio>
 #include <unistd.h>
 
+using namespace std;
+using namespace miosix;
+
 typedef Gpio<GPIOD_BASE,15> blueLed;
 
 Pedometer* pedometerApp;
@@ -25,26 +28,6 @@ Statistics* statistics;
 #define PRIORITY_MAX 2
 
 void *startPedometer(void *arg){
-
-	char payload[33];
-
-	blueLed::mode(Mode::OUTPUT);
-       
-        init();
-
-        char orangeon[]="orangeon";
-
-        char orangeoff[]="orangeoff";
-        
-	blueLed::high();
-
-	while(1){
-		scanf("%s",payload);
-		sendData(payload);		
-//		sendData(orangeon);
-//		sendData(orangeoff);
-//		usleep(50000);
-	}
     miosix::Thread::getCurrentThread()->setPriority(PRIORITY_MAX-1);
     pedometerApp->start();
 }
@@ -58,7 +41,25 @@ void *startStatistics(void *arg){
  * \brief Main method, starts the pedometer
  */
 int main(int argc, char** argv) {
-    
+//    char payload[33];
+//    blueLed::mode(Mode::OUTPUT);
+//
+//
+//    char orangeon[]="orangeon";
+//
+//    char orangeoff[]="orangeoff";
+//
+//    blueLed::high();
+//
+//    while(1){
+//        scanf("%s",payload);
+//        sendData(payload);		
+////		sendData(orangeon);
+////		sendData(orangeoff);
+////		usleep(50000);
+//    }
+  
+    init();
     pedometerApp = Pedometer::getInstance();
     statistics = Statistics::getInstance();
     
