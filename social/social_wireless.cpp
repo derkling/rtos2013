@@ -5,6 +5,7 @@
 #include <pthread.h>
 #include <string.h>
 #include "queue.h"
+#include "../pedometer/pedometer.h"
 #include <miosix/kernel/scheduler/scheduler.h>
 
 void beep(void);
@@ -142,7 +143,7 @@ void *interruptConsumer(void *arg){
 						
 			printf("%s",rxPayload);
 					  
-			int dati_pedometro_int = atoi(rxPayload);
+			int dati_pedometro_int = atoi((char*)rxPayload);
 
 			Pedometer::getInstance()->compareSteps(dati_pedometro_int);
   

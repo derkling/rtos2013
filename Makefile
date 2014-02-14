@@ -25,7 +25,8 @@ social/social_wireless.cpp\
 social/queue.cpp\
 ring/slice-and-play.cpp\
 ring/adpcm.c\
-ring/player.cpp
+ring/player.cpp\
+button.cpp
 
 ##
 ## List here additional static libraries with relative path

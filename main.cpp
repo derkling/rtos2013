@@ -9,12 +9,12 @@
  */
 
 #include <cstdlib>
-#include "pedometer.h"
-#include "statistics.h"
+#include "pedometer/pedometer.h"
+#include "pedometer/statistics.h"
 #include <pthread.h>
 #include "miosix.h"
-#include "spi.h"
-#include "social_wireless.h"
+#include "social/spi.h"
+#include "social/social_wireless.h"
 #include <cstdio>
 #include <unistd.h>
 #include "button.h"
@@ -80,7 +80,7 @@ int main(int argc, char** argv) {
 		printf("Pulsante premuto\n");
 
 	   
-		int dati_pedometro_int=pedometerApp::getStep();
+		int dati_pedometro_int=pedometerApp->getStep();
 		char dati_pedometro_string[3];
 		sprintf(dati_pedometro_string, "%d", dati_pedometro_int);
 		printf("%s",dati_pedometro_string);
