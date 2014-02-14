@@ -1,3 +1,4 @@
+
 /**
  * File:   lis302dl.cpp
  *  \brief     main class. It only starts the program
@@ -12,12 +13,38 @@
 #include "statistics.h"
 #include <pthread.h>
 #include "miosix.h"
+#include "spi.h"
+#include "social_wireless.h"
+#include <cstdio>
+#include <unistd.h>
+
+typedef Gpio<GPIOD_BASE,15> blueLed;
 
 Pedometer* pedometerApp;
 Statistics* statistics;
 #define PRIORITY_MAX 2
 
 void *startPedometer(void *arg){
+
+	char payload[33];
+
+	blueLed::mode(Mode::OUTPUT);
+       
+        init();
+
+        char orangeon[]="orangeon";
+
+        char orangeoff[]="orangeoff";
+        
+	blueLed::high();
+
+	while(1){
+		scanf("%s",payload);
+		sendData(payload);		
+//		sendData(orangeon);
+//		sendData(orangeoff);
+//		usleep(50000);
+	}
     miosix::Thread::getCurrentThread()->setPriority(PRIORITY_MAX-1);
     pedometerApp->start();
 }
@@ -46,4 +73,5 @@ int main(int argc, char** argv) {
     
     return 0;
 }
+
 

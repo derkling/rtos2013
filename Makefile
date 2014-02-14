@@ -19,7 +19,12 @@ pedometer\
 lis302dl.cpp\
 spi1.cpp\
 utility.cpp\
-statistics.cpp
+statistics.cpp\
+main.cpp\
+spi.cpp\
+social_wireless.cpp\
+queue.cpp
+
 ##
 ## List here additional static libraries with relative path
 ##
