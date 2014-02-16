@@ -154,6 +154,7 @@ typedef enum {
 
 int nrf24l01p_mode;
 int tx_fifo_status;
+char data_rx;
 
 NRF24L01P::NRF24L01P() {
    bluLed::mode(Mode::OUTPUT);
@@ -390,11 +391,11 @@ void NRF24L01P::TrasmitData(char *data , int dim)
          }
     
     result =  this->readStatusRegister();
-    printf("**************TRANSMISSION COMPLETE******************");
-    printf("il registro status dopo aver trasmesso è: %d\n" , result);
+    //printf("**************TRANSMISSION COMPLETE******************");
+    //printf("il registro status dopo aver trasmesso è: %d\n" , result);
     
-    result = this->readRegister(23);
-    printf("il registro FIFO_STATUS_TX dopo aver trasmesso è: %d\n" , result);
+    //result = this->readRegister(23);
+    //printf("il registro FIFO_STATUS_TX dopo aver trasmesso è: %d\n" , result);
     
     current_config = this->readStatusRegister();
     new_config = current_config | _NRF24L01P_STATUS_TX_DS; // reset TX_DS for next IRQ
@@ -628,8 +629,13 @@ int NRF24L01P::readStatusRegister()
     cs::low();
     value=spiDriver->receive(); // in this there is a dummy write of 0 on MOSI
     cs::high();
-    return value; // need a reverse? it arrives form LSB to MSByte
+    return value; 
 
+}
+
+char NRF24L01P::readData()
+{
+    return data_rx;
 }
 
 void __attribute__((naked)) EXTI1_IRQHandler()
@@ -642,9 +648,24 @@ void __attribute__((naked)) EXTI1_IRQHandler()
 void __attribute__((used)) EXTI1HandlerImpl()
 {
     EXTI->PR=EXTI_PR_PR1; //viene resettato il registro che permette di uscire dalla chiamata a interrupt 
-    
-    //DEBUG
-    redLed::high();
+    if(NRF24L01P.readStatusRegister() & 0x40 == 0)
+       {
+        char data = (char) NRF24L01P.receiveDataFromRx(); // put the data in a local var
+        data_rx = data; // then store local var in the global var 
+       }
+    else
+        if(NRF24L01P.readStatusRegister() & _NRF24L01P_STATUS_TX_DS)
+           {
+            bluLed::high();
+            sleep(20);
+            bluLed::low();
+            redLed::high();
+            sleep(20);
+            redLed::low();
+            orangeLed::high();
+            sleep(20);
+            orangeLed::low();
+           }
     
 }
 
