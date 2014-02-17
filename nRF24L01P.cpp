@@ -80,9 +80,7 @@
 #define NRF24L01P_CONFIG_CRC_NONE               (0)
 #define NRF24L01P_CONFIG_CRC_8BIT       (NRF24L01P_CONFIG_EN_CRC)
 #define NRF24L01P_CONFIG_CRC_16BIT      (NRF24L01P_CONFIG_EN_CRC|NRF24L01P_CONFIG_CRC0)
-#define NRF24L01P_CRC_NONE                      0
-#define NRF24L01P_CRC_8_BIT                     8
-#define NRF24L01P_CRC_16_BIT                    16
+
 
 // SETUP_AW register:
 #define NRF24L01P_SETUP_AW_AW_MASK              (0x3<<0)
@@ -95,18 +93,31 @@
 #define NRF24L01P_TPECETR                       10
 #define NRF24L01P_TPRCV                         130
 
-//size
-#define NRF24L01P_TX_FIFO_SIZE                  32
-#define NRF24L01P_RX_FIFO_SIZE                  32
-#define NRF24L01P_MIN_RF_FREQUENCY              2400
-#define NRF24L01P_MAX_RF_FREQUENCY              2525
+/*CRC Configuration*/
+#define NRF24L01P_CRC_NONE                      0
+#define NRF24L01P_CRC_8_BIT                     8
+#define NRF24L01P_CRC_16_BIT                    16
+
+/*Output Power configuration*/
 #define NRF24L01P_TX_PWR_ZERO_DB                 0
 #define NRF24L01P_TX_PWR_MINUS_6_DB             -6
 #define NRF24L01P_TX_PWR_MINUS_12_DB            -12
 #define NRF24L01P_TX_PWR_MINUS_18_DB            -18
+
+/*Data rate configuration*/
 #define NRF24L01P_DATARATE_250KBPS              250
 #define NRF24L01P_DATARATE_1MBPS                1000
 #define NRF24L01P_DATARATE_2MBPS                2000
+
+/*Tx & Rx Fifo Size*/
+#define NRF24L01P_TX_FIFO_SIZE                  32
+#define NRF24L01P_RX_FIFO_SIZE                  32
+
+/*Frequency Configuration*/
+#define NRF24L01P_MIN_RF_FREQUENCY              2400
+#define NRF24L01P_MAX_RF_FREQUENCY              2525
+
+
 #define NRF24L01P_EN_AA_NONE                    0
 #define NRF24L01P_EN_RXADDR_NONE                0
 #define NRF24L01P_SETUP_RETR_NONE               0
@@ -145,13 +156,13 @@ nRF24L01P::nRF24L01P() {
     set_register(NRF24L01P_REG_EN_RXADDR, NRF24L01P_EN_RXADDR_NONE);
     set_register(NRF24L01P_REG_RX_PW_P0,32);
     set_tx_address(5);
-    disableTXInterrupt();
+    disable_tx_interrupt();
     set_crc_width(NRF24L01P_CRC_8_BIT);
-    setTxAddress(NRF24L01P_ADDRESS_DEFAULT, NRF24L01P_ADDRESS_DEFAULT_WIDTH);
-    setRxAddress(NRF24L01P_ADDRESS_DEFAULT, NRF24L01P_ADDRESS_DEFAULT_WIDTH,NRF24L01P_PIPE_NO_0);
+    set_tx_address(NRF24L01P_ADDRESS_DEFAULT, NRF24L01P_ADDRESS_DEFAULT_WIDTH);
+    set_rx_address(NRF24L01P_ADDRESS_DEFAULT, NRF24L01P_ADDRESS_DEFAULT_WIDTH,NRF24L01P_PIPE_NO_0);
     disable_auto_ack();
     disable_auto_retransmit();
-    setTransferSize(32,NRF24L01P_PIPE_NO_0);
+    set_transfer_size(32,NRF24L01P_PIPE_NO_0);
     printf("Status %d\n",get_register_status());
     printf("Output power %d\n",get_output_power());
     printf("Air data rate %d\n",get_air_data_rate());
@@ -170,8 +181,8 @@ nRF24L01P::~nRF24L01P() {
 }
 
 
-void nRF24L01P::disableTXInterrupt(){
-     int current_config = get_register(NRF24L01P_REG_CONF); 
+void nRF24L01P::disable_tx_interrupt(){
+    int current_config = get_register(NRF24L01P_REG_CONF); 
     current_config |= NRF24L01P_CONFIG_MASK_TX;
     set_register(NRF24L01P_REG_CONF,current_config);
 
@@ -207,7 +218,7 @@ void nRF24L01P::power_up() {
     set_register(NRF24L01P_REG_CONF,current_config);
     usleep(NRF24L01P_TPD2STBY);
     mode=NRF24L01P_STANDBY_MODE;
-    flushTx();
+    flush_tx();
 }
 
 void nRF24L01P::power_down() {
@@ -250,10 +261,8 @@ int nRF24L01P::transmit(int count, char* data){
     CS::low();
     spi->spi_write(NRF24L01P_CMD_WR_TX_PAYLOAD); //command to start write from payload TX
     for( int i=0; i<count; i++){
-        //printf("char %c\n",*data);
         spi->spi_write(*data++);
     }
-    //spi->spi_write(12);
     CS::high();
     int old_mode = mode;
     set_transmit_mode();
@@ -262,7 +271,7 @@ int nRF24L01P::transmit(int count, char* data){
     CE_disable();
     while( !( get_register_status() & NRF24L01P_STATUS_TX_DS)){
         
-    } //polling waiting for transfert complete
+    } //polling waiting for transfer complete
     set_register(NRF24L01P_REG_STATUS, NRF24L01P_STATUS_TX_DS); /*clear bit data sent tx fifo*/
     if( old_mode == NRF24L01P_RX_MODE){              //reset the state before
         set_receive_mode();
@@ -274,7 +283,7 @@ int nRF24L01P::transmit(int count, char* data){
 
 int nRF24L01P::receive(int pipe,char *data,int count){
     if(mode!=NRF24L01P_RX_MODE){
-        printf("Before receive set up in recieve_mode\n");
+        printf("Before receive set up in receive_mode\n");
         return -1;
     }
     if (pipe<NRF24L01P_PIPE_NO_0 || pipe>NRF24L01P_PIPE_NO_5){
@@ -365,40 +374,6 @@ int nRF24L01P::get_register_status(){
     return status;
 }
 
-void nRF24L01P::test_receive(){
-    power_up();
-    printf("Config register at power up %d\n",get_register(NRF24L01P_REG_CONF));
-    printf("Status register before receive %d\n",get_register_status());
-    set_receive_mode();
-    printf("Config register at receive %d\n",get_register(NRF24L01P_REG_CONF));
-    printf("Status register after receive %d\n",get_register_status());
-
-    printf("default value");
-    printf( "nRF24L01+ Frequency    : %d MHz\r\n",  get_frequency() );
-   // printf( "nRF24L01+ Output power : %d dBm\r\n",  my_nrf24l01p.getRfOutputPower() );
-    printf( "nRF24L01+ Data Rate    : %d kbps\r\n", get_air_data_rate());
-   // printf( "nRF24L01+ RX Address   : 0x%010llX\r\n", my_nrf24l01p.getRxAddress() );
-    char *data;
-        showInternal();
-
-   while(true){
-     reset_interrupt();
-    printf("Status register %d\n",get_register_status());
-    printf("Config register %d\n",get_register(NRF24L01P_REG_CONF));
-    printf("ricevuto da pipe 0 %d\n",receive(NRF24L01P_PIPE_NO_0,data,1));
-    while((get_register_status() & NRF24L01P_STATUS_RX_P_NO) == 14){
-         printf("ricevuto da pipe 0 %d\n",receive(NRF24L01P_PIPE_NO_0,data,1));
-    }
-   printf("ho ricevuto %c\n",*data);    
-    //printf("ho ricevuto %c\n",data);
-    showInternal();
-    usleep(1000000);
-        
-
-    }
- 
-        
-}
 
 void nRF24L01P::setup_Gpio(){
     
@@ -406,7 +381,7 @@ void nRF24L01P::setup_Gpio(){
     MISO::alternateFunction(5);
     MOSI::mode(Mode::ALTERNATE); 
     MOSI::alternateFunction(5);
-    IRQ::mode(Mode::INPUT);
+    IRQ::mode(Mode::INPUT_PULL_UP);
     SCK::mode(Mode::ALTERNATE);
     SCK::alternateFunction(5);
     CS::mode(Mode::OUTPUT);
@@ -417,15 +392,14 @@ void nRF24L01P::setup_Gpio(){
 }
 
 void nRF24L01P::set_frequency(int frequency){
-    printf("Begin set frequency\n");
-    if ((frequency < NRF24L01P_MIN_RF_FREQUENCY) | (frequency > NRF24L01P_MAX_RF_FREQUENCY)){
+   if ((frequency < NRF24L01P_MIN_RF_FREQUENCY) | (frequency > NRF24L01P_MAX_RF_FREQUENCY)){
         printf("Error frequency module %d\n",frequency);
         return;
     }
     int channel = (frequency - NRF24L01P_MIN_RF_FREQUENCY) & 0x7F;  /*from manual RF_freq = frequency - NRF24L01P_MIN_RF_FREQUENCY)*/
     set_register(NRF24L01P_REG_RF_CH, channel);
-    printf("end set frequency\n");
 }
+
 int nRF24L01P::get_frequency(){
     int freq = get_register(NRF24L01P_REG_RF_CH);
     return (freq + NRF24L01P_MIN_RF_FREQUENCY);
@@ -493,7 +467,7 @@ int nRF24L01P::get_air_data_rate() {
             return NRF24L01P_DATARATE_2MBPS;
  
         default:
-            printf( "nRF24L01P: Unknown Air Data Rate value %d\n", rate );
+            printf( "Unknown Air Data Rate value %d\n", rate );
             return 0;
 
     }
@@ -518,7 +492,7 @@ int nRF24L01P::get_output_power() {
             return NRF24L01P_TX_PWR_MINUS_18_DB;
  
         default:
-            printf( "nRF24L01P: Unknown RF Output Power value %d\n", power );
+            printf( "Unknown RF Output Power value %d\n", power );
             return 0;
  
     }
@@ -540,28 +514,19 @@ int nRF24L01P::get_crc_width() {
             return NRF24L01P_CRC_16_BIT;
  
         default:
-            printf( "nRF24L01P: Unknown CRC Width value %d\n", crcWidth );
+            printf( "Unknown CRC Width value %d\n", crcWidth );
             return 0;
  
     }
 }
 
-void nRF24L01P::test_transmit(){
-    power_down();
-    printf("Config register at power down %d\n",get_register(NRF24L01P_REG_CONF));
-    power_up();
-    printf("Config register at power up %d\n",get_register(NRF24L01P_REG_CONF));
-    set_transmit_mode();
-    printf("Config register at transmit %d\n",get_register(NRF24L01P_REG_CONF));
-    
-}
 
 void nRF24L01P::set_tx_address(int number){
     int num_bit = number -2;
     set_register(NRF24L01P_REG_SETUP_AW, num_bit);
 }
 
-void nRF24L01P::flushTx()
+void nRF24L01P::flush_tx()
 {
   CS::low();
   spi->spi_write( NRF24L01P_SPI_CMD_FLUSH_TX  );  //svuoto coda TX
@@ -588,7 +553,7 @@ void nRF24L01P::set_crc_width(int width) {
             break;
  
         default:
-            printf( "nRF24L01P: Invalid CRC Width setting %d\n", width );
+            printf("Invalid CRC Width setting %d\n", width );
             return;
  
     }
@@ -628,7 +593,7 @@ unsigned long long nRF24L01P::get_tx_address() {
             break;
  
         default:
-            printf( "nRF24L01P: Unknown getTxAddress width value %d\n", setupAw );
+            printf( "Unknown getTxAddress width value %d\n", setupAw );
             return 0;
  
     }
@@ -659,7 +624,7 @@ unsigned long long nRF24L01P::get_rx_address(int pipe) {
  
     if ( ( pipe < NRF24L01P_PIPE_NO_0 ) || ( pipe > NRF24L01P_PIPE_NO_5 ) ) {
  
-        printf( "nRF24L01P: Invalid setRxAddress pipe number %d\n", pipe );
+        printf( "Invalid setRxAddress pipe number %d\n", pipe );
         return 0;
  
     }
@@ -685,7 +650,7 @@ unsigned long long nRF24L01P::get_rx_address(int pipe) {
                 break;
  
             default:
-                printf( "nRF24L01P: Unknown getRxAddress width value %d\n", setupAw );
+                printf( "Unknown getRxAddress width value %d\n", setupAw );
                 return 0;
  
         }
@@ -727,7 +692,7 @@ unsigned long long nRF24L01P::get_rx_address(int pipe) {
  
 }
 
-void nRF24L01P::setTxAddress(unsigned long long address, int width) {
+void nRF24L01P::set_tx_address(unsigned long long address, int width) {
  
     int setupAw = get_register(NRF24L01P_REG_SETUP_AW) & ~NRF24L01P_SETUP_AW_AW_MASK;
  
@@ -746,7 +711,7 @@ void nRF24L01P::setTxAddress(unsigned long long address, int width) {
             break;
  
         default:
-            printf( "nRF24L01P: Invalid setTxAddress width setting %d\n", width );
+            printf( "Invalid setTxAddress width setting %d\n", width );
             return;
  
     }
@@ -773,11 +738,11 @@ void nRF24L01P::setTxAddress(unsigned long long address, int width) {
  
 }
 
-void nRF24L01P::setRxAddress(unsigned long long address, int width, int pipe) {
+void nRF24L01P::set_rx_address(unsigned long long address, int width, int pipe) {
  
     if ( ( pipe < NRF24L01P_PIPE_NO_0 ) || ( pipe > NRF24L01P_PIPE_NO_5 ) ) {
  
-        printf( "nRF24L01P: Invalid setRxAddress pipe number %d\n", pipe );
+        printf( "Invalid setRxAddress pipe number %d\n", pipe );
         return;
  
     }
@@ -801,7 +766,7 @@ void nRF24L01P::setRxAddress(unsigned long long address, int width, int pipe) {
                 break;
     
             default:
-                printf( "nRF24L01P: Invalid setRxAddress width setting %d\n", width );
+                printf( "Invalid setRxAddress width setting %d\n", width );
                 return;
     
         }
@@ -841,18 +806,18 @@ void nRF24L01P::setRxAddress(unsigned long long address, int width, int pipe) {
     set_register(NRF24L01P_REG_EN_RXADDR, enRxAddr);
 }
 
-void nRF24L01P::setTransferSize(int size, int pipe) {
+void nRF24L01P::set_transfer_size(int size, int pipe) {
  
     if ( ( pipe < NRF24L01P_PIPE_NO_0) || ( pipe > NRF24L01P_PIPE_NO_5 ) ) {
  
-        printf( "nRF24L01P: Invalid Transfer Size pipe number %d\n", pipe );
+        printf( "Invalid Transfer Size pipe number %d\n", pipe );
         return;
  
     }
  
     if ( ( size < 0 ) || ( size > NRF24L01P_RX_FIFO_SIZE ) ) {
  
-        printf( "nRF24L01P: Invalid Transfer Size setting %d\n", size );
+        printf( "Invalid Transfer Size setting %d\n", size );
         return;
  
     }
@@ -861,103 +826,6 @@ void nRF24L01P::setTransferSize(int size, int pipe) {
  
     set_register(rxPwPxRegister, ( size & NRF24L01P_RX_PW_Px_MASK ) );
  
-}
-
-int nRF24L01P::readRegister(int regAddress) //arriva su 1 byte
-{
-    // request = regAddress; tanto questo è in | bit a bit con 0x00 ( READ ) e in & bit a bit con una MASK 0x1f
-    int value;
-    
-    //every spi commands must starts with a high to low cs signal
-    CS::low();
-    
-    spi->spi_write(regAddress);
-    value = spi->spi_Receive();
-    
-    CS::high();
-    
-    return value;
-}
-
-void nRF24L01P::showInternal()
-{   
-    int result;
-    
-    result = this->readRegister(0);
-    printf("<<CONFIG REGISTER>> è: %d\n" , result);
-    
-    result = this->readRegister(1);
-    printf("EN_AA REGISTER è: %d\n" , result);
-    
-    result = this->readRegister(2);
-    printf("EN_RXADDR REGISTER è: %d\n" , result);
-    
-    result = this->readRegister(3);
-    printf("SETUP_AW REGISTER è: %d\n" , result);
-    
-    result = this->readRegister(4);
-    printf("SETUP_RETR REGISTER è: %d\n" , result);
-    
-    result = this->readRegister(5);
-    printf("RF_CH REGISTER è: %d\n" , result);
-    
-    result = this->readRegister(6);
-    printf("RF_SETUP REGISTER è: %d\n" , result);
-    
-    result = this->readRegister(7);
-    printf("<<STATUS REGISTER>> è: %d\n" , result);
-    
-    result = this->readRegister(8);
-    printf("OBSERVE_TX REGISTER è: %d\n" , result);
-    
-    result = this->readRegister(9);
-    printf("RPD REGISTER è: %d\n" , result);
-    
-    result = this->readRegister(10);
-    printf("RX_ADDR_P0 REGISTER è: %d\n" , result);
-    
-     result = this->readRegister(11);
-    printf("RX_ADDR_P1 REGISTER è: %d\n" , result);
-    
-     result = this->readRegister(12);
-    printf("RX_ADDR_P2 REGISTER è: %d\n" , result);
-    
-     result = this->readRegister(13);
-    printf("RX_ADDR_P3 REGISTER è: %d\n" , result);
-    
-     result = this->readRegister(14);
-    printf("RX_ADDR_P4 REGISTER è: %d\n" , result);
-    
-     result = this->readRegister(15);
-    printf("RX_ADDR_P5 REGISTER è: %d\n" , result);
-            
-     result = this->readRegister(16);
-    printf("TX_ADDR REGISTER è: %d\n" , result);
-    
-    result = this->readRegister(17);
-    printf("RX_PW_P0 REGISTER è: %d\n" , result);
-    
-    result = this->readRegister(18);
-    printf("RX_PW_P1 REGISTER è: %d\n" , result);
-    
-    result = this->readRegister(19);
-    printf("RX_PW_P2 REGISTER è: %d\n" , result);
-    
-    result = this->readRegister(20);
-    printf("RX_PW_P3 REGISTER è: %d\n" , result);
-   
-    result = this->readRegister(21);
-    printf("RX_PW_P4 REGISTER è: %d\n" , result);
-    
-    result = this->readRegister(22);
-    printf("RX_PW_P5 REGISTER è: %d\n" , result);
-    
-    result = this->readRegister(23);
-    printf("<<FIFO_STATUS>> REGISTER è: %d\n" , result);
-    
-    result = this->readRegister(29);
-    printf("FEATURE REGISTER è: %d\n" , result);
-
 }
 
 void nRF24L01P::reset_interrupt(){

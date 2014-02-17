@@ -12,7 +12,7 @@ using namespace miosix;
 int main()
 {
     char transmit[32];
-    char receive[960];
+    char received[960];
     pthread_t wifi_thread;
     pthread_t thread_receive;
     init();
@@ -21,8 +21,8 @@ int main()
     while(1){
     
         scanf("%s", transmit);
-        invia(transmit);
-        ricevi(receive);
+        send(transmit);
+        receive(received);
 
     }
     pthread_join(wifi_thread,NULL);

@@ -2,7 +2,6 @@
 #include "miosix.h"
 #include "spi_driver.h"
 #include "nRF24L01P.h"
-
 #include <miosix/kernel/scheduler/scheduler.h>
 
 #define BUFFER_TRANSMIT_SIZE            960
@@ -13,16 +12,23 @@
 using namespace std;
 using namespace miosix;
 
-
+/*Variable for context switch*/
 static Thread *waiting=0;
+
+/*Buffers and counters*/
 static char buffer_transmit[BUFFER_TRANSMIT_SIZE];
 static char buffer_receive[BUFFER_RECEIVE_SIZE];
 static int counter_tx = 0;
 static int counter_rx = 0;
+
+/*Wireless Module*/
 static nRF24L01P *wifi;
+
+/*Buffers and module mutex*/
 static pthread_mutex_t buff_tx=PTHREAD_MUTEX_INITIALIZER;
-static pthread_mutex_t spi=PTHREAD_MUTEX_INITIALIZER;
 static pthread_mutex_t buff_rx=PTHREAD_MUTEX_INITIALIZER;
+static pthread_mutex_t spi=PTHREAD_MUTEX_INITIALIZER;
+
 
 typedef Gpio<GPIOD_BASE,12> greenLed;
 typedef Gpio<GPIOA_BASE,1> IRQ;
@@ -36,11 +42,11 @@ typedef Gpio<GPIOD_BASE,13> orangeLed;
  * 32 in modo che possa essere inviato.
  * @param payload - il payload che deve essere inserito nel buffer
  */
-void invia(char* payload){
+void send(char* payload){
     pthread_mutex_lock(&buff_tx);
     int i=0;
     if(counter_tx == BUFFER_TRANSMIT_SIZE){
-        printf("Buffer transmit pieno\n");
+        printf("Trasmit buffer is full\n");
         pthread_mutex_unlock(&buff_tx);
         return;
     }
@@ -81,39 +87,19 @@ void waitForModule(){
 
 void configureModuleInterrupt()
 {
-    IRQ::mode(Mode::INPUT_PULL_UP);
+    //IRQ::mode(Mode::INPUT_PULL_UP);
     SYSCFG->EXTICR[1] = SYSCFG_EXTICR1_EXTI1_PA;
-    EXTI->IMR |= EXTI_IMR_MR1; /*Periferica che gestisce gli external interrupt, è per il gpio 1*/
-    EXTI->RTSR &= ~EXTI_RTSR_TR1; /*Vado a verificare durante il fronte di salita*/
-    EXTI->FTSR |= EXTI_FTSR_TR1;
-    NVIC_EnableIRQ(EXTI1_IRQn); /*Abilitano il controller dell'interrupt, passando il nome e poi la priorità*/
-    NVIC_SetPriority(EXTI1_IRQn,15); //Low priority
+    /*Periferica che gestisce gli external interrupt, è per il gpio 1*/
+    EXTI->IMR |= EXTI_IMR_MR1; 
     
-}
-
-void *wifi_start(void *arg)
-{
-    char a[BUFFER_CELL_SIZE];
-    /*nRF24L01P *wifi;
-    wifi = new nRF24L01P();
-    greenLed::mode(Mode::OUTPUT);
-    redLed::mode(Mode::OUTPUT);
-    configureModuleInterrupt();*/
-    wifi->test_transmit();
-    greenLed::high();
-    usleep(1000000);
-    greenLed::low();
-    for(;;){
-        greenLed::high();
-        printf("Dammi un stringa da trasmettere\n");
-        scanf("%s", a);
-        pthread_mutex_lock(&spi);
-        wifi->transmit(BUFFER_CELL_SIZE,a);
-        pthread_mutex_unlock(&spi);
-        printf("Ho trasmesso\n");
-        greenLed::low();
-        usleep(7000000);
-    } 
+    /*Vado a verificare durante il fronte di salita*/
+    EXTI->RTSR &= ~EXTI_RTSR_TR1; 
+    EXTI->FTSR |= EXTI_FTSR_TR1;
+    /*Abilitano il controller dell'interrupt, passando il nome e poi la priorità*/
+    NVIC_EnableIRQ(EXTI1_IRQn);
+    /*Configuro una priorità bassa*/
+    NVIC_SetPriority(EXTI1_IRQn,15); 
+    
 }
 
 /**
@@ -132,7 +118,6 @@ void *wifi_receive(void *arg){
        while(wifi->packet_in_pipe(0)){
                  orangeLed::low();
                  wifi->reset_interrupt();
-                // printf("ricevuto da pipe 0 %d\n",);//mettere controllo su altro da leggere
                  wifi->receive(0,data,BUFFER_CELL_SIZE);
                  printf("<RECEIVE> %s\n",data);
                  pthread_mutex_lock(&buff_rx);
@@ -143,7 +128,7 @@ void *wifi_receive(void *arg){
                         counter_rx += BUFFER_CELL_SIZE;
                  }
                  else{
-                     printf("Buffer di ricezione pieno\n");
+                     printf("Receive buffer is full\n");
                  }
                  pthread_mutex_unlock(&buff_rx);
                  redLed::low();
@@ -186,11 +171,11 @@ void *wifi_transmit(void *arg){
     }      
 }
 
-void ricevi(char *payload){
+
+void receive(char *payload){
     pthread_mutex_lock(&buff_rx);
     if(counter_rx == 0){
         pthread_mutex_unlock(&buff_rx);
-        //printf("Buffer ricezione vuoto\n");
         return;
     }
     for(int i=0;i<counter_rx/BUFFER_CELL_SIZE;i++){
@@ -203,6 +188,10 @@ void ricevi(char *payload){
     pthread_mutex_unlock(&buff_rx);
 }
 
+/**
+ * La funzione inizializza i vari gpio collegati ai led utili per il debug, istanzia 
+ * il modulo wireless e lo configura in modalità ricezione.
+ */
 void init(){
     orangeLed::mode(Mode::OUTPUT);
     redLed::mode(Mode::OUTPUT);
