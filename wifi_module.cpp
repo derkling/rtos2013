@@ -29,18 +29,13 @@ static pthread_mutex_t buff_tx=PTHREAD_MUTEX_INITIALIZER;
 static pthread_mutex_t buff_rx=PTHREAD_MUTEX_INITIALIZER;
 static pthread_mutex_t spi=PTHREAD_MUTEX_INITIALIZER;
 
-
+/*Leds Gpio*/
 typedef Gpio<GPIOD_BASE,12> greenLed;
 typedef Gpio<GPIOD_BASE,14> redLed;
 typedef Gpio<GPIOD_BASE,15> blueLed;
 typedef Gpio<GPIOD_BASE,13> orangeLed;
 
 
-/**
- * La funzione permette di caricare nel buffer di trasmissione un payload di dimensione
- * 32 in modo che possa essere inviato.
- * @param payload - il payload che deve essere inserito nel buffer
- */
 void send(char* payload){
     pthread_mutex_lock(&buff_tx);
     int i=0;
