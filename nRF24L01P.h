@@ -36,6 +36,7 @@ public:
 
 
 private:
+    void clear_pending_interrupt();
     void disable_tx_interrupt();
     void CE_enable();
     void CE_disable();
