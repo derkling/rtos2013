@@ -31,7 +31,6 @@ static pthread_mutex_t spi=PTHREAD_MUTEX_INITIALIZER;
 
 
 typedef Gpio<GPIOD_BASE,12> greenLed;
-typedef Gpio<GPIOA_BASE,1> IRQ;
 typedef Gpio<GPIOD_BASE,14> redLed;
 typedef Gpio<GPIOD_BASE,15> blueLed;
 typedef Gpio<GPIOD_BASE,13> orangeLed;
@@ -90,7 +89,6 @@ void waitForModule(){
  */
 void configureModuleInterrupt()
 {
-    //IRQ::mode(Mode::INPUT_PULL_UP);
     SYSCFG->EXTICR[1] = SYSCFG_EXTICR1_EXTI1_PA;
     /*device which handle external interrupt, it's for GPIO 1*/
     EXTI->IMR |= EXTI_IMR_MR1; 
@@ -98,7 +96,7 @@ void configureModuleInterrupt()
     EXTI->RTSR &= ~EXTI_RTSR_TR1; 
     EXTI->FTSR |= EXTI_FTSR_TR1;
     NVIC_EnableIRQ(EXTI1_IRQn);
-    /*Ocnfigure low priority*/
+    /*Configure low priority*/
     NVIC_SetPriority(EXTI1_IRQn,15); 
     
 }
