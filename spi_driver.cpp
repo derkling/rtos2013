@@ -20,13 +20,13 @@ spi_driver::spi_driver() {
     /*set baud rate with BR bit
      dff bit to 0 → 8 bit frame
      LSBFIRST bit to 0 → MSB */
-    SPI2->CR1 = SPI_CR1_BR_2 |                       //1)imposto il baud rate andando a settere il secondo bit di BR (100 non contemplato nel reference manual page 897))
-                                                                                //2)dovrei settare CPOL e CPHA ma non ho capito cosa fanno
-                                                                                    //3)dff impostato a 0 -> 8 bit di frame
-                                                                                    //4)LSBFIRST a 0 così trasmetto in MSB format  bit piu significativo per primo
-                        SPI_CR1_SSM |                                    //5)Slave Select software abilitato
-                        SPI_CR1_SSI |                                      //6)Internal slave select  DEVO settare anche SSOE non so...
-                        SPI_CR1_MSTR  |                                  //7)Devo per forza settarlin 
+    SPI2->CR1 = SPI_CR1_BR_2 |                       //1)Setup baud rate
+                                                 
+                                                     //3)dff impostato a 0 -> 8 bit di frame
+                                                     //4)LSBFIRST a 0 così trasmetto in MSB format  bit piu significativo per primo
+                        SPI_CR1_SSM |                //5)Slave Select software abilitato
+                        SPI_CR1_SSI |               
+                        SPI_CR1_MSTR  |                                  
                         SPI_CR1_SPE;
  
 }
