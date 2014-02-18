@@ -20,11 +20,11 @@ spi_driver::spi_driver() {
     /*set baud rate with BR bit
      dff bit to 0 → 8 bit frame
      LSBFIRST bit to 0 → MSB */
-    SPI2->CR1 = SPI_CR1_BR_2 |                       //1)Setup baud rate
+    SPI2->CR1 = SPI_CR1_BR_2 |                       //Setup baud rate
                                                  
-                                                     //3)dff impostato a 0 -> 8 bit di frame
-                                                     //4)LSBFIRST a 0 così trasmetto in MSB format  bit piu significativo per primo
-                        SPI_CR1_SSM |                //5)Slave Select software abilitato
+                                                     //dff set to  0 -> 8 bit di frame
+                                                     //LSBFIRST  0 so the most significant bit come first
+                        SPI_CR1_SSM |                //Slave Select software abilitato
                         SPI_CR1_SSI |               
                         SPI_CR1_MSTR  |                                  
                         SPI_CR1_SPE;

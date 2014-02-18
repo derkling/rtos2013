@@ -151,8 +151,7 @@ nRF24L01P::nRF24L01P() {
     spi = new spi_driver();
     power_down();
     setup_Gpio();
-    set_register(NRF24L01P_REG_STATUS, NRF24L01P_STATUS_TX_DS | NRF24L01P_STATUS_MAX_RT |
-                                NRF24L01P_STATUS_RX_DR);/*clear every pending interrupt bits*/
+    clear_pending_interrupt();
     set_register(NRF24L01P_REG_EN_RXADDR, NRF24L01P_EN_RXADDR_NONE);
     set_register(NRF24L01P_REG_RX_PW_P0,32);
     set_tx_address(5);
@@ -162,7 +161,7 @@ nRF24L01P::nRF24L01P() {
     set_rx_address(NRF24L01P_ADDRESS_DEFAULT, NRF24L01P_ADDRESS_DEFAULT_WIDTH,NRF24L01P_PIPE_NO_0);
     disable_auto_ack();
     disable_auto_retransmit();
-    set_transfer_size(32,NRF24L01P_PIPE_NO_0);
+    set_transfer_size(32);
     printf("Status %d\n",get_register_status());
     printf("Output power %d\n",get_output_power());
     printf("Air data rate %d\n",get_air_data_rate());
@@ -178,6 +177,11 @@ nRF24L01P::nRF24L01P(const nRF24L01P& orig) {
 
 nRF24L01P::~nRF24L01P() {
      
+}
+    /*clear every pending interrupt bits*/
+void nRF24L01P::clear_pending_interrupt(){
+    set_register(NRF24L01P_REG_STATUS, NRF24L01P_STATUS_TX_DS | NRF24L01P_STATUS_MAX_RT |
+                                NRF24L01P_STATUS_RX_DR);
 }
 
 
@@ -806,14 +810,7 @@ void nRF24L01P::set_rx_address(unsigned long long address, int width, int pipe) 
     set_register(NRF24L01P_REG_EN_RXADDR, enRxAddr);
 }
 
-void nRF24L01P::set_transfer_size(int size, int pipe) {
- 
-    if ( ( pipe < NRF24L01P_PIPE_NO_0) || ( pipe > NRF24L01P_PIPE_NO_5 ) ) {
- 
-        printf( "Invalid Transfer Size pipe number %d\n", pipe );
-        return;
- 
-    }
+void nRF24L01P::set_transfer_size(int size) {
  
     if ( ( size < 0 ) || ( size > NRF24L01P_RX_FIFO_SIZE ) ) {
  
@@ -822,7 +819,7 @@ void nRF24L01P::set_transfer_size(int size, int pipe) {
  
     }
  
-    int rxPwPxRegister = NRF24L01P_REG_RX_PW_P0 + ( pipe - NRF24L01P_PIPE_NO_0 );
+    int rxPwPxRegister = NRF24L01P_REG_RX_PW_P0;
  
     set_register(rxPwPxRegister, ( size & NRF24L01P_RX_PW_Px_MASK ) );
  
