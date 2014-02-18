@@ -11,22 +11,22 @@
 #define	WIFI_MODULE_H
 
 /**
- * Method in order to send data with the wireless module. Max lenght of payload should be
- * 32 characters.
+ * Method created in order to send data with the wireless module. Max lenght of payload should be
+ * 32 bytes the other ones will be truncated.
  * @param payload - payload to be sent
  */
 void send(char *payload);
 
 /**
- * Function to be executed by a thread in order to receive data from other boards.
- * @param arg - something to give to function 
+ * Function executed by a thread in order to receive data from other boards.
+ * @param arg - useless parameter
  * @return 
  */
 void *wifi_receive(void *arg);
 
 /**
- * Function to be  by a thread in order to send data to other boards.
- * @param arg - something to give to function 
+ * Function excutes  by a thread in order to send data to other boards.
+ * @param arg - useless parameter
  * @return 
  */
 void *wifi_transmit(void *arg);
@@ -38,7 +38,8 @@ void *wifi_transmit(void *arg);
 void receive(char *payload);
 
 /**
- * Function in order to setup wireless module
+ * Function which setup GPIO led to debug, powers up the wireless module
+ * and set it into the recive mode.
  */
 void init();
 #endif	/* WIFI_MODULE_H */

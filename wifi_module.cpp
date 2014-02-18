@@ -85,28 +85,25 @@ void waitForModule(){
     }
 }
 
+/**
+ * setup the interrupt
+ */
 void configureModuleInterrupt()
 {
     //IRQ::mode(Mode::INPUT_PULL_UP);
     SYSCFG->EXTICR[1] = SYSCFG_EXTICR1_EXTI1_PA;
-    /*Periferica che gestisce gli external interrupt, è per il gpio 1*/
+    /*device which handle external interrupt, it's for GPIO 1*/
     EXTI->IMR |= EXTI_IMR_MR1; 
     
-    /*Vado a verificare durante il fronte di salita*/
     EXTI->RTSR &= ~EXTI_RTSR_TR1; 
     EXTI->FTSR |= EXTI_FTSR_TR1;
-    /*Abilitano il controller dell'interrupt, passando il nome e poi la priorità*/
     NVIC_EnableIRQ(EXTI1_IRQn);
-    /*Configuro una priorità bassa*/
+    /*Ocnfigure low priority*/
     NVIC_SetPriority(EXTI1_IRQn,15); 
     
 }
 
-/**
- * Il metodo costituisce la funzione che verrà svolta dal thread per la ricezione
- * @param arg
- * @return void
- */
+
 void *wifi_receive(void *arg){
     char data[BUFFER_CELL_SIZE];
     for(;;){
@@ -138,12 +135,7 @@ void *wifi_receive(void *arg){
     }
     
 }  
-/**
- * Il metodo implementa la funzione che viene svolta dal thread di trasmissione. Ogni 5 secondi verifica
- * se nel buffer è presente qualcosa da trasmettere: se è così lo svuota completamente.
- * @param arg
- * @return 
- */
+
 void *wifi_transmit(void *arg){
      char payload[BUFFER_CELL_SIZE];
     for(;;){
@@ -188,10 +180,7 @@ void receive(char *payload){
     pthread_mutex_unlock(&buff_rx);
 }
 
-/**
- * La funzione inizializza i vari gpio collegati ai led utili per il debug, istanzia 
- * il modulo wireless e lo configura in modalità ricezione.
- */
+
 void init(){
     orangeLed::mode(Mode::OUTPUT);
     redLed::mode(Mode::OUTPUT);
