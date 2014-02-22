@@ -124,6 +124,8 @@ public:
      * @return the tx address
      */
     unsigned long long get_tx_address();
+<<<<<<< HEAD
+<<<<<<< HEAD
     
     /**
      * The function return the rx address of pipe 0
@@ -135,6 +137,12 @@ public:
      * Function to get the status register
      * @return the value of the status register
      */
+=======
+    unsigned long long get_rx_address();
+>>>>>>> f7b1df0... modificata get_rx_address(), ora considera solo la pipe 0
+=======
+    unsigned long long get_rx_address_pipe0();
+>>>>>>> 468a61b... cambiati i nomi alle funzioni: è stato inserito la dicitura 'pipe0'
     int get_register_status();
     
     /**
@@ -147,6 +155,8 @@ public:
      * THe function resets the rx interrupt bit
      */
     void reset_interrupt();
+<<<<<<< HEAD
+<<<<<<< HEAD
    
     /**
      * The function checks if there are some packets in the pipe 0 of the 
@@ -187,6 +197,14 @@ public:
      */
     int receive(char *data,int count);
     
+=======
+    bool packet_in_pipe();
+=======
+    bool packet_in_pipe0();
+>>>>>>> 468a61b... cambiati i nomi alle funzioni: è stato inserito la dicitura 'pipe0'
+
+
+>>>>>>> 78722a5... modificata packet_in_pipe(), controlla solo pipe 0
 
 private:
     /**
@@ -243,8 +261,15 @@ private:
      * The function clear the tx queue
      */
     void flush_tx();
+<<<<<<< HEAD
     
     
+=======
+    void set_crc_width(int width);
+    void set_tx_address(unsigned long long address, int width);
+    void set_rx_address_pipe0(unsigned long long address, int width);
+    void set_transfer_size(int size);
+>>>>>>> a59b8d6... modificata set_rx_address, ora considera solo pipe 0
     int mode;
     /**
      * Driver spi variable

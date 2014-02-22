@@ -144,19 +144,35 @@ nRF24L01P::nRF24L01P() {
     clear_pending_interrupt();
     set_crc_width(NRF24L01P_CRC_8_BIT);
     set_tx_address(NRF24L01P_ADDRESS_DEFAULT, NRF24L01P_ADDRESS_DEFAULT_WIDTH);
+<<<<<<< HEAD
+<<<<<<< HEAD
     set_rx_address_pipe0(NRF24L01P_ADDRESS_DEFAULT, NRF24L01P_ADDRESS_DEFAULT_WIDTH);
+=======
+    set_rx_address(NRF24L01P_ADDRESS_DEFAULT, NRF24L01P_ADDRESS_DEFAULT_WIDTH);
+>>>>>>> a59b8d6... modificata set_rx_address, ora considera solo pipe 0
+=======
+    set_rx_address_pipe0(NRF24L01P_ADDRESS_DEFAULT, NRF24L01P_ADDRESS_DEFAULT_WIDTH);
+>>>>>>> 468a61b... cambiati i nomi alle funzioni: è stato inserito la dicitura 'pipe0'
     disable_auto_ack();
     disable_auto_retransmit();
     disable_tx_interrupt();
     set_transfer_size(32);
-    set_frequency(2500);
+    set_frequency(2525);
     printf("Status %d\n",get_register_status());
     printf("Output power %d\n",get_output_power());
     printf("Air data rate %d\n",get_air_data_rate());
     printf("Crc %d\n",get_crc_width());
     printf("SETUP_AW %d\n",get_register(NRF24L01P_REG_SETUP_AW));
     printf("tx register 0x%010llX\n",get_tx_address());
+<<<<<<< HEAD
+<<<<<<< HEAD
     printf("rx address 0x%010llX\n",get_rx_address_pipe0());
+=======
+    printf("rx address 0x%010llX\n",get_rx_address());
+>>>>>>> f7b1df0... modificata get_rx_address(), ora considera solo la pipe 0
+=======
+    printf("rx address 0x%010llX\n",get_rx_address_pipe0());
+>>>>>>> 468a61b... cambiati i nomi alle funzioni: è stato inserito la dicitura 'pipe0'
         
 }
 
@@ -330,10 +346,21 @@ int  nRF24L01P::get_register(int reg){
     return result;   
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 bool nRF24L01P::packet_in_pipe0(){
     int pipe = NRF24L01P_PIPE_NO_0;
     int status=get_register_status();
     if((status & NRF24L01P_STATUS_RX_DR)&&((status & NRF24L01P_STATUS_RX_P_NO)>>1)==(pipe & 0x7)){
+=======
+bool nRF24L01P::packet_in_pipe(){
+=======
+bool nRF24L01P::packet_in_pipe0(){
+>>>>>>> 468a61b... cambiati i nomi alle funzioni: è stato inserito la dicitura 'pipe0'
+    int pipe = NRF24L01P_PIPE_NO_0;
+    int status=get_register_status();
+    if((status & NRF24L01P_STATUS_DR_RX)&&((status & NRF24L01P_STATUS_RX_P_NO)>>1)==(pipe & 0x7)){
+>>>>>>> 78722a5... modificata packet_in_pipe(), controlla solo pipe 0
         return true;
     }
     return false;
@@ -589,7 +616,15 @@ unsigned long long nRF24L01P::get_tx_address() {
     return address;
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 unsigned long long nRF24L01P::get_rx_address_pipe0() {
+=======
+unsigned long long nRF24L01P::get_rx_address() {
+>>>>>>> f7b1df0... modificata get_rx_address(), ora considera solo la pipe 0
+=======
+unsigned long long nRF24L01P::get_rx_address_pipe0() {
+>>>>>>> 468a61b... cambiati i nomi alle funzioni: è stato inserito la dicitura 'pipe0'
  
     int pipe = NRF24L01P_PIPE_NO_0;
  
@@ -689,7 +724,15 @@ void nRF24L01P::set_tx_address(unsigned long long address, int width) {
  
 }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 void nRF24L01P::set_rx_address_pipe0(unsigned long long address, int width) {
+=======
+void nRF24L01P::set_rx_address(unsigned long long address, int width) {
+>>>>>>> a59b8d6... modificata set_rx_address, ora considera solo pipe 0
+=======
+void nRF24L01P::set_rx_address_pipe0(unsigned long long address, int width) {
+>>>>>>> 468a61b... cambiati i nomi alle funzioni: è stato inserito la dicitura 'pipe0'
     int pipe = NRF24L01P_PIPE_NO_0;
     
  
