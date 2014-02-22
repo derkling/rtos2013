@@ -111,16 +111,7 @@ void *wifi_receive(void *arg){
        waitForModule();
        pthread_mutex_lock(&spi);
        wifi->set_receive_mode();
-<<<<<<< HEAD
        while(wifi->packet_in_pipe0()){
-=======
-
-<<<<<<< HEAD
-       while(wifi->packet_in_pipe()){
->>>>>>> 78722a5... modificata packet_in_pipe(), controlla solo pipe 0
-=======
-       while(wifi->packet_in_pipe0()){
->>>>>>> 468a61b... cambiati i nomi alle funzioni: è stato inserito la dicitura 'pipe0'
                  orangeLed::low();
                  wifi->reset_interrupt();
                  wifi->receive(data,BUFFER_CELL_SIZE);
