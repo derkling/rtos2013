@@ -8,15 +8,13 @@
 #include "../pedometer/pedometer.h"
 #include <miosix/kernel/scheduler/scheduler.h>
 
-void beep(void);
-
 void transmit(char* payload);
 
 using namespace std;
 using namespace miosix;
 
 //gpio
-typedef Gpio<GPIOB_BASE,1> buzzer;
+
 typedef Gpio<GPIOD_BASE,12> greenLed;
 typedef Gpio<GPIOD_BASE,13> orangeLed;
 typedef Gpio<GPIOD_BASE,14> redLed;
@@ -24,6 +22,7 @@ typedef Gpio<GPIOD_BASE,14> redLed;
 //var globali
 static uint8_t rxPayload[MAX_LENGHT_PAYLOAD+1]={0};
 static Thread *waiting=0;
+static bool rxEvent;//
 
 static pthread_mutex_t str=PTHREAD_MUTEX_INITIALIZER;
 static pthread_mutex_t spi=PTHREAD_MUTEX_INITIALIZER;
@@ -98,16 +97,12 @@ void *transmitConsumer(void *arg){
 
 void *interruptConsumer(void *arg){
     
-    
-    
-    
     for(;;){
 		
 	//attendo che arrivi l'interrupt		
 	FastInterruptDisableLock dLock;
 	waiting=Thread::IRQgetCurrentThread();
-	while(waiting)
-	{
+	while(waiting){
 		Thread::IRQwait();
 		FastInterruptEnableLock eLock(dLock);
 		Thread::yield();
@@ -129,13 +124,17 @@ void *interruptConsumer(void *arg){
         }
         else if(sr==64 || sr==96 ){
             //rx interrupt
-            redLed::high();
-            
+            if(redLed::value()){
+				redLed::low();
+				orangeLed::high();
+			}else{
+				redLed::high();
+				orangeLed::low();
+			}
+			       
             uint8_t payloadWidth;
             
             spiSendCommandReadData(R_RX_PL_WID,COMMAND_WITHOUT_ADDRESS,&sr,&payloadWidth,1);
-            
-            
             
             spiSendCommandReadData(R_RX_PAYLOAD,COMMAND_WITHOUT_ADDRESS,&sr,rxPayload,(int)payloadWidth);
 			
@@ -150,10 +149,10 @@ void *interruptConsumer(void *arg){
         }
 
         //000 0 none (impossibile)
-        //001 16 max
-        //010 32 tx
+        //001 16 max interrupt
+        //010 32 tx interrupt
         //011 48 tx-max
-        //100 64 rx
+        //100 64 rx interrupt
         //101 80 rx-max
         //110 96 rx tx
         //111 112 rx tx max    
@@ -166,9 +165,8 @@ void *interruptConsumer(void *arg){
 
 /*!@brief Inizializza il modulo NRF24LR: configura SPI2, alloca la coda di trasmissione, crea il thread di trasmissione e il thread interrupt
  */
-void init(){
+void socialWirelessInit(){
     
-    buzzer::mode(Mode::OUTPUT);
     greenLed::mode(Mode::OUTPUT);
     orangeLed::mode(Mode::OUTPUT);
     redLed::mode(Mode::OUTPUT);
@@ -199,7 +197,7 @@ void init(){
 
     //ACTIVATE command followed by 0x73 required by DYNPD and FEATURE
     data=ACTIVATE_BYTE;
-    spiSendCommandWriteData(W_REGISTER,ACTIVATE,&sr,&data,1);
+    spiSendCommandWriteData(ACTIVATE,COMMAND_WITHOUT_ADDRESS,&sr,&data,1);
 
     //FEATURE->EN_DPL=1 FEATURE->EN_DYN_ACK=1
     //FEATURE=0x05
@@ -316,7 +314,7 @@ void transmit(char* payload){
  * @note La trasmissione non è istantanea. Il payload è inserito in una coda e trasmesso appena possibile.
  * @note La funzione si blocca fino a quando non ottiene il permesso di scrittura in coda
  */
-int sendData(char* payload){
+int socialWirelessSendData(char* payload){
     pthread_mutex_lock(&str);
     int res=queuePush(payload, &queue);
     pthread_mutex_unlock(&str);

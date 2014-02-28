@@ -1,13 +1,3 @@
-
-/**
- * File:   lis302dl.cpp
- *  \brief     main class. It only starts the program
- *  \author    Omar Scotti
- *  \author    Diego Rondelli
- *  \version   1.0
- *  \date      14/01/2014
- */
-
 #include <cstdlib>
 #include "pedometer/pedometer.h"
 #include "pedometer/statistics.h"
@@ -42,25 +32,8 @@ void *startStatistics(void *arg){
  * \brief Main method, starts the pedometer
  */
 int main(int argc, char** argv) {
-//    char payload[33];
-//    blueLed::mode(Mode::OUTPUT);
-//
-//
-//    char orangeon[]="orangeon";
-//
-//    char orangeoff[]="orangeoff";
-//
-//    blueLed::high();
-//
-//    while(1){
-//        scanf("%s",payload);
-//        sendData(payload);		
-////		sendData(orangeon);
-////		sendData(orangeoff);
-////		usleep(50000);
-//    }
   
-    init();
+    socialWirelessInit();
     pedometerApp = Pedometer::getInstance();
     statistics = Statistics::getInstance();
     
@@ -81,7 +54,7 @@ int main(int argc, char** argv) {
 		char dati_pedometro_string[3];
 		sprintf(dati_pedometro_string, "%d", dati_pedometro_int);
 		printf("%s",dati_pedometro_string);
-		sendData(dati_pedometro_string);
+		socialWirelessSendData(dati_pedometro_string);
 		
 	}
     
