@@ -13,7 +13,7 @@ SUBDIRS := miosix
 ##
 ## List here your source files (both .s, .c and .cpp)
 ##
-SRC := main.cpp Comando.cpp Proprieta.cpp
+SRC := main.cpp UserInterface.cpp Proprieta.cpp
 
 ##
 ## List here additional static libraries with relative path

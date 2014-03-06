@@ -139,21 +139,9 @@ void FileDescriptorTable::closeAll()
         atomic_exchange(files+i,intrusive_ref_ptr<FileBase>());
 }
 
-int FileDescriptorTable::getcwd(char *buf, size_t len)
-{
-    if(buf==0 || len<2) return -EINVAL; //We don't support the buf==0 extension
-    Lock<FastMutex> l(mutex);
-    struct stat st;
-    if(stat(".",&st) || !S_ISDIR(st.st_mode)) return -ENOENT;
-    if(cwd.length()>len) return -ERANGE;
-    strncpy(buf,cwd.c_str(),len);
-    if(cwd.length()>1) buf[cwd.length()-1]='\0'; //Erase last '/' in cwd
-    return 0;
-}
-
 int FileDescriptorTable::chdir(const char* name)
 {
-    if(name==0 || name[0]=='\0') return -EFAULT;
+    if(name==0 || name[0]=='\0') return -EFAULT;   
     int len=strlen(name);
     if(name[len-1]!='/') len++; //Reserve room for trailing slash
     Lock<FastMutex> l(mutex);
@@ -168,14 +156,14 @@ int FileDescriptorTable::chdir(const char* name)
         newCwd+=name;
     }
     ResolvedPath openData=FilesystemManager::instance().resolvePath(newCwd);
+    //NOTE: put after resolvePath() as it strips trailing / unless path=="/"
+    if(newCwd.length()>1) newCwd+='/';
+
     if(openData.result<0) return openData.result;
     struct stat st;
     StringPart sp(newCwd,string::npos,openData.off);
-    if(int result=openData.fs->lstat(sp,&st)) return result;
+    openData.fs->lstat(sp,&st);
     if(!S_ISDIR(st.st_mode)) return -ENOTDIR;
-    //NOTE: put after resolvePath() as it strips trailing /
-    //Also put after lstat() as it fails if path has a trailing slash
-    newCwd+='/';
     cwd=newCwd;
     return 0;
 }
@@ -225,7 +213,10 @@ int FileDescriptorTable::statImpl(const char* name, struct stat* pstat, bool f)
     if(name==0 || name[0]=='\0') return -EFAULT;
     string path=absolutePath(name);
     if(path.empty()) return -ENAMETOOLONG;
-    return FilesystemManager::instance().statHelper(path,pstat,f);
+    ResolvedPath openData=FilesystemManager::instance().resolvePath(path,f);
+    if(openData.result<0) return openData.result;
+    StringPart sp(path,string::npos,openData.off);
+    return openData.fs->lstat(sp,pstat);
 }
 
 FileDescriptorTable::~FileDescriptorTable()
@@ -518,11 +509,13 @@ int FilesystemManager::kmount(const char* path, intrusive_ref_ptr<FilesystemBase
     string temp(path);
     if(!(temp=="/" && filesystems.empty())) //Skip check when mounting /
     {
+        ResolvedPath rp=resolvePath(temp);
+        if(rp.result<0) return rp.result;
+        StringPart sp(temp,string::npos,rp.off);
         struct stat st;
-        if(int result=statHelper(temp,&st,false)) return result;
+        int statres=rp.fs->lstat(sp,&st);
+        if(statres<0) return statres;
         if(!S_ISDIR(st.st_mode)) return -ENOTDIR;
-        string parent=temp+"/..";
-        if(int result=statHelper(parent,&st,false)) return result;
         fs->setParentFsMountpointInode(st.st_ino);
     }
     if(filesystems.insert(make_pair(StringPart(temp),fs)).second==false)
@@ -655,14 +648,6 @@ int FilesystemManager::unlinkHelper(string& path)
     if(filesystems.find(StringPart(path))!=filesystems.end()) return -EBUSY;
     StringPart sp(path,string::npos,openData.off);
     return openData.fs->unlink(sp);
-}
-
-int FilesystemManager::statHelper(string& path, struct stat *pstat, bool f)
-{
-    ResolvedPath openData=resolvePath(path,f);
-    if(openData.result<0) return openData.result;
-    StringPart sp(path,string::npos,openData.off);
-    return openData.fs->lstat(sp,pstat);
 }
 
 int FilesystemManager::renameHelper(string& oldPath, string& newPath)

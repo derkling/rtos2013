@@ -1,69 +1,85 @@
-/* 
- * File:   Comando.cpp
+/*
+ * File:   UserInterface.cpp
  * Author: Liscio-Cazzetta
- * 
- * la classe Comando.cpp gestisce i comandi presenti nel vector comandi, quindi
+ *
+ * la classe UserInterface.cpp gestisce i comandi presenti nel vector comandi, quindi
  * in base all'input dell'utente restituisce un valore di una proprieta passata
  * per input oppure valori booleani per il controllo di correttezza di input
  */
-
-#ifndef COMANDO_H
-#define COMANDO_H
-
+ 
+#ifndef USERINTERFACE_H
+#define USERINTERFACE_H
+ 
 #include <cstdio>
 #include "miosix.h"
 #include <unistd.h>
 #include <cstring>
 #include <map>
 #include "Proprieta.h"
-
+#include <string>
+ 
 using namespace std;
-
-class Comando
+ 
+class UserInterface
 {
 public:
-        struct tipo_Comandi {
-            char comando[10];
-        };
-        tipo_Comandi comandi[6];
+        /* costanti del progetto su cui si basa tutto il codice */
+        const static short numComandi = 7;
+        const static short maxDimComando = 10;
         
+        struct tipo_Comandi {
+            std::string comando;
+        };
+        tipo_Comandi comandi[numComandi];
+         
         /* inizializza la lista dei comandi
          */
-	Comando();
-
+    UserInterface();
+ 
         /* data una stringa, verifica che questa corrisponda a qualche comando
          * presente nella lista dei comandi; se si, ritorna true, altrimenti false
          */
-        bool esisteComando(const char *stringa);
+        bool esisteComando(std::string stringa);
         
-        int read(const char *nomeProprieta);
-        
-	void update(const char *nomeProprieta, int valore);
-        
-        /* un modulo ha l'opportunita di inserire una nuova proprieta nelle'elenco
+        /* stampa a terminale la sintassi dei comandi disponibili.
          */
-	void store(const char *nomeProprieta, int valore);
-        
-        /* un modulo puo iscriversi ad una certa proprieta per ricevere una notifica 
-         * ogni qualvolta tale proprieta si aggiorna
+        void help();
+         
+        double read(std::string nomeProprieta);
+         
+        std::vector<Proprieta::CallbackFn> update(std::string nomeProprieta, int valore);
+         
+        /* un modulo può iscriversi ad una certa proprieta per ricevere una notifica
+         * ogni qualvolta tale proprieta si aggiorna tramite richiamo della funzione di
+         * callback passata come parametro.
          */
-	void subscribe(const char *nomeModulo, const char *nomeProprieta);
+        void subscribePlusCallback(std::string nomeProprieta, short numeroModulo, Proprieta::CallbackFn funzioneDiCallback);
         
-        /* questo metodo permette di verificare se ci sono aggiornamenti alle proprieta
-         * ogni qualvolta tale proprieta si aggiorna
+        /* un modulo puo iscriversi ad una certa proprieta per controllare, tramite
+         * comando check, i valori delle proprieta a cui si è sottoscritto in ottica
+         * di futuri cambiamenti delle proprieta.
          */
-        bool check(const char *nomeModulo);
+        void subscribe(std::string nomeProprieta, short numeroModulo);
+         
+        /* questa funzione controlla che il modulo sia effettivamente sottoscritto
+         * a qualche proprieta
+         */
+        bool verificaSottoscrizioni(short numeroModulo);
+         
+        /* questo metodo restituisce un vettore di struct di tipo CheckResult con 
+         * le proprieta a cui si è sottoscritto il modulo ed i relativi valori.
+         */
+        std::vector<Proprieta::CheckResult> check(short numeroModulo);
+         
+        /*funzione che inserisce una nuova proprieta nella map delle proprieta presenti
+         * assegnandogli come nome il parametro passato.
+         */
+        void storeParam(std::string nomeProprieta);
         
-        /* funzione che aggiorna altre proprieta in seguito all'aggiornamento di una
-         * proprieta rilevante che aveva memorizzate le callback function delle altre
-         * proprieta
-         */
-        void notify(const char *nomeProprieta, int valore);
+        void deleteParam(std::string nomeProprieta);
         
-        /* restituisce un vettore di stringhe contenente i nomi dei comandi disponibili
-         */
-        Proprieta proprieta;
+        /*funzione che controlla se la proprietà inserita esiste*/
+        bool esisteProprieta(std::string stringa);
 };
-
-#endif //COMANDO_H
-
+ 
+#endif //USERINTERFACE_H

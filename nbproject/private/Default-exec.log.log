@@ -1,0 +1,27 @@
+called: /home/user/Desktop/miosix-kernel/miosix/_tools/compiler/gcc/arm-miosix-eabi/lib/gcc/arm-miosix-eabi/4.7.3/../../../../arm-miosix-eabi/bin/ld
+	/home/user/Desktop/miosix/rtos2013
+	/home/user/Desktop/miosix-kernel/miosix/_tools/compiler/gcc/arm-miosix-eabi/lib/gcc/arm-miosix-eabi/4.7.3/../../../../arm-miosix-eabi/bin/ld
+	-X
+	-o
+	main.elf
+	-L./miosix
+	-L/home/user/Desktop/miosix-kernel/miosix/_tools/compiler/gcc/arm-miosix-eabi/lib/gcc/arm-miosix-eabi/4.7.3/thumb/cm4/hardfp/fpv4
+	-L/home/user/Desktop/miosix-kernel/miosix/_tools/compiler/gcc/arm-miosix-eabi/lib/gcc/arm-miosix-eabi/4.7.3/../../../../arm-miosix-eabi/lib/thumb/cm4/hardfp/fpv4
+	-L/home/user/Desktop/miosix-kernel/miosix/_tools/compiler/gcc/arm-miosix-eabi/lib/gcc/arm-miosix-eabi/4.7.3
+	-L/home/user/Desktop/miosix-kernel/miosix/_tools/compiler/gcc/arm-miosix-eabi/lib/gcc/arm-miosix-eabi/4.7.3/../../../../arm-miosix-eabi/lib
+	--gc-sections
+	-Map
+	main.map
+	-T./miosix/arch/cortexM4_stm32f4/stm32f407vg_stm32f4discovery/stm32_1m+192k_rom.ld
+	main.o
+	UserInterface.o
+	Proprieta.o
+	miosix/arch/cortexM4_stm32f4/stm32f407vg_stm32f4discovery/core/stage_1_boot.o
+	--start-group
+	-lmiosix
+	-lstdc++
+	-lc
+	-lm
+	-lgcc
+	--end-group
+

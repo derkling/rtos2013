@@ -1,25 +1,5 @@
 Changelog for Miosix np embedded OS
 
-- Fixed a bug in fat32 directory listing causing file names to be skipped when
-  listing large directories.
-- Added basic unicode helper functions
-- Implemented inode support in FAT32
-- Started implementing FAT32 directory listing, still needs work.
-- Implemented getcwd() and chdir() syscalls
-- Added assertion check that openFileCount is always positive
-- newFileOpened() is now called in FileBase constructor if parent is not null,
-  so filesystems need not remember to do that
-- Updated newlib patch to fix an use after free in closedir()
-  This change requires recompiling GCC!
-- Updated newlib patch for consistency with upstream change.
-  Updated gcc patch for better buffer usage.
-  This change requires recompiling GCC!
-- Performance improved SD driver ported to all stm32 targets
-- Updated newlib compiler patches to improve write performance also for
-  fully buffered files. This change and the previous one require
-  recompiling GCC
-- Updated from GCC 4.7.2 to GCC 4.7.3, due to reported problems building
-  the previous compiler versions.
 - Added a new benchmark to test the filesystem backend (sector read/write).
   This is a separate benchmark and not in the testsuite.
 - Updated newlib patches so as to avoid stdio code fragmenting large

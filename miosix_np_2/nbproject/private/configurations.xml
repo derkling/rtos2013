@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configurationDescriptor version="89">
+<configurationDescriptor version="90">
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
-    <df root=".." name="miosix_np_2">
+    <df root=".." name="0">
       <df name="miosix">
         <df name="arch">
           <df name="arm7_lpc2000">
@@ -319,15 +319,6 @@
             <in>devfs.h</in>
           </df>
           <df name="fat32">
-            <df name="option">
-              <in>cc932.c</in>
-              <in>cc936.c</in>
-              <in>cc949.c</in>
-              <in>cc950.c</in>
-              <in>ccsbcs.c</in>
-              <in>syscall.c</in>
-              <in>unicode.c</in>
-            </df>
             <in>diskio.cpp</in>
             <in>diskio.h</in>
             <in>fat32.cpp</in>
@@ -345,6 +336,8 @@
           <in>file.h</in>
           <in>file_access.cpp</in>
           <in>file_access.h</in>
+          <in>filesystem.cpp</in>
+          <in>filesystem.h</in>
           <in>stringpart.cpp</in>
           <in>stringpart.h</in>
         </df>
@@ -408,8 +401,6 @@
           <in>lcd44780.h</in>
           <in>software_i2c.h</in>
           <in>software_spi.h</in>
-          <in>unicode.cpp</in>
-          <in>unicode.h</in>
           <in>util.cpp</in>
           <in>util.h</in>
           <in>version.cpp</in>
@@ -419,6 +410,10 @@
       </df>
       <df name="miosix_np_2">
       </df>
+      <in>Proprieta.cpp</in>
+      <in>Proprieta.h</in>
+      <in>UserInterface.cpp</in>
+      <in>UserInterface.h</in>
       <in>main.cpp</in>
     </df>
   </logicalFolder>

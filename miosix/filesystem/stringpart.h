@@ -121,7 +121,7 @@ public:
      * allocation.
      * \param rhs a StringPart
      */
-    StringPart(StringPart& rhs, unsigned int idx, unsigned int off=0);
+    StringPart(StringPart& rhs, unsigned int idx, unsigned int off);
     
     /**
      * Copy constructor. Note that deep copying is used, so that the newly
@@ -154,12 +154,6 @@ public:
      * \return true if this starts with rhs
      */
     bool startsWith(const StringPart& rhs) const;
-    
-    /**
-     * \param c char to find in the string, starting from the end
-     * \return the index of the last occurrence of c, or string::npos
-     */
-    unsigned int findLastOf(char c) const;
     
     /**
      * \return the StringPart length, which is the same as strlen(this->c_str())

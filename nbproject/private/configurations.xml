@@ -1,0 +1,1730 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configurationDescriptor version="90">
+  <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
+    <df root="." name="0">
+      <df name="miosix">
+        <df name="_doc">
+          <df name="doxygen">
+          </df>
+          <df name="pdfdoc">
+            <df name="features">
+            </df>
+          </df>
+          <df name="textdoc">
+          </df>
+        </df>
+        <df name="_examples">
+          <df name="asm">
+            <in>main.s</in>
+          </df>
+          <df name="blinking_led">
+            <in>simple.cpp</in>
+          </df>
+          <df name="sad_trombone">
+            <in>adpcm.c</in>
+            <in>adpcm.h</in>
+            <in>convert.cpp</in>
+            <in>main.cpp</in>
+            <in>player.cpp</in>
+            <in>player.h</in>
+            <in>sad_trombone.h</in>
+          </df>
+          <df name="thread_native">
+            <in>native_thread_example.cpp</in>
+          </df>
+          <df name="thread_pthread">
+            <in>pthread_example.cpp</in>
+          </df>
+        </df>
+        <df name="_tools">
+          <df name="bootloaders">
+            <df name="stm32">
+              <df name="pc_loader">
+                <in>main.cpp</in>
+                <in>serialstream.cpp</in>
+                <in>serialstream.h</in>
+              </df>
+              <df name="uc_loader_ethboardv2">
+              </df>
+              <df name="uc_loader_stm3210e-eval">
+              </df>
+              <df name="uc_loader_stm3220g-eval">
+              </df>
+            </df>
+          </df>
+          <df name="compiler">
+            <df name="gcc">
+              <df name="arm-miosix-eabi">
+                <df name="arm-miosix-eabi">
+                  <df name="bin">
+                  </df>
+                  <df name="include">
+                    <df name="bits">
+                    </df>
+                    <df name="c++">
+                      <df name="4.7.3">
+                        <df name="arm-miosix-eabi">
+                          <df name="bits">
+                            <in>atomic_word.h</in>
+                            <in>basic_file.h</in>
+                            <in>c++allocator.h</in>
+                            <in>c++config.h</in>
+                            <in>c++io.h</in>
+                            <in>c++locale.h</in>
+                            <in>cpu_defines.h</in>
+                            <in>ctype_base.h</in>
+                            <in>ctype_inline.h</in>
+                            <in>cxxabi_tweaks.h</in>
+                            <in>error_constants.h</in>
+                            <in>extc++.h</in>
+                            <in>gthr-default.h</in>
+                            <in>gthr-posix.h</in>
+                            <in>gthr-single.h</in>
+                            <in>gthr.h</in>
+                            <in>messages_members.h</in>
+                            <in>os_defines.h</in>
+                            <in>stdc++.h</in>
+                            <in>stdtr1c++.h</in>
+                            <in>time_members.h</in>
+                          </df>
+                          <df name="pie">
+                            <df name="single-pic-base">
+                              <df name="bits">
+                                <in>atomic_word.h</in>
+                                <in>basic_file.h</in>
+                                <in>c++allocator.h</in>
+                                <in>c++config.h</in>
+                                <in>c++io.h</in>
+                                <in>c++locale.h</in>
+                                <in>cpu_defines.h</in>
+                                <in>ctype_base.h</in>
+                                <in>ctype_inline.h</in>
+                                <in>cxxabi_tweaks.h</in>
+                                <in>error_constants.h</in>
+                                <in>extc++.h</in>
+                                <in>gthr-default.h</in>
+                                <in>gthr-posix.h</in>
+                                <in>gthr-single.h</in>
+                                <in>gthr.h</in>
+                                <in>messages_members.h</in>
+                                <in>os_defines.h</in>
+                                <in>stdc++.h</in>
+                                <in>stdtr1c++.h</in>
+                                <in>time_members.h</in>
+                              </df>
+                            </df>
+                          </df>
+                          <df name="thumb">
+                            <df name="cm3">
+                              <df name="bits">
+                                <in>atomic_word.h</in>
+                                <in>basic_file.h</in>
+                                <in>c++allocator.h</in>
+                                <in>c++config.h</in>
+                                <in>c++io.h</in>
+                                <in>c++locale.h</in>
+                                <in>cpu_defines.h</in>
+                                <in>ctype_base.h</in>
+                                <in>ctype_inline.h</in>
+                                <in>cxxabi_tweaks.h</in>
+                                <in>error_constants.h</in>
+                                <in>extc++.h</in>
+                                <in>gthr-default.h</in>
+                                <in>gthr-posix.h</in>
+                                <in>gthr-single.h</in>
+                                <in>gthr.h</in>
+                                <in>messages_members.h</in>
+                                <in>os_defines.h</in>
+                                <in>stdc++.h</in>
+                                <in>stdtr1c++.h</in>
+                                <in>time_members.h</in>
+                              </df>
+                              <df name="pie">
+                                <df name="single-pic-base">
+                                  <df name="bits">
+                                    <in>atomic_word.h</in>
+                                    <in>basic_file.h</in>
+                                    <in>c++allocator.h</in>
+                                    <in>c++config.h</in>
+                                    <in>c++io.h</in>
+                                    <in>c++locale.h</in>
+                                    <in>cpu_defines.h</in>
+                                    <in>ctype_base.h</in>
+                                    <in>ctype_inline.h</in>
+                                    <in>cxxabi_tweaks.h</in>
+                                    <in>error_constants.h</in>
+                                    <in>extc++.h</in>
+                                    <in>gthr-default.h</in>
+                                    <in>gthr-posix.h</in>
+                                    <in>gthr-single.h</in>
+                                    <in>gthr.h</in>
+                                    <in>messages_members.h</in>
+                                    <in>os_defines.h</in>
+                                    <in>stdc++.h</in>
+                                    <in>stdtr1c++.h</in>
+                                    <in>time_members.h</in>
+                                  </df>
+                                </df>
+                              </df>
+                            </df>
+                            <df name="cm4">
+                              <df name="hardfp">
+                                <df name="fpv4">
+                                  <df name="bits">
+                                    <in>atomic_word.h</in>
+                                    <in>basic_file.h</in>
+                                    <in>c++allocator.h</in>
+                                    <in>c++config.h</in>
+                                    <in>c++io.h</in>
+                                    <in>c++locale.h</in>
+                                    <in>cpu_defines.h</in>
+                                    <in>ctype_base.h</in>
+                                    <in>ctype_inline.h</in>
+                                    <in>cxxabi_tweaks.h</in>
+                                    <in>error_constants.h</in>
+                                    <in>extc++.h</in>
+                                    <in>gthr-default.h</in>
+                                    <in>gthr-posix.h</in>
+                                    <in>gthr-single.h</in>
+                                    <in>gthr.h</in>
+                                    <in>messages_members.h</in>
+                                    <in>os_defines.h</in>
+                                    <in>stdc++.h</in>
+                                    <in>stdtr1c++.h</in>
+                                    <in>time_members.h</in>
+                                  </df>
+                                  <df name="pie">
+                                    <df name="single-pic-base">
+                                      <df name="bits">
+                                        <in>atomic_word.h</in>
+                                        <in>basic_file.h</in>
+                                        <in>c++allocator.h</in>
+                                        <in>c++config.h</in>
+                                        <in>c++io.h</in>
+                                        <in>c++locale.h</in>
+                                        <in>cpu_defines.h</in>
+                                        <in>ctype_base.h</in>
+                                        <in>ctype_inline.h</in>
+                                        <in>cxxabi_tweaks.h</in>
+                                        <in>error_constants.h</in>
+                                        <in>extc++.h</in>
+                                        <in>gthr-default.h</in>
+                                        <in>gthr-posix.h</in>
+                                        <in>gthr-single.h</in>
+                                        <in>gthr.h</in>
+                                        <in>messages_members.h</in>
+                                        <in>os_defines.h</in>
+                                        <in>stdc++.h</in>
+                                        <in>stdtr1c++.h</in>
+                                        <in>time_members.h</in>
+                                      </df>
+                                    </df>
+                                  </df>
+                                </df>
+                              </df>
+                            </df>
+                          </df>
+                        </df>
+                        <df name="backward">
+                          <in>auto_ptr.h</in>
+                          <in>backward_warning.h</in>
+                          <in>binders.h</in>
+                          <in>hash_fun.h</in>
+                          <in>hashtable.h</in>
+                        </df>
+                        <df name="bits">
+                          <in>algorithmfwd.h</in>
+                          <in>alloc_traits.h</in>
+                          <in>allocator.h</in>
+                          <in>atomic_base.h</in>
+                          <in>atomic_lockfree_defines.h</in>
+                          <in>basic_ios.h</in>
+                          <in>basic_ios.tcc</in>
+                          <in>basic_string.h</in>
+                          <in>basic_string.tcc</in>
+                          <in>boost_concept_check.h</in>
+                          <in>c++0x_warning.h</in>
+                          <in>char_traits.h</in>
+                          <in>codecvt.h</in>
+                          <in>concept_check.h</in>
+                          <in>cpp_type_traits.h</in>
+                          <in>cxxabi_forced.h</in>
+                          <in>deque.tcc</in>
+                          <in>exception_defines.h</in>
+                          <in>exception_ptr.h</in>
+                          <in>forward_list.h</in>
+                          <in>forward_list.tcc</in>
+                          <in>fstream.tcc</in>
+                          <in>functexcept.h</in>
+                          <in>functional_hash.h</in>
+                          <in>gslice.h</in>
+                          <in>gslice_array.h</in>
+                          <in>hash_bytes.h</in>
+                          <in>hashtable.h</in>
+                          <in>hashtable_policy.h</in>
+                          <in>indirect_array.h</in>
+                          <in>ios_base.h</in>
+                          <in>istream.tcc</in>
+                          <in>list.tcc</in>
+                          <in>locale_classes.h</in>
+                          <in>locale_classes.tcc</in>
+                          <in>locale_facets.h</in>
+                          <in>locale_facets.tcc</in>
+                          <in>locale_facets_nonio.h</in>
+                          <in>locale_facets_nonio.tcc</in>
+                          <in>localefwd.h</in>
+                          <in>mask_array.h</in>
+                          <in>move.h</in>
+                          <in>nested_exception.h</in>
+                          <in>ostream.tcc</in>
+                          <in>ostream_insert.h</in>
+                          <in>postypes.h</in>
+                          <in>ptr_traits.h</in>
+                          <in>random.h</in>
+                          <in>random.tcc</in>
+                          <in>range_access.h</in>
+                          <in>regex.h</in>
+                          <in>regex_compiler.h</in>
+                          <in>regex_constants.h</in>
+                          <in>regex_cursor.h</in>
+                          <in>regex_error.h</in>
+                          <in>regex_grep_matcher.h</in>
+                          <in>regex_grep_matcher.tcc</in>
+                          <in>regex_nfa.h</in>
+                          <in>regex_nfa.tcc</in>
+                          <in>shared_ptr.h</in>
+                          <in>shared_ptr_base.h</in>
+                          <in>slice_array.h</in>
+                          <in>sstream.tcc</in>
+                          <in>stl_algo.h</in>
+                          <in>stl_algobase.h</in>
+                          <in>stl_bvector.h</in>
+                          <in>stl_construct.h</in>
+                          <in>stl_deque.h</in>
+                          <in>stl_function.h</in>
+                          <in>stl_heap.h</in>
+                          <in>stl_iterator.h</in>
+                          <in>stl_iterator_base_funcs.h</in>
+                          <in>stl_iterator_base_types.h</in>
+                          <in>stl_list.h</in>
+                          <in>stl_map.h</in>
+                          <in>stl_multimap.h</in>
+                          <in>stl_multiset.h</in>
+                          <in>stl_numeric.h</in>
+                          <in>stl_pair.h</in>
+                          <in>stl_queue.h</in>
+                          <in>stl_raw_storage_iter.h</in>
+                          <in>stl_relops.h</in>
+                          <in>stl_set.h</in>
+                          <in>stl_stack.h</in>
+                          <in>stl_tempbuf.h</in>
+                          <in>stl_tree.h</in>
+                          <in>stl_uninitialized.h</in>
+                          <in>stl_vector.h</in>
+                          <in>stream_iterator.h</in>
+                          <in>streambuf.tcc</in>
+                          <in>streambuf_iterator.h</in>
+                          <in>stringfwd.h</in>
+                          <in>unique_ptr.h</in>
+                          <in>unordered_map.h</in>
+                          <in>unordered_set.h</in>
+                          <in>uses_allocator.h</in>
+                          <in>valarray_after.h</in>
+                          <in>valarray_array.h</in>
+                          <in>valarray_array.tcc</in>
+                          <in>valarray_before.h</in>
+                          <in>vector.tcc</in>
+                        </df>
+                        <df name="debug">
+                          <in>debug.h</in>
+                          <in>formatter.h</in>
+                          <in>functions.h</in>
+                          <in>macros.h</in>
+                          <in>map.h</in>
+                          <in>multimap.h</in>
+                          <in>multiset.h</in>
+                          <in>safe_base.h</in>
+                          <in>safe_iterator.h</in>
+                          <in>safe_iterator.tcc</in>
+                          <in>safe_local_iterator.h</in>
+                          <in>safe_local_iterator.tcc</in>
+                          <in>safe_sequence.h</in>
+                          <in>safe_sequence.tcc</in>
+                          <in>safe_unordered_base.h</in>
+                          <in>safe_unordered_container.h</in>
+                          <in>safe_unordered_container.tcc</in>
+                          <in>set.h</in>
+                        </df>
+                        <df name="decimal">
+                          <in>decimal.h</in>
+                        </df>
+                        <df name="ext">
+                          <df name="pb_ds">
+                            <df name="detail">
+                              <df name="bin_search_tree_">
+                                <in>bin_search_tree_.hpp</in>
+                                <in>constructors_destructor_fn_imps.hpp</in>
+                                <in>debug_fn_imps.hpp</in>
+                                <in>erase_fn_imps.hpp</in>
+                                <in>find_fn_imps.hpp</in>
+                                <in>info_fn_imps.hpp</in>
+                                <in>insert_fn_imps.hpp</in>
+                                <in>iterators_fn_imps.hpp</in>
+                                <in>node_iterators.hpp</in>
+                                <in>point_iterators.hpp</in>
+                                <in>policy_access_fn_imps.hpp</in>
+                                <in>r_erase_fn_imps.hpp</in>
+                                <in>rotate_fn_imps.hpp</in>
+                                <in>split_join_fn_imps.hpp</in>
+                                <in>traits.hpp</in>
+                              </df>
+                              <df name="binary_heap_">
+                                <in>binary_heap_.hpp</in>
+                                <in>const_iterator.hpp</in>
+                                <in>constructors_destructor_fn_imps.hpp</in>
+                                <in>debug_fn_imps.hpp</in>
+                                <in>entry_cmp.hpp</in>
+                                <in>entry_pred.hpp</in>
+                                <in>erase_fn_imps.hpp</in>
+                                <in>find_fn_imps.hpp</in>
+                                <in>info_fn_imps.hpp</in>
+                                <in>insert_fn_imps.hpp</in>
+                                <in>iterators_fn_imps.hpp</in>
+                                <in>point_const_iterator.hpp</in>
+                                <in>policy_access_fn_imps.hpp</in>
+                                <in>resize_policy.hpp</in>
+                                <in>split_join_fn_imps.hpp</in>
+                                <in>trace_fn_imps.hpp</in>
+                              </df>
+                              <df name="binomial_heap_">
+                                <in>binomial_heap_.hpp</in>
+                                <in>constructors_destructor_fn_imps.hpp</in>
+                                <in>debug_fn_imps.hpp</in>
+                              </df>
+                              <df name="binomial_heap_base_">
+                                <in>binomial_heap_base_.hpp</in>
+                                <in>constructors_destructor_fn_imps.hpp</in>
+                                <in>debug_fn_imps.hpp</in>
+                                <in>erase_fn_imps.hpp</in>
+                                <in>find_fn_imps.hpp</in>
+                                <in>insert_fn_imps.hpp</in>
+                                <in>split_join_fn_imps.hpp</in>
+                              </df>
+                              <df name="branch_policy">
+                                <in>branch_policy.hpp</in>
+                                <in>null_node_metadata.hpp</in>
+                                <in>traits.hpp</in>
+                              </df>
+                              <df name="cc_hash_table_map_">
+                                <in>cc_ht_map_.hpp</in>
+                                <in>cmp_fn_imps.hpp</in>
+                                <in>cond_key_dtor_entry_dealtor.hpp</in>
+                                <in>constructor_destructor_fn_imps.hpp</in>
+                                <in>constructor_destructor_no_store_hash_fn_imps.hpp</in>
+                                <in>constructor_destructor_store_hash_fn_imps.hpp</in>
+                                <in>debug_fn_imps.hpp</in>
+                                <in>debug_no_store_hash_fn_imps.hpp</in>
+                                <in>debug_store_hash_fn_imps.hpp</in>
+                                <in>entry_list_fn_imps.hpp</in>
+                                <in>erase_fn_imps.hpp</in>
+                                <in>erase_no_store_hash_fn_imps.hpp</in>
+                                <in>erase_store_hash_fn_imps.hpp</in>
+                                <in>find_fn_imps.hpp</in>
+                                <in>find_store_hash_fn_imps.hpp</in>
+                                <in>info_fn_imps.hpp</in>
+                                <in>insert_fn_imps.hpp</in>
+                                <in>insert_no_store_hash_fn_imps.hpp</in>
+                                <in>insert_store_hash_fn_imps.hpp</in>
+                                <in>iterators_fn_imps.hpp</in>
+                                <in>policy_access_fn_imps.hpp</in>
+                                <in>resize_fn_imps.hpp</in>
+                                <in>resize_no_store_hash_fn_imps.hpp</in>
+                                <in>resize_store_hash_fn_imps.hpp</in>
+                                <in>size_fn_imps.hpp</in>
+                                <in>standard_policies.hpp</in>
+                                <in>trace_fn_imps.hpp</in>
+                              </df>
+                              <df name="eq_fn">
+                                <in>eq_by_less.hpp</in>
+                                <in>hash_eq_fn.hpp</in>
+                              </df>
+                              <df name="gp_hash_table_map_">
+                                <in>constructor_destructor_fn_imps.hpp</in>
+                                <in>constructor_destructor_no_store_hash_fn_imps.hpp</in>
+                                <in>constructor_destructor_store_hash_fn_imps.hpp</in>
+                                <in>debug_fn_imps.hpp</in>
+                                <in>debug_no_store_hash_fn_imps.hpp</in>
+                                <in>debug_store_hash_fn_imps.hpp</in>
+                                <in>erase_fn_imps.hpp</in>
+                                <in>erase_no_store_hash_fn_imps.hpp</in>
+                                <in>erase_store_hash_fn_imps.hpp</in>
+                                <in>find_fn_imps.hpp</in>
+                                <in>find_no_store_hash_fn_imps.hpp</in>
+                                <in>find_store_hash_fn_imps.hpp</in>
+                                <in>gp_ht_map_.hpp</in>
+                                <in>info_fn_imps.hpp</in>
+                                <in>insert_fn_imps.hpp</in>
+                                <in>insert_no_store_hash_fn_imps.hpp</in>
+                                <in>insert_store_hash_fn_imps.hpp</in>
+                                <in>iterator_fn_imps.hpp</in>
+                                <in>policy_access_fn_imps.hpp</in>
+                                <in>resize_fn_imps.hpp</in>
+                                <in>resize_no_store_hash_fn_imps.hpp</in>
+                                <in>resize_store_hash_fn_imps.hpp</in>
+                                <in>standard_policies.hpp</in>
+                                <in>trace_fn_imps.hpp</in>
+                              </df>
+                              <df name="hash_fn">
+                                <in>direct_mask_range_hashing_imp.hpp</in>
+                                <in>direct_mod_range_hashing_imp.hpp</in>
+                                <in>linear_probe_fn_imp.hpp</in>
+                                <in>mask_based_range_hashing.hpp</in>
+                                <in>mod_based_range_hashing.hpp</in>
+                                <in>probe_fn_base.hpp</in>
+                                <in>quadratic_probe_fn_imp.hpp</in>
+                                <in>ranged_hash_fn.hpp</in>
+                                <in>ranged_probe_fn.hpp</in>
+                                <in>sample_probe_fn.hpp</in>
+                                <in>sample_range_hashing.hpp</in>
+                                <in>sample_ranged_hash_fn.hpp</in>
+                                <in>sample_ranged_probe_fn.hpp</in>
+                              </df>
+                              <df name="left_child_next_sibling_heap_">
+                                <in>const_iterator.hpp</in>
+                                <in>constructors_destructor_fn_imps.hpp</in>
+                                <in>debug_fn_imps.hpp</in>
+                                <in>erase_fn_imps.hpp</in>
+                                <in>info_fn_imps.hpp</in>
+                                <in>insert_fn_imps.hpp</in>
+                                <in>iterators_fn_imps.hpp</in>
+                                <in>left_child_next_sibling_heap_.hpp</in>
+                                <in>node.hpp</in>
+                                <in>point_const_iterator.hpp</in>
+                                <in>policy_access_fn_imps.hpp</in>
+                                <in>trace_fn_imps.hpp</in>
+                              </df>
+                              <df name="list_update_map_">
+                                <in>constructor_destructor_fn_imps.hpp</in>
+                                <in>debug_fn_imps.hpp</in>
+                                <in>entry_metadata_base.hpp</in>
+                                <in>erase_fn_imps.hpp</in>
+                                <in>find_fn_imps.hpp</in>
+                                <in>info_fn_imps.hpp</in>
+                                <in>insert_fn_imps.hpp</in>
+                                <in>iterators_fn_imps.hpp</in>
+                                <in>lu_map_.hpp</in>
+                                <in>trace_fn_imps.hpp</in>
+                              </df>
+                              <df name="list_update_policy">
+                                <in>lu_counter_metadata.hpp</in>
+                                <in>sample_update_policy.hpp</in>
+                              </df>
+                              <df name="ov_tree_map_">
+                                <in>constructors_destructor_fn_imps.hpp</in>
+                                <in>debug_fn_imps.hpp</in>
+                                <in>erase_fn_imps.hpp</in>
+                                <in>info_fn_imps.hpp</in>
+                                <in>insert_fn_imps.hpp</in>
+                                <in>iterators_fn_imps.hpp</in>
+                                <in>node_iterators.hpp</in>
+                                <in>ov_tree_map_.hpp</in>
+                                <in>policy_access_fn_imps.hpp</in>
+                                <in>split_join_fn_imps.hpp</in>
+                                <in>traits.hpp</in>
+                              </df>
+                              <df name="pairing_heap_">
+                                <in>constructors_destructor_fn_imps.hpp</in>
+                                <in>debug_fn_imps.hpp</in>
+                                <in>erase_fn_imps.hpp</in>
+                                <in>find_fn_imps.hpp</in>
+                                <in>insert_fn_imps.hpp</in>
+                                <in>pairing_heap_.hpp</in>
+                                <in>split_join_fn_imps.hpp</in>
+                              </df>
+                              <df name="pat_trie_">
+                                <in>constructors_destructor_fn_imps.hpp</in>
+                                <in>debug_fn_imps.hpp</in>
+                                <in>erase_fn_imps.hpp</in>
+                                <in>find_fn_imps.hpp</in>
+                                <in>info_fn_imps.hpp</in>
+                                <in>insert_join_fn_imps.hpp</in>
+                                <in>iterators_fn_imps.hpp</in>
+                                <in>pat_trie_.hpp</in>
+                                <in>pat_trie_base.hpp</in>
+                                <in>policy_access_fn_imps.hpp</in>
+                                <in>r_erase_fn_imps.hpp</in>
+                                <in>rotate_fn_imps.hpp</in>
+                                <in>split_fn_imps.hpp</in>
+                                <in>synth_access_traits.hpp</in>
+                                <in>trace_fn_imps.hpp</in>
+                                <in>traits.hpp</in>
+                                <in>update_fn_imps.hpp</in>
+                              </df>
+                              <df name="rb_tree_map_">
+                                <in>constructors_destructor_fn_imps.hpp</in>
+                                <in>debug_fn_imps.hpp</in>
+                                <in>erase_fn_imps.hpp</in>
+                                <in>find_fn_imps.hpp</in>
+                                <in>info_fn_imps.hpp</in>
+                                <in>insert_fn_imps.hpp</in>
+                                <in>node.hpp</in>
+                                <in>rb_tree_.hpp</in>
+                                <in>split_join_fn_imps.hpp</in>
+                                <in>traits.hpp</in>
+                              </df>
+                              <df name="rc_binomial_heap_">
+                                <in>constructors_destructor_fn_imps.hpp</in>
+                                <in>debug_fn_imps.hpp</in>
+                                <in>erase_fn_imps.hpp</in>
+                                <in>insert_fn_imps.hpp</in>
+                                <in>rc.hpp</in>
+                                <in>rc_binomial_heap_.hpp</in>
+                                <in>split_join_fn_imps.hpp</in>
+                                <in>trace_fn_imps.hpp</in>
+                              </df>
+                              <df name="resize_policy">
+                                <in>cc_hash_max_collision_check_resize_trigger_imp.hpp</in>
+                                <in>hash_exponential_size_policy_imp.hpp</in>
+                                <in>hash_load_check_resize_trigger_imp.hpp</in>
+                                <in>hash_load_check_resize_trigger_size_base.hpp</in>
+                                <in>hash_prime_size_policy_imp.hpp</in>
+                                <in>hash_standard_resize_policy_imp.hpp</in>
+                                <in>sample_resize_policy.hpp</in>
+                                <in>sample_resize_trigger.hpp</in>
+                                <in>sample_size_policy.hpp</in>
+                              </df>
+                              <df name="splay_tree_">
+                                <in>constructors_destructor_fn_imps.hpp</in>
+                                <in>debug_fn_imps.hpp</in>
+                                <in>erase_fn_imps.hpp</in>
+                                <in>find_fn_imps.hpp</in>
+                                <in>info_fn_imps.hpp</in>
+                                <in>insert_fn_imps.hpp</in>
+                                <in>node.hpp</in>
+                                <in>splay_fn_imps.hpp</in>
+                                <in>splay_tree_.hpp</in>
+                                <in>split_join_fn_imps.hpp</in>
+                                <in>traits.hpp</in>
+                              </df>
+                              <df name="thin_heap_">
+                                <in>constructors_destructor_fn_imps.hpp</in>
+                                <in>debug_fn_imps.hpp</in>
+                                <in>erase_fn_imps.hpp</in>
+                                <in>find_fn_imps.hpp</in>
+                                <in>insert_fn_imps.hpp</in>
+                                <in>split_join_fn_imps.hpp</in>
+                                <in>thin_heap_.hpp</in>
+                                <in>trace_fn_imps.hpp</in>
+                              </df>
+                              <df name="tree_policy">
+                                <in>node_metadata_selector.hpp</in>
+                                <in>order_statistics_imp.hpp</in>
+                                <in>sample_tree_node_update.hpp</in>
+                              </df>
+                              <df name="trie_policy">
+                                <in>node_metadata_selector.hpp</in>
+                                <in>order_statistics_imp.hpp</in>
+                                <in>prefix_search_node_update_imp.hpp</in>
+                                <in>sample_trie_access_traits.hpp</in>
+                                <in>sample_trie_node_update.hpp</in>
+                                <in>trie_policy_base.hpp</in>
+                                <in>trie_string_access_traits_imp.hpp</in>
+                              </df>
+                              <df name="unordered_iterator">
+                                <in>const_iterator.hpp</in>
+                                <in>iterator.hpp</in>
+                                <in>point_const_iterator.hpp</in>
+                                <in>point_iterator.hpp</in>
+                              </df>
+                              <in>cond_dealtor.hpp</in>
+                              <in>container_base_dispatch.hpp</in>
+                              <in>debug_map_base.hpp</in>
+                              <in>priority_queue_base_dispatch.hpp</in>
+                              <in>standard_policies.hpp</in>
+                              <in>tree_trace_base.hpp</in>
+                              <in>type_utils.hpp</in>
+                              <in>types_traits.hpp</in>
+                            </df>
+                            <in>assoc_container.hpp</in>
+                            <in>exception.hpp</in>
+                            <in>hash_policy.hpp</in>
+                            <in>list_update_policy.hpp</in>
+                            <in>priority_queue.hpp</in>
+                            <in>tag_and_trait.hpp</in>
+                            <in>tree_policy.hpp</in>
+                            <in>trie_policy.hpp</in>
+                          </df>
+                          <in>alloc_traits.h</in>
+                          <in>array_allocator.h</in>
+                          <in>atomicity.h</in>
+                          <in>bitmap_allocator.h</in>
+                          <in>cast.h</in>
+                          <in>codecvt_specializations.h</in>
+                          <in>concurrence.h</in>
+                          <in>debug_allocator.h</in>
+                          <in>enc_filebuf.h</in>
+                          <in>extptr_allocator.h</in>
+                          <in>malloc_allocator.h</in>
+                          <in>mt_allocator.h</in>
+                          <in>new_allocator.h</in>
+                          <in>numeric_traits.h</in>
+                          <in>pod_char_traits.h</in>
+                          <in>pointer.h</in>
+                          <in>pool_allocator.h</in>
+                          <in>rc_string_base.h</in>
+                          <in>ropeimpl.h</in>
+                          <in>sso_string_base.h</in>
+                          <in>stdio_filebuf.h</in>
+                          <in>stdio_sync_filebuf.h</in>
+                          <in>string_conversions.h</in>
+                          <in>throw_allocator.h</in>
+                          <in>type_traits.h</in>
+                          <in>typelist.h</in>
+                          <in>vstring.h</in>
+                          <in>vstring.tcc</in>
+                          <in>vstring_fwd.h</in>
+                          <in>vstring_util.h</in>
+                        </df>
+                        <df name="profile">
+                          <df name="impl">
+                            <in>profiler.h</in>
+                            <in>profiler_algos.h</in>
+                            <in>profiler_container_size.h</in>
+                            <in>profiler_hash_func.h</in>
+                            <in>profiler_hashtable_size.h</in>
+                            <in>profiler_list_to_slist.h</in>
+                            <in>profiler_list_to_vector.h</in>
+                            <in>profiler_map_to_unordered_map.h</in>
+                            <in>profiler_node.h</in>
+                            <in>profiler_state.h</in>
+                            <in>profiler_trace.h</in>
+                            <in>profiler_vector_size.h</in>
+                            <in>profiler_vector_to_list.h</in>
+                          </df>
+                          <in>base.h</in>
+                          <in>iterator_tracker.h</in>
+                          <in>map.h</in>
+                          <in>multimap.h</in>
+                          <in>multiset.h</in>
+                          <in>set.h</in>
+                        </df>
+                        <df name="tr1">
+                          <in>bessel_function.tcc</in>
+                          <in>beta_function.tcc</in>
+                          <in>complex.h</in>
+                          <in>ctype.h</in>
+                          <in>ell_integral.tcc</in>
+                          <in>exp_integral.tcc</in>
+                          <in>fenv.h</in>
+                          <in>float.h</in>
+                          <in>functional_hash.h</in>
+                          <in>gamma.tcc</in>
+                          <in>hashtable.h</in>
+                          <in>hashtable_policy.h</in>
+                          <in>hypergeometric.tcc</in>
+                          <in>inttypes.h</in>
+                          <in>legendre_function.tcc</in>
+                          <in>limits.h</in>
+                          <in>math.h</in>
+                          <in>modified_bessel_func.tcc</in>
+                          <in>poly_hermite.tcc</in>
+                          <in>poly_laguerre.tcc</in>
+                          <in>random.h</in>
+                          <in>random.tcc</in>
+                          <in>riemann_zeta.tcc</in>
+                          <in>shared_ptr.h</in>
+                          <in>special_function_util.h</in>
+                          <in>stdarg.h</in>
+                          <in>stdbool.h</in>
+                          <in>stdint.h</in>
+                          <in>stdio.h</in>
+                          <in>stdlib.h</in>
+                          <in>tgmath.h</in>
+                          <in>unordered_map.h</in>
+                          <in>unordered_set.h</in>
+                          <in>wchar.h</in>
+                          <in>wctype.h</in>
+                        </df>
+                        <df name="tr2">
+                          <in>bool_set.tcc</in>
+                        </df>
+                        <in>complex.h</in>
+                        <in>cxxabi.h</in>
+                        <in>fenv.h</in>
+                        <in>tgmath.h</in>
+                      </df>
+                    </df>
+                    <df name="machine">
+                      <in>_default_types.h</in>
+                      <in>_types.h</in>
+                      <in>ansi.h</in>
+                      <in>endian.h</in>
+                      <in>fastmath.h</in>
+                      <in>ieeefp.h</in>
+                      <in>malloc.h</in>
+                      <in>param.h</in>
+                      <in>setjmp-dj.h</in>
+                      <in>setjmp.h</in>
+                      <in>stdlib.h</in>
+                      <in>termios.h</in>
+                      <in>time.h</in>
+                      <in>types.h</in>
+                    </df>
+                    <df name="rpc">
+                    </df>
+                    <df name="sys">
+                      <in>_default_fcntl.h</in>
+                      <in>_types.h</in>
+                      <in>cdefs.h</in>
+                      <in>config.h</in>
+                      <in>custom_file.h</in>
+                      <in>dir.h</in>
+                      <in>dirent.h</in>
+                      <in>errno.h</in>
+                      <in>fcntl.h</in>
+                      <in>features.h</in>
+                      <in>file.h</in>
+                      <in>iconvnls.h</in>
+                      <in>lock.h</in>
+                      <in>param.h</in>
+                      <in>queue.h</in>
+                      <in>reent.h</in>
+                      <in>resource.h</in>
+                      <in>sched.h</in>
+                      <in>signal.h</in>
+                      <in>stat.h</in>
+                      <in>stdio.h</in>
+                      <in>string.h</in>
+                      <in>syslimits.h</in>
+                      <in>time.h</in>
+                      <in>timeb.h</in>
+                      <in>times.h</in>
+                      <in>types.h</in>
+                      <in>unistd.h</in>
+                      <in>utime.h</in>
+                      <in>wait.h</in>
+                    </df>
+                    <in>_ansi.h</in>
+                    <in>_syslist.h</in>
+                    <in>alloca.h</in>
+                    <in>ar.h</in>
+                    <in>argz.h</in>
+                    <in>assert.h</in>
+                    <in>complex.h</in>
+                    <in>ctype.h</in>
+                    <in>dirent.h</in>
+                    <in>envlock.h</in>
+                    <in>envz.h</in>
+                    <in>errno.h</in>
+                    <in>fastmath.h</in>
+                    <in>fcntl.h</in>
+                    <in>fnmatch.h</in>
+                    <in>getopt.h</in>
+                    <in>glob.h</in>
+                    <in>grp.h</in>
+                    <in>iconv.h</in>
+                    <in>ieeefp.h</in>
+                    <in>inttypes.h</in>
+                    <in>langinfo.h</in>
+                    <in>libgen.h</in>
+                    <in>limits.h</in>
+                    <in>locale.h</in>
+                    <in>malloc.h</in>
+                    <in>math.h</in>
+                    <in>newlib.h</in>
+                    <in>paths.h</in>
+                    <in>pthread.h</in>
+                    <in>pwd.h</in>
+                    <in>reent.h</in>
+                    <in>regdef.h</in>
+                    <in>regex.h</in>
+                    <in>sched.h</in>
+                    <in>search.h</in>
+                    <in>setjmp.h</in>
+                    <in>signal.h</in>
+                    <in>stdint.h</in>
+                    <in>stdio.h</in>
+                    <in>stdio_ext.h</in>
+                    <in>stdlib.h</in>
+                    <in>string.h</in>
+                    <in>strings.h</in>
+                    <in>tar.h</in>
+                    <in>termios.h</in>
+                    <in>tgmath.h</in>
+                    <in>time.h</in>
+                    <in>unctrl.h</in>
+                    <in>unistd.h</in>
+                    <in>utime.h</in>
+                    <in>utmp.h</in>
+                    <in>wchar.h</in>
+                    <in>wctype.h</in>
+                    <in>wordexp.h</in>
+                  </df>
+                  <df name="lib">
+                    <df name="ldscripts">
+                    </df>
+                    <df name="pie">
+                      <df name="single-pic-base">
+                      </df>
+                    </df>
+                    <df name="thumb">
+                      <df name="cm3">
+                        <df name="pie">
+                          <df name="single-pic-base">
+                          </df>
+                        </df>
+                      </df>
+                      <df name="cm4">
+                        <df name="hardfp">
+                          <df name="fpv4">
+                            <df name="pie">
+                              <df name="single-pic-base">
+                              </df>
+                            </df>
+                          </df>
+                        </df>
+                      </df>
+                    </df>
+                  </df>
+                </df>
+                <df name="bin">
+                </df>
+                <df name="include">
+                  <df name="gdb">
+                    <in>jit-reader.h</in>
+                  </df>
+                </df>
+                <df name="lib">
+                  <df name="gcc">
+                    <df name="arm-miosix-eabi">
+                      <df name="4.7.3">
+                        <df name="include">
+                          <in>arm_neon.h</in>
+                          <in>float.h</in>
+                          <in>iso646.h</in>
+                          <in>mmintrin.h</in>
+                          <in>stdalign.h</in>
+                          <in>stdarg.h</in>
+                          <in>stdbool.h</in>
+                          <in>stddef.h</in>
+                          <in>stdfix.h</in>
+                          <in>stdint-gcc.h</in>
+                          <in>stdint.h</in>
+                          <in>stdnoreturn.h</in>
+                          <in>tgmath.h</in>
+                          <in>unwind-arm-common.h</in>
+                          <in>unwind.h</in>
+                          <in>varargs.h</in>
+                        </df>
+                        <df name="include-fixed">
+                          <in>limits.h</in>
+                          <in>syslimits.h</in>
+                        </df>
+                        <df name="install-tools">
+                          <df name="include">
+                            <in>limits.h</in>
+                          </df>
+                          <in>gsyslimits.h</in>
+                        </df>
+                        <df name="pie">
+                          <df name="single-pic-base">
+                          </df>
+                        </df>
+                        <df name="plugin">
+                          <df name="include">
+                            <df name="ada">
+                              <df name="gcc-interface">
+                              </df>
+                            </df>
+                            <df name="c-family">
+                              <in>c-common.h</in>
+                              <in>c-objc.h</in>
+                              <in>c-pragma.h</in>
+                              <in>c-pretty-print.h</in>
+                            </df>
+                            <df name="config">
+                              <df name="arm">
+                                <in>aout.h</in>
+                                <in>arm-opts.h</in>
+                                <in>arm-protos.h</in>
+                                <in>arm.h</in>
+                                <in>bpabi.h</in>
+                                <in>elf.h</in>
+                                <in>miosix-eabi.h</in>
+                                <in>unknown-elf.h</in>
+                              </df>
+                              <in>dbxelf.h</in>
+                              <in>elfos.h</in>
+                              <in>initfini-array.h</in>
+                              <in>newlib-stdint.h</in>
+                            </df>
+                            <df name="cp">
+                              <in>cp-tree.h</in>
+                              <in>cxx-pretty-print.h</in>
+                              <in>name-lookup.h</in>
+                            </df>
+                            <df name="java">
+                            </df>
+                            <df name="objc">
+                            </df>
+                            <in>alias.h</in>
+                            <in>alloc-pool.h</in>
+                            <in>ansidecl.h</in>
+                            <in>auto-host.h</in>
+                            <in>basic-block.h</in>
+                            <in>bitmap.h</in>
+                            <in>bversion.h</in>
+                            <in>c-tree.h</in>
+                            <in>cfghooks.h</in>
+                            <in>cfgloop.h</in>
+                            <in>cgraph.h</in>
+                            <in>config.h</in>
+                            <in>configargs.h</in>
+                            <in>coretypes.h</in>
+                            <in>cppdefault.h</in>
+                            <in>cpplib.h</in>
+                            <in>debug.h</in>
+                            <in>defaults.h</in>
+                            <in>diagnostic-core.h</in>
+                            <in>diagnostic.h</in>
+                            <in>double-int.h</in>
+                            <in>emit-rtl.h</in>
+                            <in>except.h</in>
+                            <in>filenames.h</in>
+                            <in>fixed-value.h</in>
+                            <in>flag-types.h</in>
+                            <in>flags.h</in>
+                            <in>function.h</in>
+                            <in>gcc-plugin.h</in>
+                            <in>genrtl.h</in>
+                            <in>ggc.h</in>
+                            <in>gimple-pretty-print.h</in>
+                            <in>gimple.h</in>
+                            <in>gtype-desc.h</in>
+                            <in>hard-reg-set.h</in>
+                            <in>hashtab.h</in>
+                            <in>highlev-plugin-common.h</in>
+                            <in>hwint.h</in>
+                            <in>incpath.h</in>
+                            <in>input.h</in>
+                            <in>insn-constants.h</in>
+                            <in>insn-flags.h</in>
+                            <in>insn-modes.h</in>
+                            <in>internal-fn.h</in>
+                            <in>intl.h</in>
+                            <in>ipa-prop.h</in>
+                            <in>ipa-ref-inline.h</in>
+                            <in>ipa-ref.h</in>
+                            <in>ipa-reference.h</in>
+                            <in>ipa-utils.h</in>
+                            <in>langhooks.h</in>
+                            <in>libiberty.h</in>
+                            <in>line-map.h</in>
+                            <in>machmode.h</in>
+                            <in>md5.h</in>
+                            <in>obstack.h</in>
+                            <in>options.h</in>
+                            <in>opts.h</in>
+                            <in>output.h</in>
+                            <in>params.h</in>
+                            <in>plugin-api.h</in>
+                            <in>plugin-version.h</in>
+                            <in>plugin.h</in>
+                            <in>pointer-set.h</in>
+                            <in>predict.h</in>
+                            <in>prefix.h</in>
+                            <in>pretty-print.h</in>
+                            <in>real.h</in>
+                            <in>realmpfr.h</in>
+                            <in>rtl.h</in>
+                            <in>safe-ctype.h</in>
+                            <in>sbitmap.h</in>
+                            <in>splay-tree.h</in>
+                            <in>statistics.h</in>
+                            <in>symtab.h</in>
+                            <in>system.h</in>
+                            <in>target-hooks-macros.h</in>
+                            <in>target.h</in>
+                            <in>timevar.h</in>
+                            <in>tm-preds.h</in>
+                            <in>tm.h</in>
+                            <in>tm_p.h</in>
+                            <in>toplev.h</in>
+                            <in>tree-check.h</in>
+                            <in>tree-dump.h</in>
+                            <in>tree-flow-inline.h</in>
+                            <in>tree-flow.h</in>
+                            <in>tree-inline.h</in>
+                            <in>tree-iterator.h</in>
+                            <in>tree-pass.h</in>
+                            <in>tree-pretty-print.h</in>
+                            <in>tree-ssa-alias.h</in>
+                            <in>tree-ssa-operands.h</in>
+                            <in>tree-ssa-sccvn.h</in>
+                            <in>tree.h</in>
+                            <in>vec.h</in>
+                            <in>vecir.h</in>
+                            <in>vecprim.h</in>
+                            <in>version.h</in>
+                          </df>
+                        </df>
+                        <df name="thumb">
+                          <df name="cm3">
+                            <df name="pie">
+                              <df name="single-pic-base">
+                              </df>
+                            </df>
+                          </df>
+                          <df name="cm4">
+                            <df name="hardfp">
+                              <df name="fpv4">
+                                <df name="pie">
+                                  <df name="single-pic-base">
+                                  </df>
+                                </df>
+                              </df>
+                            </df>
+                          </df>
+                        </df>
+                      </df>
+                    </df>
+                  </df>
+                </df>
+                <df name="libexec">
+                  <df name="gcc">
+                    <df name="arm-miosix-eabi">
+                      <df name="4.7.3">
+                        <df name="install-tools">
+                        </df>
+                        <df name="plugin">
+                        </df>
+                      </df>
+                    </df>
+                  </df>
+                </df>
+                <df name="share">
+                  <df name="gcc-4.7.3">
+                    <df name="python">
+                      <df name="libstdcxx">
+                        <df name="v6">
+                        </df>
+                      </df>
+                    </df>
+                  </df>
+                  <df name="gdb">
+                    <df name="python">
+                      <df name="gdb">
+                        <df name="command">
+                        </df>
+                      </df>
+                    </df>
+                    <df name="syscalls">
+                    </df>
+                  </df>
+                  <df name="info">
+                  </df>
+                  <df name="locale">
+                    <df name="bg">
+                      <df name="LC_MESSAGES">
+                      </df>
+                    </df>
+                    <df name="da">
+                      <df name="LC_MESSAGES">
+                      </df>
+                    </df>
+                    <df name="de">
+                      <df name="LC_MESSAGES">
+                      </df>
+                    </df>
+                    <df name="eo">
+                      <df name="LC_MESSAGES">
+                      </df>
+                    </df>
+                    <df name="es">
+                      <df name="LC_MESSAGES">
+                      </df>
+                    </df>
+                    <df name="fi">
+                      <df name="LC_MESSAGES">
+                      </df>
+                    </df>
+                    <df name="fr">
+                      <df name="LC_MESSAGES">
+                      </df>
+                    </df>
+                    <df name="ga">
+                      <df name="LC_MESSAGES">
+                      </df>
+                    </df>
+                    <df name="id">
+                      <df name="LC_MESSAGES">
+                      </df>
+                    </df>
+                    <df name="it">
+                      <df name="LC_MESSAGES">
+                      </df>
+                    </df>
+                    <df name="ja">
+                      <df name="LC_MESSAGES">
+                      </df>
+                    </df>
+                    <df name="ms">
+                      <df name="LC_MESSAGES">
+                      </df>
+                    </df>
+                    <df name="nl">
+                      <df name="LC_MESSAGES">
+                      </df>
+                    </df>
+                    <df name="pt_BR">
+                      <df name="LC_MESSAGES">
+                      </df>
+                    </df>
+                    <df name="ro">
+                      <df name="LC_MESSAGES">
+                      </df>
+                    </df>
+                    <df name="ru">
+                      <df name="LC_MESSAGES">
+                      </df>
+                    </df>
+                    <df name="rw">
+                      <df name="LC_MESSAGES">
+                      </df>
+                    </df>
+                    <df name="sk">
+                      <df name="LC_MESSAGES">
+                      </df>
+                    </df>
+                    <df name="sr">
+                      <df name="LC_MESSAGES">
+                      </df>
+                    </df>
+                    <df name="sv">
+                      <df name="LC_MESSAGES">
+                      </df>
+                    </df>
+                    <df name="tr">
+                      <df name="LC_MESSAGES">
+                      </df>
+                    </df>
+                    <df name="uk">
+                      <df name="LC_MESSAGES">
+                      </df>
+                    </df>
+                    <df name="vi">
+                      <df name="LC_MESSAGES">
+                      </df>
+                    </df>
+                    <df name="zh_CN">
+                      <df name="LC_MESSAGES">
+                      </df>
+                    </df>
+                    <df name="zh_TW">
+                      <df name="LC_MESSAGES">
+                      </df>
+                    </df>
+                  </df>
+                  <df name="man">
+                    <df name="man1">
+                    </df>
+                    <df name="man7">
+                    </df>
+                  </df>
+                </df>
+              </df>
+            </df>
+          </df>
+          <df name="delay_test">
+            <in>delay_test.cpp</in>
+          </df>
+          <df name="feedforward_profiling">
+            <in>fdstream.h</in>
+            <in>fdstream.tcc</in>
+            <in>jtag_profiler.cpp</in>
+            <in>test.cpp</in>
+          </df>
+          <df name="fs_backend">
+            <in>backend_benchmark.cpp</in>
+          </df>
+          <df name="fs_misc_testcode">
+            <in>test_driver.cpp</in>
+            <in>xstat.c</in>
+          </df>
+          <df name="ram_test">
+            <in>main.cpp</in>
+            <in>sha1.cpp</in>
+            <in>sha1.h</in>
+          </df>
+          <df name="testsuite">
+            <in>testsuite.cpp</in>
+          </df>
+          <df name="unused">
+            <in>conflict_table.cpp</in>
+            <in>conflict_table.h</in>
+            <in>pthread_key.cpp</in>
+          </df>
+        </df>
+        <df name="arch">
+          <df name="arm7_lpc2000">
+            <df name="common">
+              <df name="interfaces-impl">
+                <in>atomic_ops_impl.h</in>
+                <in>endianness_impl.h</in>
+              </df>
+              <in>arch_settings.h</in>
+            </df>
+            <df name="lpc2138_miosix_board">
+              <df name="core">
+                <in>interrupts.cpp</in>
+                <in>interrupts.h</in>
+                <in>stage_1_boot.s</in>
+              </df>
+              <df name="drivers">
+                <in>serial.cpp</in>
+                <in>serial.h</in>
+              </df>
+              <df name="interfaces-impl">
+                <in>arch_registers_impl.h</in>
+                <in>bsp.cpp</in>
+                <in>bsp_impl.h</in>
+                <in>console.cpp</in>
+                <in>delays.cpp</in>
+                <in>disk.cpp</in>
+                <in>gpio_impl.h</in>
+                <in>portability.cpp</in>
+                <in>portability_impl.h</in>
+              </df>
+              <in>LPC213x.h</in>
+              <in>board_settings.h</in>
+            </df>
+          </df>
+          <df name="common">
+            <df name="drivers">
+              <in>dcc.cpp</in>
+              <in>dcc.h</in>
+              <in>stm32_hardware_rng.cpp</in>
+              <in>stm32_hardware_rng.h</in>
+            </df>
+          </df>
+          <df name="cortexM3_stm32">
+            <df name="common">
+              <df name="CMSIS">
+                <in>core_cm3.c</in>
+                <in>core_cm3.h</in>
+                <in>stm32f10x.h</in>
+                <in>system_stm32f10x.c</in>
+                <in>system_stm32f10x.h</in>
+              </df>
+              <df name="core">
+                <in>interrupts.cpp</in>
+                <in>interrupts.h</in>
+              </df>
+              <df name="drivers">
+                <in>serial.cpp</in>
+                <in>serial.h</in>
+              </df>
+              <df name="interfaces-impl">
+                <in>arch_registers_impl.h</in>
+                <in>atomic_ops_impl.h</in>
+                <in>delays.cpp</in>
+                <in>disk.cpp</in>
+                <in>endianness_impl.h</in>
+                <in>gpio_impl.cpp</in>
+                <in>gpio_impl.h</in>
+                <in>portability.cpp</in>
+                <in>portability_impl.h</in>
+              </df>
+              <in>arch_settings.h</in>
+            </df>
+            <df name="stm32f100rb_stm32vldiscovery">
+              <df name="core">
+                <in>stage_1_boot.cpp</in>
+              </df>
+              <df name="interfaces-impl">
+                <in>bsp.cpp</in>
+                <in>bsp_impl.h</in>
+                <in>console.cpp</in>
+              </df>
+              <in>board_settings.h</in>
+            </df>
+            <df name="stm32f103ve_mp3v2">
+              <df name="core">
+                <in>stage_1_boot.cpp</in>
+              </df>
+              <df name="interfaces-impl">
+                <in>bsp.cpp</in>
+                <in>bsp_impl.h</in>
+                <in>console.cpp</in>
+                <in>hwmapping.h</in>
+              </df>
+              <in>board_settings.h</in>
+            </df>
+            <df name="stm32f103ve_strive_mini">
+              <df name="core">
+                <in>stage_1_boot.cpp</in>
+              </df>
+              <df name="interfaces-impl">
+                <in>bsp.cpp</in>
+                <in>bsp_impl.h</in>
+                <in>console.cpp</in>
+                <in>hwmapping.h</in>
+              </df>
+              <in>board_settings.h</in>
+            </df>
+            <df name="stm32f103ze_redbull_v2">
+              <df name="core">
+                <in>stage_1_boot.cpp</in>
+              </df>
+              <df name="interfaces-impl">
+                <in>bsp.cpp</in>
+                <in>bsp_impl.h</in>
+                <in>console.cpp</in>
+                <in>hwmapping.h</in>
+              </df>
+              <in>board_settings.h</in>
+            </df>
+            <df name="stm32f103ze_stm3210e-eval">
+              <df name="core">
+                <in>stage_1_boot.cpp</in>
+              </df>
+              <df name="interfaces-impl">
+                <in>bsp.cpp</in>
+                <in>bsp_impl.h</in>
+                <in>console.cpp</in>
+              </df>
+              <in>board_settings.h</in>
+            </df>
+          </df>
+          <df name="cortexM3_stm32f2">
+            <df name="common">
+              <df name="CMSIS">
+                <in>core_cm3.c</in>
+                <in>core_cm3.h</in>
+                <in>stm32f2xx.h</in>
+                <in>system_stm32f2xx.c</in>
+                <in>system_stm32f2xx.h</in>
+              </df>
+              <df name="core">
+                <in>interrupts.cpp</in>
+                <in>interrupts.h</in>
+              </df>
+              <df name="interfaces-impl">
+                <in>arch_registers_impl.h</in>
+                <in>atomic_ops_impl.h</in>
+                <in>disk.cpp</in>
+                <in>endianness_impl.h</in>
+                <in>gpio_impl.cpp</in>
+                <in>gpio_impl.h</in>
+                <in>portability.cpp</in>
+                <in>portability_impl.h</in>
+              </df>
+              <in>arch_settings.h</in>
+            </df>
+            <df name="stm32f207ig_stm3220g-eval">
+              <df name="core">
+                <in>stage_1_boot.cpp</in>
+              </df>
+              <df name="interfaces-impl">
+                <in>bsp.cpp</in>
+                <in>bsp_impl.h</in>
+                <in>console-impl.h</in>
+                <in>console.cpp</in>
+                <in>delays.cpp</in>
+              </df>
+              <in>board_settings.h</in>
+            </df>
+            <df name="stm32f207ze_als_camboard">
+              <df name="core">
+                <in>stage_1_boot.cpp</in>
+              </df>
+              <df name="interfaces-impl">
+                <in>bsp.cpp</in>
+                <in>bsp_impl.h</in>
+                <in>console-impl.h</in>
+                <in>console.cpp</in>
+                <in>delays.cpp</in>
+                <in>hwmapping.h</in>
+              </df>
+              <in>board_settings.h</in>
+            </df>
+            <df name="stm32f207zg_EthBoardV2">
+              <df name="core">
+                <in>stage_1_boot.cpp</in>
+              </df>
+              <df name="interfaces-impl">
+                <in>bsp.cpp</in>
+                <in>bsp_impl.h</in>
+                <in>console-impl.h</in>
+                <in>console.cpp</in>
+                <in>delays.cpp</in>
+                <in>hwmapping.h</in>
+              </df>
+              <in>board_settings.h</in>
+            </df>
+          </df>
+          <df name="cortexM3_stm32l1">
+            <df name="common">
+              <df name="CMSIS">
+                <df name="Documentation">
+                </df>
+                <in>core_cm3.h</in>
+                <in>core_cmFunc.h</in>
+                <in>core_cmInstr.h</in>
+                <in>stm32l1xx.h</in>
+                <in>system_stm32l1xx.c</in>
+                <in>system_stm32l1xx.h</in>
+              </df>
+              <df name="core">
+                <in>interrupts.cpp</in>
+                <in>interrupts.h</in>
+              </df>
+              <df name="interfaces-impl">
+                <in>arch_registers_impl.h</in>
+                <in>atomic_ops_impl.h</in>
+                <in>delays.cpp</in>
+                <in>endianness_impl.h</in>
+                <in>gpio_impl.cpp</in>
+                <in>gpio_impl.h</in>
+                <in>portability.cpp</in>
+                <in>portability_impl.h</in>
+              </df>
+              <in>arch_settings.h</in>
+            </df>
+            <df name="stm32l151c8_als_mainboard">
+              <df name="core">
+                <in>stage_1_boot.cpp</in>
+              </df>
+              <df name="interfaces-impl">
+                <in>bsp.cpp</in>
+                <in>bsp_impl.h</in>
+                <in>console-impl.h</in>
+                <in>console.cpp</in>
+                <in>hwmapping.h</in>
+              </df>
+              <in>board_settings.h</in>
+            </df>
+          </df>
+          <df name="cortexM4_stm32f4">
+            <df name="common">
+              <df name="CMSIS">
+                <df name="Documentation">
+                </df>
+                <in>core_cm4.h</in>
+                <in>core_cm4_simd.h</in>
+                <in>core_cmFunc.h</in>
+                <in>core_cmInstr.h</in>
+                <in>stm32f4xx.h</in>
+                <in>system_stm32f4xx.c</in>
+                <in>system_stm32f4xx.h</in>
+              </df>
+              <df name="core">
+                <in>interrupts.cpp</in>
+                <in>interrupts.h</in>
+              </df>
+              <df name="interfaces-impl">
+                <in>arch_registers_impl.h</in>
+                <in>atomic_ops_impl.h</in>
+                <in>delays.cpp</in>
+                <in>disk.cpp</in>
+                <in>endianness_impl.h</in>
+                <in>gpio_impl.cpp</in>
+                <in>gpio_impl.h</in>
+                <in>portability.cpp</in>
+                <in>portability_impl.h</in>
+              </df>
+              <in>arch_settings.h</in>
+            </df>
+            <df name="stm32f407vg_bitsboard">
+              <df name="core">
+                <in>stage_1_boot.cpp</in>
+              </df>
+              <df name="interfaces-impl">
+                <in>bsp.cpp</in>
+                <in>bsp_impl.h</in>
+                <in>console-impl.h</in>
+                <in>console.cpp</in>
+              </df>
+              <in>board_settings.h</in>
+            </df>
+            <df name="stm32f407vg_stm32f4discovery">
+              <df name="core">
+                <in>stage_1_boot.cpp</in>
+              </df>
+              <df name="interfaces-impl">
+                <in>bsp.cpp</in>
+                <in>bsp_impl.h</in>
+                <in>console-impl.h</in>
+                <in>console.cpp</in>
+              </df>
+              <in>board_settings.h</in>
+            </df>
+          </df>
+        </df>
+        <df name="config">
+          <in>miosix_settings.h</in>
+        </df>
+        <df name="e20">
+          <in>callback.h</in>
+          <in>e20.cpp</in>
+          <in>e20.h</in>
+        </df>
+        <df name="filesystem">
+          <df name="console">
+            <in>console_device.cpp</in>
+            <in>console_device.h</in>
+          </df>
+          <df name="devfs">
+            <in>base_files.cpp</in>
+            <in>base_files.h</in>
+            <in>devfs.cpp</in>
+            <in>devfs.h</in>
+          </df>
+          <df name="fat32">
+            <in>diskio.cpp</in>
+            <in>diskio.h</in>
+            <in>fat32.cpp</in>
+            <in>fat32.h</in>
+            <in>ff.c</in>
+            <in>ff.h</in>
+            <in>ffconf.h</in>
+            <in>integer.h</in>
+          </df>
+          <df name="mountpointfs">
+            <in>mountpointfs.cpp</in>
+            <in>mountpointfs.h</in>
+          </df>
+          <in>file.cpp</in>
+          <in>file.h</in>
+          <in>file_access.cpp</in>
+          <in>file_access.h</in>
+          <in>filesystem.cpp</in>
+          <in>filesystem.h</in>
+          <in>stringpart.cpp</in>
+          <in>stringpart.h</in>
+        </df>
+        <df name="interfaces">
+          <in>arch_registers.h</in>
+          <in>atomic_ops.h</in>
+          <in>bsp.h</in>
+          <in>console.h</in>
+          <in>delays.h</in>
+          <in>disk.h</in>
+          <in>endianness.h</in>
+          <in>gpio.h</in>
+          <in>portability.h</in>
+        </df>
+        <df name="kernel">
+          <df name="scheduler">
+            <df name="control">
+              <in>control_scheduler.cpp</in>
+              <in>control_scheduler.h</in>
+              <in>control_scheduler_types.h</in>
+              <in>parameters.h</in>
+            </df>
+            <df name="edf">
+              <in>edf_scheduler.cpp</in>
+              <in>edf_scheduler.h</in>
+              <in>edf_scheduler_types.h</in>
+            </df>
+            <df name="priority">
+              <in>priority_scheduler.cpp</in>
+              <in>priority_scheduler.h</in>
+              <in>priority_scheduler_types.h</in>
+            </df>
+            <in>sched_types.h</in>
+            <in>scheduler.h</in>
+            <in>tick_interrupt.h</in>
+          </df>
+          <in>buffer_queue.h</in>
+          <in>error.cpp</in>
+          <in>error.h</in>
+          <in>intrusive.h</in>
+          <in>kernel.cpp</in>
+          <in>kernel.h</in>
+          <in>logging.h</in>
+          <in>pthread.cpp</in>
+          <in>pthread_private.h</in>
+          <in>stage_2_boot.cpp</in>
+          <in>stage_2_boot.h</in>
+          <in>sync.cpp</in>
+          <in>sync.h</in>
+        </df>
+        <df name="stdlib_integration">
+          <in>libc_integration.cpp</in>
+          <in>libc_integration.h</in>
+          <in>libstdcpp_integration.cpp</in>
+          <in>libstdcpp_integration.h</in>
+        </df>
+        <df name="util">
+          <in>crc16.cpp</in>
+          <in>crc16.h</in>
+          <in>lcd44780.cpp</in>
+          <in>lcd44780.h</in>
+          <in>software_i2c.h</in>
+          <in>software_spi.h</in>
+          <in>util.cpp</in>
+          <in>util.h</in>
+          <in>version.cpp</in>
+          <in>version.h</in>
+        </df>
+        <in>miosix.h</in>
+      </df>
+      <df name="miosix_np_2">
+      </df>
+      <in>Proprieta.cpp</in>
+      <in>Proprieta.h</in>
+      <in>UserInterface.cpp</in>
+      <in>UserInterface.h</in>
+      <in>main.cpp</in>
+    </df>
+  </logicalFolder>
+  <projectmakefile>Makefile</projectmakefile>
+  <confs>
+    <conf name="Default" type="0">
+      <toolsSet>
+        <developmentServer>localhost</developmentServer>
+        <platform>2</platform>
+      </toolsSet>
+      <compile>
+        <compiledirpicklist>
+          <compiledirpicklistitem>.</compiledirpicklistitem>
+          <compiledirpicklistitem>${AUTO_FOLDER}</compiledirpicklistitem>
+        </compiledirpicklist>
+        <compiledir>${AUTO_FOLDER}</compiledir>
+        <compilecommandpicklist>
+          <compilecommandpicklistitem>${MAKE} ${ITEM_NAME}.o</compilecommandpicklistitem>
+          <compilecommandpicklistitem>${AUTO_COMPILE}</compilecommandpicklistitem>
+        </compilecommandpicklist>
+        <compilecommand>${AUTO_COMPILE}</compilecommand>
+      </compile>
+      <dbx_gdbdebugger version="1">
+        <gdb_pathmaps>
+        </gdb_pathmaps>
+        <gdb_interceptlist>
+          <gdbinterceptoptions gdb_all="false" gdb_unhandled="true" gdb_unexpected="true"/>
+        </gdb_interceptlist>
+        <gdb_options>
+          <DebugOptions>
+          </DebugOptions>
+        </gdb_options>
+        <gdb_buildfirst gdb_buildfirst_overriden="false" gdb_buildfirst_old="false"/>
+      </dbx_gdbdebugger>
+      <nativedebugger version="1">
+        <engine>gdb</engine>
+      </nativedebugger>
+      <runprofile version="9">
+        <runcommandpicklist>
+          <runcommandpicklistitem>"${OUTPUT_PATH}"</runcommandpicklistitem>
+        </runcommandpicklist>
+        <runcommand>"${OUTPUT_PATH}"</runcommand>
+        <rundir>.</rundir>
+        <buildfirst>false</buildfirst>
+        <terminal-type>0</terminal-type>
+        <remove-instrumentation>0</remove-instrumentation>
+        <environment>
+        </environment>
+      </runprofile>
+    </conf>
+  </confs>
+</configurationDescriptor>

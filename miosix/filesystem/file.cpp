@@ -31,20 +31,14 @@
 #include <dirent.h>
 #include <fcntl.h>
 #include "file_access.h"
-#include "config/miosix_settings.h"
 
 using namespace std;
 
 namespace miosix {
 
 //
-// class FileBase
+// class File
 //
-
-FileBase::FileBase(intrusive_ref_ptr<FilesystemBase> parent) : parent(parent)
-{
-    if(parent) parent->newFileOpened();
-}
 
 int FileBase::isatty() const
 {
@@ -166,16 +160,9 @@ int FilesystemBase::readlink(StringPart& name, string& target)
 
 bool FilesystemBase::supportsSymlinks() const { return false; }
 
-void FilesystemBase::newFileOpened() { atomicAdd(&openFileCount,1); }
+void FilesystemBase::fileCloseHook() { atomicAdd(&openFileCount,-1); }
 
-void FilesystemBase::fileCloseHook()
-{
-    #ifdef WITH_ERRLOG
-    assert(atomicAddExchange(&openFileCount,-1)>=0);
-    #else //WITH_ERRLOG
-    atomicAdd(&openFileCount,-1);
-    #endif //WITH_ERRLOG
-}
+void FilesystemBase::newFileOpened() { atomicAdd(&openFileCount,1); }
 
 FilesystemBase::~FilesystemBase() {}
 

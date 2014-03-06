@@ -147,12 +147,6 @@ int DevFs::open(intrusive_ref_ptr<FileBase>& file, StringPart& name,
 int DevFs::lstat(StringPart& name, struct stat *pstat)
 {
     Lock<FastMutex> l(mutex);
-    if(name.empty())
-    {
-        fillStatHelper(pstat,rootDirInode,filesystemId);
-        pstat->st_mode=S_IFDIR | 0755; //drwxr-xr-x is a directory
-        return 0;
-    }
     map<StringPart,DeviceFileWrapper>::iterator it=files.find(name);
     if(it==files.end()) return -ENOENT;
     return it->second.lstat(pstat);
@@ -193,7 +187,7 @@ bool DevFs::addDeviceFile(const char *name, DeviceFileWrapper dfw)
 {
     if(name==0 || name[0]=='\0') return false;
     int len=strlen(name);
-    for(int i=0;i<len;i++) if(name[i]=='/') return false;
+    for(int i=1;i<len;i++) if(name[i]=='/') return false;
     Lock<FastMutex> l(mutex);
     bool result=files.insert(make_pair(StringPart(name),dfw)).second;
     //Assign inode to the file

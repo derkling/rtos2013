@@ -226,14 +226,6 @@ public:
     }
     
     /**
-     * Return current directory
-     * \param buf the current directory is stored here
-     * \param len buffer length, if it is not big enough, ERANGE is returned
-     * \return 0 on success, or a negative number on failure
-     */
-    int getcwd(char *buf, size_t len);
-    
-    /**
      * Change current directory
      * \param path new current directory
      * \return 0 on success, or a negative number on failure
@@ -376,18 +368,6 @@ public:
      * \return 0 on success, or a neagtive number on failure
      */
     int unlinkHelper(std::string& path);
-    
-    /**
-     * \internal
-     * Helper function to stat a file or directory. Only meant to be used by
-     * FileDescriptorTable::statImpl()
-     * \param path path of file or directory to stat
-     * \param pstat pointer to stat struct
-     * \param f f true to follow last synlink (stat),
-     * false to not follow it (lstat)
-     * \return 0 on success, or a negative number on failure
-     */
-    int statHelper(std::string& path, struct stat *pstat, bool f);
     
     /**
      * \internal
