@@ -8,7 +8,7 @@ using namespace miosix;
 
 extern int out_data = 0; //this is a global variable set by podometer thread (podometer must initialize this variable )
 
-extern int in_data = 0; //global variable readed by sound thread and setted by our module 
+extern int in_data = -1; //global variable readed by sound thread and setted by our module 
 
 //ATTENTION: WITH INTEGRATION WE MUST HANDLE THE MUTUAL EXCLUSION TO ACCESS AT THIS GLOBAL VARS 
 
