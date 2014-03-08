@@ -28,7 +28,6 @@ public:
     void configureTxAddress(int n_byte);
     void flushTx();
     void flushRx();
-    void NoAckOnThisPack();
     void TrasmitData(char* data_pointer , int dim);
     void resetModule();
     void showInternal();
@@ -36,6 +35,8 @@ public:
     void setAirDataRate(int air_rate);
     void resetRXirq();
     void resetTXirq();
+    void notifyTX();
+    void notifyRX();
 private:
     spi *spiDriver;
 };

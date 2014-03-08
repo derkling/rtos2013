@@ -6,9 +6,9 @@
 using namespace std;
 using namespace miosix;
 
-int out_data = 91; //this is a global variable set by podometer thread 
+extern int out_data = 0; //this is a global variable set by podometer thread (podometer must initialize this variable )
 
-int in_data = 0; //global variable readed by sound thread 
+extern int in_data = 0; //global variable readed by sound thread and setted by our module 
 
 int main(){
 
@@ -26,18 +26,20 @@ int main(){
     {
      while(module->readRPD()==0 && ( ( module->readStatusRegister() & 0x40 ) == 0 ) )  //untill RPD is 0 and there are no RX_DR pending
           {/*w8 something...*/
-            printf("[INFO_MESSAGE]: w8 for something\n");  //debug
+            printf("[INFO_MESSAGE]: waiting for events\n");  //debug
           }
      if(module->readRPD() != 0 ) //Somebody near me!
        {
          printf("[INFO_MESSAGE]: transmission");
          module->TrasmitData(pointer,4); //the reset of tx_ds irq is inside the function
+         module->notifyTX();
        }
      else //Something received
          {
          printf("[INFO_MESSAGE]: receiving");
          in_data = module->receiveDataFromRx();
          module->resetRXirq();
+         module->notifyRX();
          }
     }
     
