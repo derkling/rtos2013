@@ -491,8 +491,6 @@ void NRF24L01P::writeRegister(int regAddress, int regData)
     spiDriver->send(regData); 
     
     cs::high();
-    
-    
 }
 
 /**

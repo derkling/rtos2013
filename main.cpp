@@ -6,15 +6,15 @@
 using namespace std;
 using namespace miosix;
 
-int out_data = 91;
+int out_data = 91; //this is a global variable set by podometer thread 
 
-int in_data = 0;
+int in_data = 0; //global variable readed by sound thread 
 
 
 int main(){
 
     NRF24L01P* module = new NRF24L01P();
-    char * pointer = &out_data;
+    char * pointer = (char*)&out_data;
     
     module->powerUp();
     module->configureInterrupt();
