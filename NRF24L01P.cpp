@@ -145,15 +145,8 @@ _NRF24L01P_MODE_TX_MODE,
 } NRF24L01P_MODE;
 
 
-typedef enum {
-    _TX_FIFO_EMPTY,
-    _TX_FIFO_NOT_EMPTY,
-    _TX_FIFO_FULL // only when all slots are busy
-} TX_FIFO_STATE;
-
-
 int nrf24l01p_mode;
-int tx_fifo_status;
+
 
 NRF24L01P::NRF24L01P() {
    bluLed::mode(Mode::OUTPUT);
@@ -172,7 +165,6 @@ NRF24L01P::NRF24L01P() {
    ce::low();
    
    nrf24l01p_mode = _NRF24L01P_MODE_UNDEFINED; // starts with an undefined state
-   tx_fifo_status = _TX_FIFO_EMPTY; // the tx_fifo starts empty obviously
 }
 
 NRF24L01P::NRF24L01P(const NRF24L01P& orig) {   
@@ -194,23 +186,9 @@ void NRF24L01P::powerUp()
    writeRegister(_NRF24L01P_REG_CONFIG, new_config );
    
    //now have to wait to worst time from power_down to standby ( charts for info )
-   
    usleep(_NRF24L01P_TIMING_Tpd2stby_us);
    
-   //writeRegister(_NRF24L01P_REG_TX_ADDR , 10); //customize the two register with same data
-   //writeRegister(_NRF24L01P_REG_RX_ADDR_P0 ,20);
-   
-   
    nrf24l01p_mode = _NRF24L01P_MODE_STANDBY; // now we are in standby mode 
-   
-   
-   //DEBUG TRANSMISSION
-   
-   //this->writeRegister(_NRF24L01P_REG_RX_PW_P0, 1);
-   //this->writeRegister(_NRF24L01P_REG_RX_PW_P1, 1);
-   //this->writeRegister( _NRF24L01P_REG_SETUP_AW,1);
-   
-   //DEBUG TRANSMISSION
    bluLed::high();
 }
 
@@ -312,7 +290,6 @@ void NRF24L01P::setAirDataRate(int air_rate)
 }
 
 
-
 /**
  In order to call this function you have to call power_up, PWR_UP MUST be 1! 
  */
@@ -401,7 +378,6 @@ void NRF24L01P::flushTx()
   cs::low();
   spiDriver->send( _NRF24L01P_SPI_CMD_FLUSH_TX  );  //svuoto coda TX
   cs::high();
-  tx_fifo_status = _TX_FIFO_EMPTY;
 }
 
 void NRF24L01P::flushRx()
@@ -410,9 +386,6 @@ void NRF24L01P::flushRx()
   cs::low();
   spiDriver->send( _NRF24L01P_SPI_CMD_FLUSH_RX  );  //svuoto coda TX
   cs::high();
-  tx_fifo_status = _TX_FIFO_EMPTY;
-
-
 }
 
 void NRF24L01P::NoAckOnThisPack()

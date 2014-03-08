@@ -10,7 +10,6 @@ int out_data = 91; //this is a global variable set by podometer thread
 
 int in_data = 0; //global variable readed by sound thread 
 
-
 int main(){
 
     NRF24L01P* module = new NRF24L01P();
@@ -27,14 +26,16 @@ int main(){
     {
      while(module->readRPD()==0 && ( ( module->readStatusRegister() & 0x40 ) == 0 ) )  //untill RPD is 0 and there are no RX_DR pending
           {/*w8 something...*/
-            printf("w8 for something\n");  //debug
+            printf("[INFO_MESSAGE]: w8 for something\n");  //debug
           }
      if(module->readRPD() != 0 ) //Somebody near me!
        {
+         printf("[INFO_MESSAGE]: transmission");
          module->TrasmitData(pointer,4); //the reset of tx_ds irq is inside the function
        }
      else //Something received
          {
+         printf("[INFO_MESSAGE]: receiving");
          in_data = module->receiveDataFromRx();
          module->resetRXirq();
          }
