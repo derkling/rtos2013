@@ -3,6 +3,19 @@
  * Author: degrigis
  * 
  * Created on January 9, 2014, 7:38 PM
+ * 
+ * 
+ * BASIC USAGE
+ * 
+ * When the wifi-module is correctly initialized a blueLed is on in the STM32
+ * the main thread exploiting these functions reading the RPD status and the status register 
+ * 
+ * When a transmission is accomplished a redLed blinks three times on the board
+ * When a receive is accomplished a orangeLed blinks three times on the board 
+ * 
+ * The data to send are in a global variable called out_data
+ * The data received from other board are stored in a global variable called in_data 
+ * 
  */
 
 #include "NRF24L01P.h"
@@ -196,6 +209,21 @@ void NRF24L01P::configureTxAddress(int number)
     
     writeRegister(_NRF24L01P_REG_SETUP_AW, n_bit );
     
+}
+
+void NRF24L01P::disableAllAutoAck()
+{
+    this->writeRegister(1,0); //disable all the auto-ack 
+}
+
+void NRF24L01P::setStaticPayloadSize(int size)
+{
+    if(size <1 || size >32)
+      {
+        printf("[ERROR_MESSAGE]: Payload size must be integer between 1 and 32\n");
+      }
+    else
+        this->writeRegister(17,size); // 4 bytes of static payload
 }
 
 void NRF24L01P::powerDown()

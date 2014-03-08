@@ -10,18 +10,19 @@ extern int out_data = 0; //this is a global variable set by podometer thread (po
 
 extern int in_data = 0; //global variable readed by sound thread and setted by our module 
 
+//ATTENTION: WITH INTEGRATION WE MUST HANDLE THE MUTUAL EXCLUSION TO ACCESS AT THIS GLOBAL VARS 
+
 int main(){
 
     NRF24L01P* module = new NRF24L01P();
     char * pointer = (char*)&out_data;
-    
+
     module->powerUp();
     module->configureInterrupt();
-    module->writeRegister(1,0); //disable all the auto-ack 
-    
-    module->writeRegister(17,4); // 4 bytes of static payload
+    module->disableAllAutoAck(); 
+    module->setStaticPayloadSize(4); // static payload size 4 byte ( due to the fact that we'll transmit only integer numbers)
     module->setReceiveMode();
-    
+
     while(true) //global cycle of module job
     {
      while(module->readRPD()==0 && ( ( module->readStatusRegister() & 0x40 ) == 0 ) )  //untill RPD is 0 and there are no RX_DR pending
@@ -42,6 +43,10 @@ int main(){
          module->notifyRX();
          }
     }
+    
+    //if something strange happen reset module and powerDown 
+    module->resetModule(); 
+    module->powerDown();
     
 }
 

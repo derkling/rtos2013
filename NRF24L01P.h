@@ -21,6 +21,8 @@ public:
     void powerDown();
     void setReceiveMode();
     void setTransmitMode();
+    void setStaticPayloadSize(int size);
+    void disableAllAutoAck();
     void returnStandByI();
     int receiveDataFromRx();
     int readRPD();
