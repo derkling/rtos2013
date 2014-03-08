@@ -34,7 +34,8 @@ public:
     void showInternal();
     void setRfChannel(int channel);
     void setAirDataRate(int air_rate);
-    char readData();
+    void resetRXirq();
+    void resetTXirq();
 private:
     spi *spiDriver;
 };

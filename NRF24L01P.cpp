@@ -154,7 +154,6 @@ typedef enum {
 
 int nrf24l01p_mode;
 int tx_fifo_status;
-char data_rx;
 
 NRF24L01P::NRF24L01P() {
    bluLed::mode(Mode::OUTPUT);
@@ -350,16 +349,9 @@ void NRF24L01P::setReceiveMode()
 void NRF24L01P::TrasmitData(char *data , int dim)
 {
     int i;
-    int original_ce = ce::value();
     ce::low();
     
     if(dim > _NRF24L01P_TX_FIFO_SIZE  ) dim = _NRF24L01P_TX_FIFO_SIZE; //check the size of data
-   
-    printf("Have to transmit %c\n", *data);
-    
-    int current_config = this->readStatusRegister();
-    int new_config = current_config | _NRF24L01P_STATUS_TX_DS; // reset TX_DS
-    writeRegister(_NRF24L01P_REG_STATUS,  new_config );
     
     cs::low(); //---SPI START! 
     
@@ -371,46 +363,34 @@ void NRF24L01P::TrasmitData(char *data , int dim)
         }
     
     cs::high(); //---SPI END!
+        
+    //int result =  this->readStatusRegister();
+    //printf("il registro status prima di aver trasmesso è: %d\n" , result);
     
-    int OriginalMode = nrf24l01p_mode; // save the current mode of nrf
+    this->setTransmitMode(); //switch to transmission mode
     
-    int result =  this->readStatusRegister();
-    printf("il registro status prima di aver trasmesso è: %d\n" , result);
-    
-    this->setTransmitMode(); // and switch to transmission mode
     ce::high();
     usleep(_NRF24L01P_TIMING_Thce_us);
     ce::low(); 
     
-    result = this->readRegister(23);
-    printf("il registro FIFO_STATUS_TX prima di aver trasmesso è: %d\n" , result);
+    //result = this->readRegister(23);
+    //printf("il registro FIFO_STATUS_TX prima di aver trasmesso è: %d\n" , result);
     
     while(!(this->readStatusRegister() & _NRF24L01P_STATUS_TX_DS ))
          {
-          printf("waiting tx_ds\n");// Wait untill IRQ set the TX_DS to 1.
+          //printf("waiting tx_ds\n");// Wait untill IRQ set the TX_DS to 1.
          }
     
-    result =  this->readStatusRegister();
+    //result =  this->readStatusRegister();
     //printf("**************TRANSMISSION COMPLETE******************");
     //printf("il registro status dopo aver trasmesso è: %d\n" , result);
     
     //result = this->readRegister(23);
     //printf("il registro FIFO_STATUS_TX dopo aver trasmesso è: %d\n" , result);
     
-    current_config = this->readStatusRegister();
-    new_config = current_config | _NRF24L01P_STATUS_TX_DS; // reset TX_DS for next IRQ
-    writeRegister(_NRF24L01P_REG_STATUS,  new_config );
-    
-    //if(OriginalMode == _NRF24L01P_MODE_RX_MODE )
-      //{ now comment, it will be useful later! 
-        this->setReceiveMode();
-     // }
-    
-    //if(original_ce == 1 ) 
-     //ce::high();
-    //else 
-     ce::low();
-    
+    this->resetTXirq(); //reset tx_ds irq bit 
+    ce::low(); //return to stand-by
+    this->setReceiveMode(); //return to receive mode
     usleep(_NRF24L01P_TIMING_Tpece2csn_us);
     
 }
@@ -633,9 +613,18 @@ int NRF24L01P::readStatusRegister()
 
 }
 
-char NRF24L01P::readData()
+void NRF24L01P::resetRXirq()
 {
-    return data_rx;
+    int current_config = this->readStatusRegister();
+    int new_config = current_config | _NRF24L01P_STATUS_RX_DR; // reset RX_DR for next IRQ
+    writeRegister(_NRF24L01P_REG_STATUS,  new_config );
+}
+
+void NRF24L01P::resetTXirq()
+{
+ int current_config = this->readStatusRegister();
+ int new_config = current_config | _NRF24L01P_STATUS_TX_DS; // reset TX_DS for next IRQ
+ writeRegister(_NRF24L01P_REG_STATUS,  new_config );
 }
 
 void __attribute__((naked)) EXTI1_IRQHandler()
@@ -647,25 +636,7 @@ void __attribute__((naked)) EXTI1_IRQHandler()
 
 void __attribute__((used)) EXTI1HandlerImpl()
 {
-    EXTI->PR=EXTI_PR_PR1; //viene resettato il registro che permette di uscire dalla chiamata a interrupt 
-    if(NRF24L01P.readStatusRegister() & 0x40 == 0)
-       {
-        char data = (char) NRF24L01P.receiveDataFromRx(); // put the data in a local var
-        data_rx = data; // then store local var in the global var 
-       }
-    else
-        if(NRF24L01P.readStatusRegister() & _NRF24L01P_STATUS_TX_DS)
-           {
-            bluLed::high();
-            sleep(20);
-            bluLed::low();
-            redLed::high();
-            sleep(20);
-            redLed::low();
-            orangeLed::high();
-            sleep(20);
-            orangeLed::low();
-           }
+    EXTI->PR=EXTI_PR_PR1; //Reset the register that permit to exit from IRQ call
     
 }
 
