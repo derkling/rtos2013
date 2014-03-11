@@ -10,6 +10,8 @@ extern int out_data = 0; //this is a global variable set by podometer thread (po
 
 extern int in_data = -1; //global variable readed by sound thread and setted by our module
 
+static Thread *waiting=0;//global variable readed by interrupt handler
+
 //ATTENTION: WITH INTEGRATION WE MUST HANDLE THE MUTUAL EXCLUSION TO ACCESS AT THIS GLOBAL VARS
 
 
@@ -25,7 +27,7 @@ void __attribute__((naked)) EXTI1_IRQHandler(){
 
 void __attribute__((used)) EXTI1HandlerImpl(){
 
-    EXTI->PR = EXTI_PR_PR1;//era usato uguale (=) boh
+    EXTI->PR = EXTI_PR_PR1;
 
     if(waiting==0) return;
     waiting->IRQwakeup();
@@ -36,10 +38,8 @@ void __attribute__((used)) EXTI1HandlerImpl(){
 }
 
 
-/*!
- * @brief Funzione che rappresenta il thread di trasmissione
- * @note Il thread non termina mai. Si sveglia ogni 5 secondi e se c'è un pacchetto in coda lo trasmette
- */
+//thread che si occupa della trasmissione
+//infinito, polling ogni 2 secondi su out_data
 void *transThread(void *arg){
 
     for(;;){
@@ -47,6 +47,8 @@ void *transThread(void *arg){
         usleep(20000);
         //se il podometro mi ha settato la variabile (diversa da 0) vuol dire che devo trasmettere
         if(out_data != 0){
+
+            char * pointer = (char*)&out_data;
              module->TrasmitData(pointer,4);
              out_data = 0;
 
@@ -61,7 +63,7 @@ void *transThread(void *arg){
 
    int init(){
     NRF24L01P* module = new NRF24L01P();
-    char * pointer = (char*)&out_data;
+
 
     module->powerUp();
     module->configureInterrupt();
