@@ -7,5 +7,5 @@ using namespace miosix;
 
 int main()
 {
-    //iprintf("Hello world, write your application here\n");
+    printf("GPR12: Emanuele De Donatis, Bruno Pistone\n");
 }
