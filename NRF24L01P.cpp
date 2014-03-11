@@ -463,7 +463,6 @@ void NRF24L01P::setTransmitMode()
   writeRegister(_NRF24L01P_REG_CONFIG , new_config );
   
   nrf24l01p_mode = _NRF24L01P_MODE_TX_MODE;
-  orangeLed::high();
   
   //Actually starts the transmission packet flow charts
 }
@@ -629,7 +628,6 @@ void NRF24L01P::notifyTX()
     int i;
     for(i=0;i<3;i++){
     redLed::high();
-    usleep(200);
     redLed::low();
     }
 }
@@ -643,25 +641,10 @@ void NRF24L01P::notifyRX()
     int i;
     for(i=0;i<3;i++){
     orangeLed::high();
-    usleep(200);
     orangeLed::low();
     }
     
 }
-
-void __attribute__((naked)) EXTI1_IRQHandler()
-{
-    saveContext();
-    asm volatile("bl _Z16EXTI1HandlerImplv");
-    restoreContext();
-}
-
-void __attribute__((used)) EXTI1HandlerImpl()
-{
-    EXTI->PR=EXTI_PR_PR1; //Reset the register that permit to exit from IRQ call
-    
-}
-
 
 void NRF24L01P::configureInterrupt()
 {
