@@ -3,6 +3,19 @@
  * Author: degrigis
  * 
  * Created on January 9, 2014, 7:38 PM
+ * 
+ * 
+ * BASIC USAGE
+ * 
+ * When the wifi-module is correctly initialized a blueLed is on in the STM32
+ * the main thread exploiting these functions reading the RPD status and the status register 
+ * 
+ * When a transmission is accomplished a redLed blinks three times on the board
+ * When a receive is accomplished a orangeLed blinks three times on the board 
+ * 
+ * The data to send are in a global variable called out_data
+ * The data received from other board are stored in a global variable called in_data 
+ * 
  */
 
 #include "NRF24L01P.h"
@@ -86,12 +99,7 @@ using namespace miosix;
 #define _NRF24L01P_CONFIG_NO_MASK_MAX_RT 0xef
 #define _NRF24L01P_CONFIG_NO_MASK_TX_DS  0xdf
 #define _NRF24L01P_CONFIG_NO_MASK_RX_DR  0xbf
- 
-#define _NRF24L01P_CONFIG_CRC_MASK       (_NRF24L01P_CONFIG_EN_CRC|_NRF24L01P_CONFIG_CRC0)
-#define _NRF24L01P_CONFIG_CRC_NONE       (0)
-#define _NRF24L01P_CONFIG_CRC_8BIT       (_NRF24L01P_CONFIG_EN_CRC)
-#define _NRF24L01P_CONFIG_CRC_16BIT      (_NRF24L01P_CONFIG_EN_CRC|_NRF24L01P_CONFIG_CRC0)
- 
+
 // EN_AA register:
 #define _NRF24L01P_EN_AA_NONE            0
  
@@ -104,22 +112,6 @@ using namespace miosix;
 #define _NRF24L01P_SETUP_AW_AW_4BYTE     (0x2<<0)
 #define _NRF24L01P_SETUP_AW_AW_5BYTE     (0x3<<0)
  
-// SETUP_RETR register:
-#define _NRF24L01P_SETUP_RETR_NONE       0
- 
-// RF_SETUP register:
-#define _NRF24L01P_RF_SETUP_RF_PWR_MASK          (0x3<<1)
-#define _NRF24L01P_RF_SETUP_RF_PWR_0DBM          (0x3<<1)
-#define _NRF24L01P_RF_SETUP_RF_PWR_MINUS_6DBM    (0x2<<1)
-#define _NRF24L01P_RF_SETUP_RF_PWR_MINUS_12DBM   (0x1<<1)
-#define _NRF24L01P_RF_SETUP_RF_PWR_MINUS_18DBM   (0x0<<1)
- 
-#define _NRF24L01P_RF_SETUP_RF_DR_HIGH_BIT       (1 << 3)
-#define _NRF24L01P_RF_SETUP_RF_DR_LOW_BIT        (1 << 5)
-#define _NRF24L01P_RF_SETUP_RF_DR_MASK           (_NRF24L01P_RF_SETUP_RF_DR_LOW_BIT|_NRF24L01P_RF_SETUP_RF_DR_HIGH_BIT)
-#define _NRF24L01P_RF_SETUP_RF_DR_250KBPS        (_NRF24L01P_RF_SETUP_RF_DR_LOW_BIT)
-#define _NRF24L01P_RF_SETUP_RF_DR_1MBPS          (0)
-#define _NRF24L01P_RF_SETUP_RF_DR_2MBPS          (_NRF24L01P_RF_SETUP_RF_DR_HIGH_BIT)
  
 // STATUS register:
 #define _NRF24L01P_STATUS_TX_FULL        (1<<0)
@@ -164,15 +156,8 @@ _NRF24L01P_MODE_TX_MODE,
 } NRF24L01P_MODE;
 
 
-typedef enum {
-    _TX_FIFO_EMPTY,
-    _TX_FIFO_NOT_EMPTY,
-    _TX_FIFO_FULL // only when all slots are busy
-} TX_FIFO_STATE;
-
-
 int nrf24l01p_mode;
-int tx_fifo_status;
+
 
 NRF24L01P::NRF24L01P() {
    bluLed::mode(Mode::OUTPUT);
@@ -191,7 +176,6 @@ NRF24L01P::NRF24L01P() {
    ce::low();
    
    nrf24l01p_mode = _NRF24L01P_MODE_UNDEFINED; // starts with an undefined state
-   tx_fifo_status = _TX_FIFO_EMPTY; // the tx_fifo starts empty obviously
 }
 
 NRF24L01P::NRF24L01P(const NRF24L01P& orig) {   
@@ -213,13 +197,7 @@ void NRF24L01P::powerUp()
    writeRegister(_NRF24L01P_REG_CONFIG, new_config );
    
    //now have to wait to worst time from power_down to standby ( charts for info )
-   
    usleep(_NRF24L01P_TIMING_Tpd2stby_us);
-   
-   configureTxAddress(3); //3 byte of transmit address
-   writeRegister(_NRF24L01P_REG_TX_ADDR , 10); //customize the two register with same data
-   writeRegister(_NRF24L01P_REG_RX_ADDR_P0 ,10);
-   
    
    nrf24l01p_mode = _NRF24L01P_MODE_STANDBY; // now we are in standby mode 
    bluLed::high();
@@ -231,6 +209,21 @@ void NRF24L01P::configureTxAddress(int number)
     
     writeRegister(_NRF24L01P_REG_SETUP_AW, n_bit );
     
+}
+
+void NRF24L01P::disableAllAutoAck()
+{
+    this->writeRegister(1,0); //disable all the auto-ack 
+}
+
+void NRF24L01P::setStaticPayloadSize(int size)
+{
+    if(size <1 || size >32)
+      {
+        printf("[ERROR_MESSAGE]: Payload size must be integer between 1 and 32\n");
+      }
+    else
+        this->writeRegister(17,size); // 4 bytes of static payload
 }
 
 void NRF24L01P::powerDown()
@@ -321,6 +314,8 @@ void NRF24L01P::setAirDataRate(int air_rate)
     else
         printf("Wrong air_rate value\n");
 }
+
+
 /**
  In order to call this function you have to call power_up, PWR_UP MUST be 1! 
  */
@@ -343,9 +338,11 @@ void NRF24L01P::setReceiveMode()
    
    usleep(_NRF24L01P_TIMING_Tstby2a_us);
    
+   usleep(40); // sleeping to activate RPD
+   
+   
    nrf24l01p_mode = _NRF24L01P_MODE_RX_MODE;
    
-   redLed::high();
 }
 
 /**
@@ -355,16 +352,9 @@ void NRF24L01P::setReceiveMode()
 void NRF24L01P::TrasmitData(char *data , int dim)
 {
     int i;
-    int original_ce = ce::value();
     ce::low();
     
     if(dim > _NRF24L01P_TX_FIFO_SIZE  ) dim = _NRF24L01P_TX_FIFO_SIZE; //check the size of data
-   
-    printf("Have to transmit %c\n", *data);
-    
-    int current_config = this->readStatusRegister();
-    int new_config = current_config | _NRF24L01P_STATUS_TX_DS; // reset TX_DS
-    writeRegister(_NRF24L01P_REG_STATUS,  new_config );
     
     cs::low(); //---SPI START! 
     
@@ -376,46 +366,34 @@ void NRF24L01P::TrasmitData(char *data , int dim)
         }
     
     cs::high(); //---SPI END!
+        
+    //int result =  this->readStatusRegister();
+    //printf("il registro status prima di aver trasmesso è: %d\n" , result);
     
-    int OriginalMode = nrf24l01p_mode; // save the current mode of nrf
+    this->setTransmitMode(); //switch to transmission mode
     
-    int result =  this->readStatusRegister();
-    printf("il registro status prima di aver trasmesso è: %d\n" , result);
-    
-    this->setTransmitMode(); // and switch to transmission mode
     ce::high();
     usleep(_NRF24L01P_TIMING_Thce_us);
     ce::low(); 
     
-    result = this->readRegister(23);
-    printf("il registro FIFO_STATUS_TX prima di aver trasmesso è: %d\n" , result);
+    //result = this->readRegister(23);
+    //printf("il registro FIFO_STATUS_TX prima di aver trasmesso è: %d\n" , result);
     
     while(!(this->readStatusRegister() & _NRF24L01P_STATUS_TX_DS ))
          {
-          printf("waiting tx_ds\n");// Wait untill IRQ set the TX_DS to 1.
+          //printf("waiting tx_ds\n");// Wait untill IRQ set the TX_DS to 1.
          }
     
-    result =  this->readStatusRegister();
-    printf("**************TRANSMISSION COMPLETE******************");
-    printf("il registro status dopo aver trasmesso è: %d\n" , result);
+    //result =  this->readStatusRegister();
+    //printf("**************TRANSMISSION COMPLETE******************");
+    //printf("il registro status dopo aver trasmesso è: %d\n" , result);
     
-    result = this->readRegister(23);
-    printf("il registro FIFO_STATUS_TX dopo aver trasmesso è: %d\n" , result);
+    //result = this->readRegister(23);
+    //printf("il registro FIFO_STATUS_TX dopo aver trasmesso è: %d\n" , result);
     
-    current_config = this->readStatusRegister();
-    new_config = current_config | _NRF24L01P_STATUS_TX_DS; // reset TX_DS for next IRQ
-    writeRegister(_NRF24L01P_REG_STATUS,  new_config );
-    
-    //if(OriginalMode == _NRF24L01P_MODE_RX_MODE )
-      //{ now comment, it will be useful later! 
-        this->setReceiveMode();
-     // }
-    
-    //if(original_ce == 1 ) 
-     //ce::high();
-    //else 
-     ce::low();
-    
+    this->resetTXirq(); //reset tx_ds irq bit 
+    ce::low(); //return to stand-by
+    this->setReceiveMode(); //return to receive mode
     usleep(_NRF24L01P_TIMING_Tpece2csn_us);
     
 }
@@ -426,7 +404,6 @@ void NRF24L01P::flushTx()
   cs::low();
   spiDriver->send( _NRF24L01P_SPI_CMD_FLUSH_TX  );  //svuoto coda TX
   cs::high();
-  tx_fifo_status = _TX_FIFO_EMPTY;
 }
 
 void NRF24L01P::flushRx()
@@ -435,19 +412,8 @@ void NRF24L01P::flushRx()
   cs::low();
   spiDriver->send( _NRF24L01P_SPI_CMD_FLUSH_RX  );  //svuoto coda TX
   cs::high();
-  tx_fifo_status = _TX_FIFO_EMPTY;
-
-
 }
 
-void NRF24L01P::NoAckOnThisPack()
-{
-  printf("Removing ack on this packet \n");
-  cs::low();
-  spiDriver->send( _NRF24L01P_SPI_CMD_W_TX_PYLD_NO_ACK  );  // Don't want ack on this packet 
-  cs::high();
-
-}
 /**
  * used to take data from RX_FIFO_BUFFER through SPI 
  * @return 
@@ -499,14 +465,12 @@ void NRF24L01P::setTransmitMode()
   nrf24l01p_mode = _NRF24L01P_MODE_TX_MODE;
   orangeLed::high();
   
-  //here now starts the transmission packet flow charts, remember to change mode in the function
-  //that handles the interrupt and to set the TX_FIFO to empty ( if empty naturally )
+  //Actually starts the transmission packet flow charts
 }
 
 void NRF24L01P::writeRegister(int regAddress, int regData)
 {
     this->returnStandByI();
-    // aggiungere controllo ce e ripristinarlo alla fine di questa funzione 
     int request;
     request = regAddress | _NRF24L01P_SPI_W_REGISTER;
    
@@ -516,8 +480,6 @@ void NRF24L01P::writeRegister(int regAddress, int regData)
     spiDriver->send(regData); 
     
     cs::high();
-    
-    
 }
 
 /**
@@ -527,7 +489,7 @@ void NRF24L01P::writeRegister(int regAddress, int regData)
  * @return : the value in hex of the register
  * 
  */
-int NRF24L01P::readRegister(int regAddress) //arriva su 1 byte
+int NRF24L01P::readRegister(int regAddress) 
 {
     // request = regAddress; tanto questo è in | bit a bit con 0x00 ( READ ) e in & bit a bit con una MASK 0x1f
     int value;
@@ -625,7 +587,7 @@ void NRF24L01P::showInternal()
 }
 /**
  * 
- * the status register is passe via miso after a dummy write on mosi
+ * the status register is passed via miso after a dummy write on mosi
  * @return : the value in hex of status register of NRF24L01P
  */
 int NRF24L01P::readStatusRegister()
@@ -634,8 +596,57 @@ int NRF24L01P::readStatusRegister()
     cs::low();
     value=spiDriver->receive(); // in this there is a dummy write of 0 on MOSI
     cs::high();
-    return value; // need a reverse? it arrives form LSB to MSByte
+    return value; 
 
+}
+
+/**
+ * Write '1' to the RX_DR bit to clear it
+ */
+void NRF24L01P::resetRXirq()
+{
+    int current_config = this->readStatusRegister();
+    int new_config = current_config | _NRF24L01P_STATUS_RX_DR; // reset RX_DR for next IRQ
+    writeRegister(_NRF24L01P_REG_STATUS,  new_config );
+}
+
+/**
+ * Write '1' to the TX_DS bit to clear it
+ */
+void NRF24L01P::resetTXirq()
+{
+ int current_config = this->readStatusRegister();
+ int new_config = current_config | _NRF24L01P_STATUS_TX_DS; // reset TX_DS for next IRQ
+ writeRegister(_NRF24L01P_REG_STATUS,  new_config );
+}
+
+/**
+ * Notify to user that a transmission has been accomplished 
+ * a redLed blinks 3 times
+ */
+void NRF24L01P::notifyTX()
+{
+    int i;
+    for(i=0;i<3;i++){
+    redLed::high();
+    usleep(200);
+    redLed::low();
+    }
+}
+
+/**
+ * Notify to user that a receive has been accomplished 
+ * an orangeLed blinks 3 times
+ */
+void NRF24L01P::notifyRX()
+{
+    int i;
+    for(i=0;i<3;i++){
+    orangeLed::high();
+    usleep(200);
+    orangeLed::low();
+    }
+    
 }
 
 void __attribute__((naked)) EXTI1_IRQHandler()
@@ -647,11 +658,8 @@ void __attribute__((naked)) EXTI1_IRQHandler()
 
 void __attribute__((used)) EXTI1HandlerImpl()
 {
-    EXTI->PR=EXTI_PR_PR1; //viene resettato il registro che permette di uscire dalla chiamata a interrupt 
+    EXTI->PR=EXTI_PR_PR1; //Reset the register that permit to exit from IRQ call
     
-    //DEBUG
-    redLed::high();
-   
 }
 
 

@@ -21,6 +21,8 @@ public:
     void powerDown();
     void setReceiveMode();
     void setTransmitMode();
+    void setStaticPayloadSize(int size);
+    void disableAllAutoAck();
     void returnStandByI();
     int receiveDataFromRx();
     int readRPD();
@@ -28,12 +30,15 @@ public:
     void configureTxAddress(int n_byte);
     void flushTx();
     void flushRx();
-    void NoAckOnThisPack();
     void TrasmitData(char* data_pointer , int dim);
     void resetModule();
     void showInternal();
     void setRfChannel(int channel);
     void setAirDataRate(int air_rate);
+    void resetRXirq();
+    void resetTXirq();
+    void notifyTX();
+    void notifyRX();
 private:
     spi *spiDriver;
 };
