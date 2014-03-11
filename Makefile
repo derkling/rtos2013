@@ -14,7 +14,7 @@ SUBDIRS := miosix
 ## List here your source files (both .s, .c and .cpp)
 ##
 SRC :=                                  \
-main.cpp				\
+mainRx.cpp				\
 spi.cpp					\
 NRF24L01P.cpp			    
 

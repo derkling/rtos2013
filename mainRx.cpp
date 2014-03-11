@@ -30,6 +30,7 @@ int main()
       while(!(module->readStatusRegister() & 0x40 )) //0x40 is 64 in decimal, that correspond to RX_DS
            {
             printf("waiting rx_ds\n");// Wait untill IRQ set the TX_DS to 1.
+            printf("%d", module->readRPD());
           }
     char data = (char) module->receiveDataFromRx();
     module->showInternal();
