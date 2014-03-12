@@ -52,6 +52,13 @@ public:
     * \return current number of steps
     */
    int getSteps();
+   
+   /**
+    * Compare own steps with others steps
+    * 
+    * \param otherSteps other steps to compare
+    */
+   void compareSteps(int otherSteps);
       
    /**
     * \return the current training mode 
