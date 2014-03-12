@@ -1,0 +1,25 @@
+called: /home/user/Desktop/miosix-kernel/miosix/_tools/compiler/gcc/arm-miosix-eabi/lib/gcc/arm-miosix-eabi/4.7.3/../../../../arm-miosix-eabi/bin/ld
+	/media/sf_RTOS/ProgettoRTOS/rtos2013
+	/home/user/Desktop/miosix-kernel/miosix/_tools/compiler/gcc/arm-miosix-eabi/lib/gcc/arm-miosix-eabi/4.7.3/../../../../arm-miosix-eabi/bin/ld
+	-X
+	-o
+	main.elf
+	-L./miosix
+	-L/home/user/Desktop/miosix-kernel/miosix/_tools/compiler/gcc/arm-miosix-eabi/lib/gcc/arm-miosix-eabi/4.7.3/thumb/cm3
+	-L/home/user/Desktop/miosix-kernel/miosix/_tools/compiler/gcc/arm-miosix-eabi/lib/gcc/arm-miosix-eabi/4.7.3/../../../../arm-miosix-eabi/lib/thumb/cm3
+	-L/home/user/Desktop/miosix-kernel/miosix/_tools/compiler/gcc/arm-miosix-eabi/lib/gcc/arm-miosix-eabi/4.7.3
+	-L/home/user/Desktop/miosix-kernel/miosix/_tools/compiler/gcc/arm-miosix-eabi/lib/gcc/arm-miosix-eabi/4.7.3/../../../../arm-miosix-eabi/lib
+	--gc-sections
+	-Map
+	main.map
+	-T./miosix/arch/cortexM3_stm32/stm32f103ze_stm3210e-eval/stm32_512k+64k_all_in_xram.ld
+	main.o
+	miosix/arch/cortexM3_stm32/stm32f103ze_stm3210e-eval/core/stage_1_boot.o
+	--start-group
+	-lmiosix
+	-lstdc++
+	-lc
+	-lm
+	-lgcc
+	--end-group
+
