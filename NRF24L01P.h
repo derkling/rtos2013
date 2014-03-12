@@ -23,6 +23,7 @@ public:
     void setTransmitMode();
     void setStaticPayloadSize(int size);
     void disableAllAutoAck();
+    void maskIrq(int w);
     void returnStandByI();
     int receiveDataFromRx();
     int readRPD();

@@ -26,7 +26,7 @@ LIBS :=
 ##
 ## List here additional include directories (in the form -Iinclude_dir)
 ##
-INCLUDE_DIRS :=
+INCLUDE_DIRS := 
 
 ##############################################################################
 ## You should not need to modify anything below                             ##

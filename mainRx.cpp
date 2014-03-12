@@ -20,7 +20,7 @@ int main()
    //module->setRfChannel(2);
     //module->setAirDataRate(38); // if this is 38, the transmitter must be 38 too
     
-    module->writeRegister(17,1); // setto la grandezza del payload da ricevere a 1 byte!  STATIC PAYLOAD 
+    module->writeRegister(17,4); // setto la grandezza del payload da ricevere a 1 byte!  STATIC PAYLOAD 
     module->setReceiveMode();
     
     
