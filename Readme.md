@@ -6,14 +6,16 @@ This project is a part of a collaborative [project for the class of Real-Time Op
 
 ##Features
 + STM32 F4 Discovery
-   [Product Page]("http://www.st.com/web/catalog/tools/FM116/SC959/SS1532/PF252419")
-   32-bit ARM Cortex-M4F core
+⋅⋅[Product Page]("http://www.st.com/web/catalog/tools/FM116/SC959/SS1532/PF252419")
+⋅⋅32-bit ARM Cortex-M4F core
+
 + LIS302DL ST MEMS
-   [Datasheet]("http://www.st.com/web/catalog/sense_power/FM89/SC444/PF152913")
-   3-axis accelerometer
+⋅⋅[Datasheet]("http://www.st.com/web/catalog/sense_power/FM89/SC444/PF152913")
+⋅⋅3-axis accelerometer
+
 + MIOSIX embedded OS
-   [http://miosix.org]("http://miosix.org")
-   Open source POSIX compliant solution C++ coded for optimal performances
+⋅⋅[http://miosix.org]("http://miosix.org")
+⋅⋅Open source POSIX compliant solution C++ coded for optimal performances
 
 ##Goals
 + Count daily number of steps
