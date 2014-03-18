@@ -23,12 +23,12 @@ static pthread_t pedometerThread;
 
 static pthread_mutex_t modality=PTHREAD_MUTEX_INITIALIZER; //Mutex that prevent misconfiguration trasm/receive
 
-NRF24L01P* module;
+NRF24L01P* module; 
 Pedometer* pedometer;
 
 void *startPedometer(void *arg) {
-    miosix::Thread::getCurrentThread()->setPriority(2);
-    pedometer->start();
+    miosix::Thread::getCurrentThread()->setPriority(2); //High priority to the podometer's counter 
+    pedometer->start(); //Let's start counting 
 }
 
 void *irq_handler(void* arg)
@@ -50,9 +50,9 @@ void *irq_handler(void* arg)
      in_data = module->receiveDataFromRx(); //Retreive the data received from others 
      out_data = pedometer->getSteps(); //Retreive the current steps from pedometer 
      
-     if(out_data < in_data)
+     if(out_data < in_data) //If my steps are lower than the other
        {
-        ring::instance().looser_Song(100);       
+        ring::instance().looser_Song(100);  //sound library!   
        }
      else
        {
@@ -60,7 +60,6 @@ void *irq_handler(void* arg)
        }
      
      module->resetRXirq(); //reset rx_dr irq 
-     module->notifyRX(); //blink led that notify receiving 
      printf("Received %d\n", in_data);     
      module->flushRx(); //flush the rx to prevent full buffer 
      pthread_mutex_unlock(&modality); //release the mutex
@@ -68,51 +67,66 @@ void *irq_handler(void* arg)
     }
 }
 
+/**
+ * Thread's function that send in the air the actual number
+ * of steps done every 500ms
+ * @param arg
+ * @return 
+ */
 void *send_handler(void* arg)
 {
-    char * pointer = (char*)&out_data;
+    char * pointer = (char*)&out_data; // char pointer to global int variable ( scan byte per byte the integer)
     while(true)
     {
-        usleep(500000); //every 500ms transmit (old 5000000)
-        pthread_mutex_lock(&modality);
-        out_data = pedometer->getSteps(); //Update the out_data with current steps
-        module->TrasmitData(pointer,4); //Pointer now points to the updated value 
-        printf("Transmitted %d\n", out_data);
+        usleep(500000); //every 500ms transmit 
+        pthread_mutex_lock(&modality); //lock the modality 
         
-        pthread_mutex_unlock(&modality);
+        out_data = pedometer->getSteps(); //Update the out_data with current steps 
+        module->TrasmitData(pointer,4); //Pointer now points to the updated value 
+        printf("Transmitted %d\n", out_data); //Sugar 
+        
+        pthread_mutex_unlock(&modality); //release modality 
     }
 }
+
 
 int main(){
     
     //Initialize and starts the podometer
     pedometer = pedometer->get_instance();
    
+    //Initialize and configure the NRF24L01P for this purpose
     module = new NRF24L01P();
     module->powerUp(); //power up the module
-    module->configureInterrupt();
+    module->configureInterrupt(); //configure the irq on PA1
     module->disableAllAutoAck(); //disabling all auto-ack on all the pipe
     module->setStaticPayloadSize(4); // static payload size 4 byte ( due to the fact that we'll transmit only integer numbers)
-    module->setReceiveMode();
-    module->maskIrq(2);
+    module->setReceiveMode(); //put module in receive mode 
+    module->maskIrq(2); //Masking the tx_ds and max_rt irq, actually we don't need them 
 
+    //Thread creation 
     pthread_create(&pedometerThread,NULL,&startPedometer, NULL); //launch podometer's thread 
-    pthread_create(&irq_thread,NULL,&irq_handler,NULL);
-    pthread_create(&send_thread,NULL,&send_handler,NULL);
+    pthread_create(&irq_thread,NULL,&irq_handler,NULL); //thread that handle the receiving of a message from other boards 
+    pthread_create(&send_thread,NULL,&send_handler,NULL); //thread that handle the transmission of our steps every 500ms 
     
+    //wait the guys! 
     pthread_join(irq_thread,NULL);
     pthread_join(send_thread,NULL);
     pthread_join(pedometerThread,NULL);
 
 }
 
-
+/**
+ * Handling of irq , this one is the predefined function that 
+ * respond to an irq on EXTI1 in the vector table 
+ */
 void __attribute__((naked)) EXTI1_IRQHandler()
 {
     saveContext();
-    asm volatile("bl _Z16EXTI1HandlerImplv");
+    asm volatile("bl _Z16EXTI1HandlerImplv"); //Jump to C++ function from asm
     restoreContext();
 }
+
 
 void __attribute__((used)) EXTI1HandlerImpl()
 {
