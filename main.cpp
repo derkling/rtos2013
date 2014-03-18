@@ -12,6 +12,7 @@
 using namespace std;
 using namespace miosix;
 
+//Exclusive access to out_data is indirect provided by the mutex modality 
 static int out_data = 0; //this is a global variable set by podometer thread (podometer must initialize this variable )
 static int in_data = -1; //this is the data readed from other devices by the 
 
@@ -69,7 +70,7 @@ void *irq_handler(void* arg)
 
 /**
  * Thread's function that send in the air the actual number
- * of steps done every 500ms
+ * of steps done every 1 sec
  * @param arg
  * @return 
  */
@@ -78,7 +79,7 @@ void *send_handler(void* arg)
     char * pointer = (char*)&out_data; // char pointer to global int variable ( scan byte per byte the integer)
     while(true)
     {
-        usleep(500000); //every 500ms transmit 
+        usleep(1000000); //every 1 second transmit 
         pthread_mutex_lock(&modality); //lock the modality 
         
         out_data = pedometer->getSteps(); //Update the out_data with current steps 

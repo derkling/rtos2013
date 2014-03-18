@@ -8,10 +8,6 @@
  * BASIC USAGE
  * 
  * When the wifi-module is correctly initialized a blueLed is on in the STM32
- * the main thread exploiting these functions reading the RPD status and the status register 
- * 
- * When a transmission is accomplished a redLed blinks three times on the board
- * When a receive is accomplished a orangeLed blinks three times on the board 
  * 
  * The data to send are in a global variable called out_data
  * The data received from other board are stored in a global variable called in_data 
