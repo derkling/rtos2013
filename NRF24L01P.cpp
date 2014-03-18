@@ -408,7 +408,7 @@ void NRF24L01P::TrasmitData(char *data , int dim)
 
 void NRF24L01P::flushTx()
 {
-  printf("--->FLUSH TX-BUFFER\n");
+  //printf("--->FLUSH TX-BUFFER\n");
   cs::low();
   spiDriver->send( _NRF24L01P_SPI_CMD_FLUSH_TX  );  //svuoto coda TX
   cs::high();
@@ -416,7 +416,7 @@ void NRF24L01P::flushTx()
 
 void NRF24L01P::flushRx()
 {
-  printf("--->FLUSH RX-BUFFER\n");
+  //printf("--->FLUSH RX-BUFFER\n");
   cs::low();
   spiDriver->send( _NRF24L01P_SPI_CMD_FLUSH_RX  );  //svuoto coda TX
   cs::high();

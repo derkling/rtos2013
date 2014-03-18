@@ -6,25 +6,33 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "NRF24L01P.h"
+#include "pedometer.h"
+#include "slice-and-play.h"
 
 using namespace std;
 using namespace miosix;
 
 static int out_data = 0; //this is a global variable set by podometer thread (podometer must initialize this variable )
-static int in_data = -1; //global variable readed by sound thread and setted by our module 
+static int in_data = -1; //this is the data readed from other devices by the 
 
 static Thread *waiting=0;
 
 static pthread_t irq_thread;
 static pthread_t send_thread;
+static pthread_t pedometerThread;
 
 static pthread_mutex_t modality=PTHREAD_MUTEX_INITIALIZER; //Mutex that prevent misconfiguration trasm/receive
 
 NRF24L01P* module;
+Pedometer* pedometer;
+
+void *startPedometer(void *arg) {
+    miosix::Thread::getCurrentThread()->setPriority(2);
+    pedometer->start();
+}
 
 void *irq_handler(void* arg)
 {    
-    printf("lanciato irq handler \n");
     for(;;)
     {
      FastInterruptDisableLock dLock;
@@ -35,34 +43,40 @@ void *irq_handler(void* arg)
            FastInterruptEnableLock eLock(dLock);
            Thread::yield();
           }
-     printf("arrivato irq rx_dr\n");
-     //Out of there I received an irq for sure 
+     //Out of there I received an rx_dr irq for sure, because the other are masked 
+     
      pthread_mutex_lock(&modality); //Can I put in receive mode? 
    
-         in_data = module->receiveDataFromRx();
-         //Chiamata al suono per il confronto [TODO]
-         module->resetRXirq(); 
-         module->notifyRX();
-         printf("Received %d\n", in_data);
-         module->flushRx();
+     in_data = module->receiveDataFromRx(); //Retreive the data received from others 
+     out_data = pedometer->getSteps(); //Retreive the current steps from pedometer 
      
-     pthread_mutex_unlock(&modality);
+     if(out_data < in_data)
+       {
+        ring::instance().looser_Song(100);       
+       }
+     else
+       {
+        ring::instance().victory_Song(100); 
+       }
+     
+     module->resetRXirq(); //reset rx_dr irq 
+     module->notifyRX(); //blink led that notify receiving 
+     printf("Received %d\n", in_data);     
+     module->flushRx(); //flush the rx to prevent full buffer 
+     pthread_mutex_unlock(&modality); //release the mutex
      continue;
-    //remember reset IRQ 
     }
-
 }
 
 void *send_handler(void* arg)
 {
     char * pointer = (char*)&out_data;
-    printf("inside send thread\n");
     while(true)
     {
         usleep(500000); //every 500ms transmit (old 5000000)
         pthread_mutex_lock(&modality);
-        
-        module->TrasmitData(pointer,4);
+        out_data = pedometer->getSteps(); //Update the out_data with current steps
+        module->TrasmitData(pointer,4); //Pointer now points to the updated value 
         printf("Transmitted %d\n", out_data);
         
         pthread_mutex_unlock(&modality);
@@ -70,6 +84,10 @@ void *send_handler(void* arg)
 }
 
 int main(){
+    
+    //Initialize and starts the podometer
+    pedometer = pedometer->get_instance();
+   
     module = new NRF24L01P();
     module->powerUp(); //power up the module
     module->configureInterrupt();
@@ -78,11 +96,14 @@ int main(){
     module->setReceiveMode();
     module->maskIrq(2);
 
+    pthread_create(&pedometerThread,NULL,&startPedometer, NULL); //launch podometer's thread 
     pthread_create(&irq_thread,NULL,&irq_handler,NULL);
     pthread_create(&send_thread,NULL,&send_handler,NULL);
     
     pthread_join(irq_thread,NULL);
     pthread_join(send_thread,NULL);
+    pthread_join(pedometerThread,NULL);
+
 }
 
 

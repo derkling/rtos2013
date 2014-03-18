@@ -13,11 +13,16 @@ SUBDIRS := miosix
 ##
 ## List here your source files (both .s, .c and .cpp)
 ##
-SRC :=                                  \
-main.cpp				\
-spi.cpp					\
-NRF24L01P.cpp			    
-
+SRC :=\
+    main.cpp\
+    spi.cpp \
+    NRF24L01P.cpp\
+    adpcm.c \
+    slice-and-play.cpp \
+    player.cpp\
+    lis302dl.cpp \
+    pedometer.cpp\
+    
 ##
 ## List here additional static libraries with relative path
 ##
