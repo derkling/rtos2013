@@ -8,10 +8,6 @@
  * BASIC USAGE
  * 
  * When the wifi-module is correctly initialized a blueLed is on in the STM32
- * the main thread exploiting these functions reading the RPD status and the status register 
- * 
- * When a transmission is accomplished a redLed blinks three times on the board
- * When a receive is accomplished a orangeLed blinks three times on the board 
  * 
  * The data to send are in a global variable called out_data
  * The data received from other board are stored in a global variable called in_data 
@@ -24,6 +20,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "spi.h"
+
+
 using namespace miosix;
 
 /*
@@ -288,6 +286,17 @@ void NRF24L01P::returnStandByI()
     nrf24l01p_mode = _NRF24L01P_MODE_STANDBY;
 }
 
+void NRF24L01P::maskIrq(int w)
+{
+    if(w == 2)
+      {
+         int current_config , new_config; 
+         current_config = readRegister(_NRF24L01P_REG_CONFIG); // retreive the current status of CONFIG register
+         new_config = current_config |_NRF24L01P_CONFIG_MASK_TX_DS  ; // mask the TX_DS 
+         writeRegister(_NRF24L01P_REG_CONFIG, new_config);
+      }
+}
+
 /**
  * Remember that the RF channel is set according to formula: F0 = 2400 + RF_CH [ MHZ ]
  * the frequency are from 2,4 GHZ to 2,525GHZ, so the offset is between 0 and 125
@@ -376,31 +385,26 @@ void NRF24L01P::TrasmitData(char *data , int dim)
     usleep(_NRF24L01P_TIMING_Thce_us);
     ce::low(); 
     
-    //result = this->readRegister(23);
-    //printf("il registro FIFO_STATUS_TX prima di aver trasmesso è: %d\n" , result);
-    
+   
+    /*
     while(!(this->readStatusRegister() & _NRF24L01P_STATUS_TX_DS ))
          {
           //printf("waiting tx_ds\n");// Wait untill IRQ set the TX_DS to 1.
          }
+    */
     
-    //result =  this->readStatusRegister();
-    //printf("**************TRANSMISSION COMPLETE******************");
-    //printf("il registro status dopo aver trasmesso è: %d\n" , result);
-    
-    //result = this->readRegister(23);
-    //printf("il registro FIFO_STATUS_TX dopo aver trasmesso è: %d\n" , result);
+    usleep(50000);
     
     this->resetTXirq(); //reset tx_ds irq bit 
     ce::low(); //return to stand-by
-    this->setReceiveMode(); //return to receive mode
     usleep(_NRF24L01P_TIMING_Tpece2csn_us);
-    
+    this->setReceiveMode(); //return to receive mode
+
 }
 
 void NRF24L01P::flushTx()
 {
-  printf("--->FLUSH TX-BUFFER\n");
+  //printf("--->FLUSH TX-BUFFER\n");
   cs::low();
   spiDriver->send( _NRF24L01P_SPI_CMD_FLUSH_TX  );  //svuoto coda TX
   cs::high();
@@ -408,7 +412,7 @@ void NRF24L01P::flushTx()
 
 void NRF24L01P::flushRx()
 {
-  printf("--->FLUSH RX-BUFFER\n");
+  //printf("--->FLUSH RX-BUFFER\n");
   cs::low();
   spiDriver->send( _NRF24L01P_SPI_CMD_FLUSH_RX  );  //svuoto coda TX
   cs::high();
@@ -463,7 +467,6 @@ void NRF24L01P::setTransmitMode()
   writeRegister(_NRF24L01P_REG_CONFIG , new_config );
   
   nrf24l01p_mode = _NRF24L01P_MODE_TX_MODE;
-  orangeLed::high();
   
   //Actually starts the transmission packet flow charts
 }
@@ -629,7 +632,6 @@ void NRF24L01P::notifyTX()
     int i;
     for(i=0;i<3;i++){
     redLed::high();
-    usleep(200);
     redLed::low();
     }
 }
@@ -643,25 +645,10 @@ void NRF24L01P::notifyRX()
     int i;
     for(i=0;i<3;i++){
     orangeLed::high();
-    usleep(200);
     orangeLed::low();
     }
     
 }
-
-void __attribute__((naked)) EXTI1_IRQHandler()
-{
-    saveContext();
-    asm volatile("bl _Z16EXTI1HandlerImplv");
-    restoreContext();
-}
-
-void __attribute__((used)) EXTI1HandlerImpl()
-{
-    EXTI->PR=EXTI_PR_PR1; //Reset the register that permit to exit from IRQ call
-    
-}
-
 
 void NRF24L01P::configureInterrupt()
 {

@@ -1,43 +1,145 @@
 
 #include <cstdio>
 #include "miosix.h"
+#include <miosix/kernel/scheduler/scheduler.h>
+#include <pthread.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include "NRF24L01P.h"
+#include "pedometer.h"
+#include "slice-and-play.h"
 
 using namespace std;
 using namespace miosix;
 
-extern int out_data = 0; //this is a global variable set by podometer thread (podometer must initialize this variable )
+//Exclusive access to out_data is indirect provided by the mutex modality 
+static int out_data = 0; //this is a global variable set by podometer thread (podometer must initialize this variable )
+static int in_data = -1; //this is the data readed from other devices by the 
 
-extern int in_data = -1; //global variable readed by sound thread and setted by our module 
+static Thread *waiting=0;
 
-//ATTENTION: WITH INTEGRATION WE MUST HANDLE THE MUTUAL EXCLUSION TO ACCESS AT THIS GLOBAL VARS 
+static pthread_t irq_thread;
+static pthread_t send_thread;
+static pthread_t pedometerThread;
 
-static pthread_t thread1;
 
-void *beacon(){
-    
+static pthread_mutex_t modality=PTHREAD_MUTEX_INITIALIZER; //Mutex that prevent misconfiguration trasm/receive
+
+
+NRF24L01P* module; 
+Pedometer* pedometer;
+
+
+void *startPedometer(void *arg) {
+    miosix::Thread::getCurrentThread()->setPriority(2); //High priority to the podometer's counter 
+    pedometer->start(); //Let's start counting 
 }
+
+void *irq_handler(void* arg)
+{    
+    for(;;)
+    {
+     FastInterruptDisableLock dLock;
+     waiting=Thread::IRQgetCurrentThread();
+     while(waiting) //waiting for an interrupt (rx_dr)
+          {
+           Thread::IRQwait();
+           FastInterruptEnableLock eLock(dLock);
+           Thread::yield();
+          }
+     //Out of there I received an rx_dr irq for sure, because the other are masked 
+     
+     pthread_mutex_lock(&modality); //Can I put in receive mode? 
+   
+     in_data = module->receiveDataFromRx(); //Retreive the data received from others 
+     out_data = pedometer->getSteps(); //Retreive the current steps from pedometer 
+     
+     if(out_data < in_data) //If my steps are lower than the other
+       {
+        ring::instance().looser_Song(100);  //sound library!   
+       }
+     else
+       {
+        ring::instance().victory_Song(100); 
+       }
+     
+     module->resetRXirq(); //reset rx_dr irq 
+     printf("Received %d\n", in_data);     
+     module->flushRx(); //flush the rx to prevent full buffer 
+     pthread_mutex_unlock(&modality); //release the mutex
+     continue;
+
+    }
+}
+
+/**
+ * Thread's function that send in the air the actual number
+ * of steps done every 1 sec
+ * @param arg
+ * @return 
+ */
+void *send_handler(void* arg)
+{
+    char * pointer = (char*)&out_data; // char pointer to global int variable ( scan byte per byte the integer)
+    while(true)
+    {
+        usleep(1000000); //every 1 second transmit 
+        pthread_mutex_lock(&modality); //lock the modality 
+        
+        out_data = pedometer->getSteps(); //Update the out_data with current steps 
+        module->TrasmitData(pointer,4); //Pointer now points to the updated value 
+        printf("Transmitted %d\n", out_data); //Sugar 
+        
+        pthread_mutex_unlock(&modality); //release modality 
+    }
+}
+
 
 int main(){
-
-    NRF24L01P* module = new NRF24L01P();
-    char * pointer = (char*)&out_data;
-
-    module->powerUp();
-    module->configureInterrupt();
-    module->disableAllAutoAck(); 
-    module->setStaticPayloadSize(4); // static payload size 4 byte ( due to the fact that we'll transmit only integer numbers)
+    
+    //Initialize and starts the podometer
+    pedometer = pedometer->get_instance();
    
+    //Initialize and configure the NRF24L01P for this purpose
+    module = new NRF24L01P();
+    module->powerUp(); //power up the module
+    module->configureInterrupt(); //configure the irq on PA1
+    module->disableAllAutoAck(); //disabling all auto-ack on all the pipe
+    module->setStaticPayloadSize(4); // static payload size 4 byte ( due to the fact that we'll transmit only integer numbers)
+    module->setReceiveMode(); //put module in receive mode 
+    module->maskIrq(2); //Masking the tx_ds and max_rt irq, actually we don't need them 
 
-    while(true) //global cycle of module job
-    {   
-        module->TrasmitData(pointer, 4);
-        
-    }
+    //Thread creation 
+    pthread_create(&pedometerThread,NULL,&startPedometer, NULL); //launch podometer's thread 
+    pthread_create(&irq_thread,NULL,&irq_handler,NULL); //thread that handle the receiving of a message from other boards 
+    pthread_create(&send_thread,NULL,&send_handler,NULL); //thread that handle the transmission of our steps every 500ms 
     
-    //if something strange happen reset module and powerDown 
-    module->resetModule(); 
-    module->powerDown();
-    
+    //wait the guys! 
+    pthread_join(irq_thread,NULL);
+    pthread_join(send_thread,NULL);
+    pthread_join(pedometerThread,NULL);
+
 }
+
+/**
+ * Handling of irq , this one is the predefined function that 
+ * respond to an irq on EXTI1 in the vector table 
+ */
+void __attribute__((naked)) EXTI1_IRQHandler()
+{
+    saveContext();
+    asm volatile("bl _Z16EXTI1HandlerImplv"); //Jump to C++ function from asm
+    restoreContext();
+}
+
+
+void __attribute__((used)) EXTI1HandlerImpl()
+{
+    EXTI->PR=EXTI_PR_PR1; //Reset the register that permit to exit from IRQ call
+    if(waiting==0) return;
+    waiting->IRQwakeup();
+    if(waiting->IRQgetPriority()>Thread::IRQgetCurrentThread()->IRQgetPriority()) Scheduler::IRQfindNextThread();
+    waiting=0;
+}
+
 

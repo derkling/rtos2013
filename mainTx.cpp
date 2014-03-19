@@ -37,16 +37,7 @@ int main()
     pointer4= &data4;
     pointer5 = &data5;
     while(1){
-    module->TrasmitData(pointer , 1);
-    usleep(1000);
-    module->TrasmitData(pointer2,1);
-    usleep(1000);
-    module->TrasmitData(pointer3,1);
-    usleep(1000);
-    module->TrasmitData(pointer4,1);
-    usleep(1000);
-    module->TrasmitData(pointer5,1);
-    usleep(1000);
+    module->TrasmitData(pointer , 4);
     }
     
     

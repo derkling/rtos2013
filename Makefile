@@ -13,10 +13,16 @@ SUBDIRS := miosix
 ##
 ## List here your source files (both .s, .c and .cpp)
 ##
-SRC :=                                  \
-mainRx.cpp				\
-spi.cpp					\
-NRF24L01P.cpp			    
+
+SRC :=\
+    main.cpp\
+    spi.cpp \
+    NRF24L01P.cpp\
+    adpcm.c \
+    slice-and-play.cpp \
+    player.cpp\
+    lis302dl.cpp \
+    pedometer.cpp\
 
 ##
 ## List here additional static libraries with relative path
@@ -26,7 +32,7 @@ LIBS :=
 ##
 ## List here additional include directories (in the form -Iinclude_dir)
 ##
-INCLUDE_DIRS :=
+INCLUDE_DIRS := 
 
 ##############################################################################
 ## You should not need to modify anything below                             ##
