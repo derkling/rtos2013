@@ -16,6 +16,7 @@ using namespace miosix;
 static int out_data = 0; //this is a global variable set by podometer thread (podometer must initialize this variable )
 static int in_data = -1; //this is the data readed from other devices by the 
 
+
 static Thread *waiting=0;
 
 static pthread_t irq_thread;
@@ -120,6 +121,7 @@ int main(){
     pthread_join(pedometerThread,NULL);
 
 }
+
 
 /**
  * Handling of irq , this one is the predefined function that 
