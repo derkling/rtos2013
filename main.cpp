@@ -137,5 +137,3 @@ void __attribute__((used)) EXTI1HandlerImpl()
     if(waiting->IRQgetPriority()>Thread::IRQgetCurrentThread()->IRQgetPriority()) Scheduler::IRQfindNextThread();
     waiting=0;
 }
-
-
