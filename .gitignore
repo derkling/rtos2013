@@ -17,3 +17,5 @@ main.map
  miosix_np_2/nbproject/private/CodeAssistancePathMapper.properties
        miosix_np_2/nbproject/private/launcher.properties
 
+*.lyx#
+*.lyx~
