@@ -25,9 +25,10 @@
 \bibtex_command default
 \index_command default
 \paperfontsize default
+\spacing single
 \use_hyperref false
 \papersize default
-\use_geometry false
+\use_geometry true
 \use_amsmath 1
 \use_esint 1
 \use_mhchem 1
@@ -42,6 +43,8 @@
 \shortcut idx
 \color #008000
 \end_index
+\leftmargin 2.5cm
+\rightmargin 2.5cm
 \secnumdepth 3
 \tocdepth 3
 \paragraph_separation indent
@@ -112,7 +115,7 @@ centering
 
 
 \begin_inset Graphics
-	filename Logo_Politecnico_Milano.png
+	filename img/Logo_Politecnico_Milano.png
 	scale 40
 
 \end_inset
@@ -666,6 +669,12 @@ sideways false
 status open
 
 \begin_layout Plain Layout
+\begin_inset Graphics
+	filename img/Automa nRF24L01.png
+	scale 80
+
+\end_inset
+
 
 \end_layout
 
@@ -753,6 +762,18 @@ Pedometer
 \begin_layout Itemize
 
 Speaker + suoni (cartella contenente i campioni dei suoni utilizzati)
+\end_layout
+
+\begin_layout Standard
+
+Per una spiegazione detagliata sull'implementazione delle varie funzioni
+ si vedano i commenti interni al codice.
+\end_layout
+
+\begin_layout Standard
+
+Per invece una documentazione dettagliata dei due moduli integrati si vedano
+ i documenti redatti dagli altri gruppi.
 \end_layout
 
 \begin_layout Subsection
@@ -1159,7 +1180,7 @@ begin{itemize}
 \backslash
 item 
 \backslash
-textbf{Pedometer:}
+textbf{Player:}
 \end_layout
 
 \begin_layout Plain Layout
@@ -1173,8 +1194,7 @@ begin {itemize}
 
 			
 \backslash
-item classe contenente le funzioni che permettono il setup iniziale del
- podometro e la lettura dei dati rilevati
+item classe contenente le funzioni che permettono lo stream corretto dell'audio
 \end_layout
 
 \begin_layout Plain Layout
@@ -1194,7 +1214,7 @@ end{itemize}
 \backslash
 item 
 \backslash
-textbf{lis302dl:} 
+textbf{slice-and-play:} 
 \end_layout
 
 \begin_layout Plain Layout
@@ -1208,8 +1228,8 @@ begin {itemize}
 
 			
 \backslash
-item permette il setup corretto dell'accellerometro per la rivelazione dei
- movimenti sui 3 assi cartesiani
+item classe che mette a disposizioni le funzioni utili all'integrazione
+ del modulo
 \end_layout
 
 \begin_layout Plain Layout
@@ -1225,15 +1245,11 @@ end{itemize}
 
 \begin_layout Plain Layout
 
-\end_layout
-
-\begin_layout Plain Layout
-
 	
 \backslash
 item 
 \backslash
-textbf{stats:}
+textbf{convert:}
 \end_layout
 
 \begin_layout Plain Layout
@@ -1247,8 +1263,8 @@ begin {itemize}
 
 			
 \backslash
-item classe in grado di ricavare statistiche, come il calcolo delle calorie
- consumate, dai dati raccolti 
+item classe in grado di convertire i file campionati da formato .wav a formato
+ .h
 \end_layout
 
 \begin_layout Plain Layout
