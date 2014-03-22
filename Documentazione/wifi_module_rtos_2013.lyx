@@ -366,6 +366,287 @@ Sulla board è installato il sistema operativo miosix, il quale fornisce
  per il C++.
 \end_layout
 
+\begin_layout Section
+Assunzioni e Strumenti utilizzati
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{itemize}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+	
+\backslash
+item 
+\backslash
+textbf{Assunzioni:}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+		
+\backslash
+begin{itemize}
+\end_layout
+
+\begin_layout Plain Layout
+
+			
+\backslash
+item Entrabe le board possono sia ricevere che trasmettere, si è raggiunto
+ questo obiettivo grazie all'uso di thread e la loro sincronizzazione
+\end_layout
+
+\begin_layout Plain Layout
+
+		
+\backslash
+end{itemize}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+		
+\backslash
+begin{itemize}
+\end_layout
+
+\begin_layout Plain Layout
+
+			
+\backslash
+item La trasmissione è stata pensata con un paylaod statico a 4 byte visto
+ che l'unica dato possibile da trasmettere è il numero di passi intero
+\end_layout
+
+\begin_layout Plain Layout
+
+		
+\backslash
+end{itemize}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+		
+\backslash
+begin{itemize}
+\end_layout
+
+\begin_layout Plain Layout
+
+			
+\backslash
+item <<TODO - assunzioni sui metodi di integrazione>
+\end_layout
+
+\begin_layout Plain Layout
+
+		
+\backslash
+end{itemize}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+	
+\backslash
+item 
+\backslash
+textbf{Strumenti Utilizzati:} 
+\end_layout
+
+\begin_layout Plain Layout
+
+		
+\backslash
+begin{itemize}
+\end_layout
+
+\begin_layout Plain Layout
+
+			
+\backslash
+item STM32F4 Discovery: board con architettura ARM a 32 bit, fornitaci da
+ STMicroelectronics©
+\end_layout
+
+\begin_layout Plain Layout
+
+		
+\backslash
+end{itemize}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+		
+\backslash
+begin{itemize}
+\end_layout
+
+\begin_layout Plain Layout
+
+			
+\backslash
+item Software per il controllo di versione git con repository remota hostata
+ sul portale Github 
+\end_layout
+
+\begin_layout Plain Layout
+
+	
+\backslash
+end{itemize}
+\end_layout
+
+\begin_layout Plain Layout
+
+		
+\backslash
+begin{itemize}
+\end_layout
+
+\begin_layout Plain Layout
+
+			
+\backslash
+item Modulo wifi NRF24L01P prodotto da Nordic Semiconduc- tor©
+\end_layout
+
+\begin_layout Plain Layout
+
+		
+\backslash
+end{itemize}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+		
+\backslash
+begin{itemize}
+\end_layout
+
+\begin_layout Plain Layout
+
+			
+\backslash
+item Sistema operativo open source per sistemi embedded Miosix sviluppato
+ dall'Ing.
+ Federico Terraneo
+\end_layout
+
+\begin_layout Plain Layout
+
+		
+\backslash
+end{itemize}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+		
+\backslash
+begin{itemize}
+\end_layout
+
+\begin_layout Plain Layout
+
+			
+\backslash
+item QSTLink2: programma sviluppato da STMicroelectronics© che permette
+ di flashare eseguibili sulla board
+\end_layout
+
+\begin_layout Plain Layout
+
+		
+\backslash
+end{itemize}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+		
+\backslash
+begin{itemize}
+\end_layout
+
+\begin_layout Plain Layout
+
+			
+\backslash
+item Cavo seriale
+\end_layout
+
+\begin_layout Plain Layout
+
+		
+\backslash
+end{itemize}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{itemize}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
 \begin_layout Standard
 \begin_inset Newpage newpage
 \end_inset
@@ -676,6 +957,298 @@ item files C++ derivanti da una prima versione del progetto in cui una board
 \begin_layout Plain Layout
 
 Molto utile per capire a fondo i meccanismi del modulo Wifi
+\end_layout
+
+\begin_layout Plain Layout
+
+		
+\backslash
+end{itemize}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{itemize}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Pedometer
+\end_layout
+
+\begin_layout Standard
+Modulo sviluppato dal gruppo Piscitello - Tacconelli, serve a tenere rilevare
+ i passi efffettuati tramite accellerometro e algoritmo di <TODO nome cinese>>
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{itemize}
+\end_layout
+
+\begin_layout Plain Layout
+
+	
+\backslash
+item 
+\backslash
+textbf{Pedometer:}
+\end_layout
+
+\begin_layout Plain Layout
+
+		
+\backslash
+begin {itemize}
+\end_layout
+
+\begin_layout Plain Layout
+
+			
+\backslash
+item classe contenente le funzioni che permettono il setup iniziale del
+ podometro e la lettura dei dati rilevati
+\end_layout
+
+\begin_layout Plain Layout
+
+		
+\backslash
+end{itemize}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+	
+\backslash
+item 
+\backslash
+textbf{lis302dl:} 
+\end_layout
+
+\begin_layout Plain Layout
+
+		
+\backslash
+begin {itemize}
+\end_layout
+
+\begin_layout Plain Layout
+
+			
+\backslash
+item permette il setup corretto dell'accellerometro per la rivelazione dei
+ movimenti sui 3 assi cartesiani
+\end_layout
+
+\begin_layout Plain Layout
+
+		
+\backslash
+end{itemize}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+	
+\backslash
+item 
+\backslash
+textbf{stats:}
+\end_layout
+
+\begin_layout Plain Layout
+
+		
+\backslash
+begin {itemize}
+\end_layout
+
+\begin_layout Plain Layout
+
+			
+\backslash
+item classe in grado di ricavare statistiche, come il calcolo delle calorie
+ consumate, dai dati raccolti 
+\end_layout
+
+\begin_layout Plain Layout
+
+		
+\backslash
+end{itemize}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{itemize}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Speaker
+\end_layout
+
+\begin_layout Standard
+Modulo sviluppato dal gruppo Mezzanotte - Garetti - <<TODO nome altro tipo
+ >>.
+ Questo modulo è in grado di emettere avvisi acustici tramite il campionamento
+ di appositi suoni.
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{itemize}
+\end_layout
+
+\begin_layout Plain Layout
+
+	
+\backslash
+item 
+\backslash
+textbf{Pedometer:}
+\end_layout
+
+\begin_layout Plain Layout
+
+		
+\backslash
+begin {itemize}
+\end_layout
+
+\begin_layout Plain Layout
+
+			
+\backslash
+item classe contenente le funzioni che permettono il setup iniziale del
+ podometro e la lettura dei dati rilevati
+\end_layout
+
+\begin_layout Plain Layout
+
+		
+\backslash
+end{itemize}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+	
+\backslash
+item 
+\backslash
+textbf{lis302dl:} 
+\end_layout
+
+\begin_layout Plain Layout
+
+		
+\backslash
+begin {itemize}
+\end_layout
+
+\begin_layout Plain Layout
+
+			
+\backslash
+item permette il setup corretto dell'accellerometro per la rivelazione dei
+ movimenti sui 3 assi cartesiani
+\end_layout
+
+\begin_layout Plain Layout
+
+		
+\backslash
+end{itemize}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+	
+\backslash
+item 
+\backslash
+textbf{stats:}
+\end_layout
+
+\begin_layout Plain Layout
+
+		
+\backslash
+begin {itemize}
+\end_layout
+
+\begin_layout Plain Layout
+
+			
+\backslash
+item classe in grado di ricavare statistiche, come il calcolo delle calorie
+ consumate, dai dati raccolti 
 \end_layout
 
 \begin_layout Plain Layout
