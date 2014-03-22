@@ -16,12 +16,13 @@ using namespace miosix;
 typedef Gpio <GPIOA_BASE,0> button;
 
 //Exclusive access to out_data is indirect provided by the mutex modality 
-static int out_data = 0; //this is a global variable set by podometer thread (podometer must initialize this variable )
-static int in_data = -1; //this is the data readed from other devices by the 
+static int out_data = 0; //this is a global variable set by podometer thread
+static int in_data = -1; //this is the data readed from other devices by the module 
 
 
-static Thread *waiting=0;
-static Thread *waiting1=0;
+static Thread *waiting=0; //waiting for module's irq
+static Thread *waiting1=0; //waiting for button's irq 
+
 
 static pthread_t irq_thread;
 static pthread_t send_thread;
@@ -178,21 +179,4 @@ void __attribute__((used)) EXTI1HandlerImpl()
 }
 
 
-//definitin of button irq handler 
-void __attribute__((naked)) EXTI0_IRQHandler()
-{
-    saveContext();
-    asm volatile("bl _Z16EXTI0HandlerImplv");
-    restoreContext();
-}
 
-void __attribute__((used)) EXTI0HandlerImpl()
-{
-    EXTI->PR=EXTI_PR_PR0; //viene resettato il registro che permette di uscire dalla chiamata a interrupt 
-    
-    if(waiting1==0) return;
-    waiting1->IRQwakeup(); // risveglia il thread 
-    if(waiting1->IRQgetPriority()>Thread::IRQgetCurrentThread()->IRQgetPriority())
-		Scheduler::IRQfindNextThread();
-    waiting1=0;
-}
