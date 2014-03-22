@@ -347,12 +347,20 @@ end{itemize}
 
 \end_layout
 
+\begin_layout Standard
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
 \begin_layout Section
 Funzionamento NRF24L01
 \end_layout
 
 \begin_layout Standard
 \begin_inset Float figure
+placement H
 wide false
 sideways false
 status open
@@ -380,6 +388,35 @@ Schema di funzionamento NRF24L01
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
+Il codice è stato strutturato in base allo schema sovrastante:
+\end_layout
+
+\begin_layout Itemize
+Passaggio da stato Power down a stato Standby I tramite funzone powerUp()
+\end_layout
+
+\begin_layout Itemize
+Passaggio da Stabdby I a RX mode tramite funzione setReceiveMode()
+\end_layout
+
+\begin_layout Itemize
+Passaggio da RX mode a TX mode passando da Standby I tramite funzione TrasmitDat
+a() che al suo interno invoca la funzione setTransmitMode()
+\end_layout
+
+\begin_layout Itemize
+Passaggio da TX Mode a RX mode affidato sempre alla funzione TrasmitData(),
+ la quale quado finisce attua un opportuna manipolazione dei bit al fine
+ di riportare lo stato del modulo in RX mode passando da Standby I
+\end_layout
+
+\begin_layout Standard
+Inoltre il codice è stato pensato affinchè si evitasse il passaggio allo
+ stato Standby II che, come riportato nel reference manual di NRF24L01,
+ risulta essere uno stato indesiderato.
 \end_layout
 
 \end_body
