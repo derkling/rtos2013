@@ -227,18 +227,31 @@ Sebastiano Mariani, Fabio Gritti
 
 \end_layout
 
+\begin_layout Standard
+\begin_inset CommandInset toc
+LatexCommand tableofcontents
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
 \begin_layout Section
 Introduzione
 \end_layout
 
 \begin_layout Standard
 Lo scopo del progetto è quello di sviluppare codice che permetta l'integrazione
- tra la board STM32F4_Discovery e il modulo wi-fi NRF24L01.
-\end_layout
-
-\begin_layout Standard
-Successivamente si è integrata la board con altri moduli così da poter sfruttare
- la comunicazione wireless implementata.
+ tra la board STM32F4_Discovery e il modulo wi-fi NRF24L01, e successivamente
+ integrare la board con altri moduli così da poter sfruttare la comunicazione
+ wireless implementata.
 \end_layout
 
 \begin_layout Standard
@@ -348,6 +361,12 @@ end{itemize}
 \end_layout
 
 \begin_layout Standard
+Sulla board è installato il sistema operativo miosix, il quale fornisce
+ strumenti indispensabili come il bootloader e un environment di esecuzione
+ per il C++.
+\end_layout
+
+\begin_layout Standard
 \begin_inset Newpage newpage
 \end_inset
 
@@ -417,6 +436,273 @@ Passaggio da TX Mode a RX mode affidato sempre alla funzione TrasmitData(),
 Inoltre il codice è stato pensato affinchè si evitasse il passaggio allo
  stato Standby II che, come riportato nel reference manual di NRF24L01,
  risulta essere uno stato indesiderato.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Descrizione Classi
+\end_layout
+
+\begin_layout Standard
+Le varie classi del progetto sono state suddivise in cartelle, una per modulo,
+ per rendere più comprensibile la struttura del progetto e di conseguenza
+ renderla più navigabile.
+\end_layout
+
+\begin_layout Standard
+la suddivisione è la seguente:
+\end_layout
+
+\begin_layout Itemize
+
+Wifi-Module
+\end_layout
+
+\begin_layout Itemize
+
+Pedometer
+\end_layout
+
+\begin_layout Itemize
+
+Speaker + suoni (cartella contenente i campioni dei suoni utilizzati)
+\end_layout
+
+\begin_layout Subsection
+Wifi-Module
+\end_layout
+
+\begin_layout Standard
+Cartella contenente tutte le classi C++ utili al funzionamento del NRF24L01
+ più alcuni file utili a scopi di debugging
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{itemize}
+\end_layout
+
+\begin_layout Plain Layout
+
+	
+\backslash
+item 
+\backslash
+textbf{NRF24L01:}
+\end_layout
+
+\begin_layout Plain Layout
+
+		
+\backslash
+begin {itemize}
+\end_layout
+
+\begin_layout Plain Layout
+
+			
+\backslash
+item classe contenente le funzioni strettamente legate al setup e alle operazion
+i per permettere la trasmissione dei dati wireless
+\end_layout
+
+\begin_layout Plain Layout
+
+		
+\backslash
+end{itemize}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+	
+\backslash
+item 
+\backslash
+textbf{Spi:} classe necessaria per trasmettere i dati al modulo wifi
+\end_layout
+
+\begin_layout Plain Layout
+
+		
+\backslash
+begin {itemize}
+\end_layout
+
+\begin_layout Plain Layout
+
+			
+\backslash
+item costruttore: esegue il setup del bus spi in modalità full-duplex
+\end_layout
+
+\begin_layout Plain Layout
+
+		
+\backslash
+end{itemize}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+		
+\backslash
+begin {itemize}
+\end_layout
+
+\begin_layout Plain Layout
+
+			
+\backslash
+item send(int data): permette di inviare dati tramite bus spi
+\end_layout
+
+\begin_layout Plain Layout
+
+		
+\backslash
+end{itemize}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+		
+\backslash
+begin {itemize}
+\end_layout
+
+\begin_layout Plain Layout
+
+			
+\backslash
+item receive(): permette di ricevere dati tramite bus spi
+\end_layout
+
+\begin_layout Plain Layout
+
+		
+\backslash
+end{itemize}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+	
+\backslash
+item 
+\backslash
+textbf{exorcizo.cpp:}
+\end_layout
+
+\begin_layout Plain Layout
+
+		
+\backslash
+begin {itemize}
+\end_layout
+
+\begin_layout Plain Layout
+
+			
+\backslash
+item file C++ che quando eseguito compie un reset di tutti i registri della
+ board.
+ Molto utile in fase di debug
+\end_layout
+
+\begin_layout Plain Layout
+
+		
+\backslash
+end{itemize}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+	
+\backslash
+item 
+\backslash
+textbf{mainRX.cpp - mainTX.cpp:}
+\end_layout
+
+\begin_layout Plain Layout
+
+		
+\backslash
+begin {itemize}
+\end_layout
+
+\begin_layout Plain Layout
+
+			
+\backslash
+item files C++ derivanti da una prima versione del progetto in cui una board
+ si occupava solamente della trasmissione e l'altra solo della ricezione.
+\end_layout
+
+\begin_layout Plain Layout
+
+Molto utile per capire a fondo i meccanismi del modulo Wifi
+\end_layout
+
+\begin_layout Plain Layout
+
+		
+\backslash
+end{itemize}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{itemize}
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \end_body
