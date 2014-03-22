@@ -15,13 +15,13 @@ SUBDIRS := miosix
 ##
 SRC :=\
     main.cpp\
-    spi.cpp \
-    NRF24L01P.cpp\
-    adpcm.c \
-    slice-and-play.cpp \
-    player.cpp\
-    lis302dl.cpp \
-    pedometer.cpp\
+    Wifi-Module/spi.cpp \
+    Wifi-Module/NRF24L01P.cpp\
+    Speaker/adpcm.c \
+    Speaker/slice-and-play.cpp \
+    Speaker/player.cpp\
+    Podometer/lis302dl.cpp \
+    Podometer/pedometer.cpp\
     
 ##
 ## List here additional static libraries with relative path

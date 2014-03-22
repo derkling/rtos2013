@@ -5,9 +5,9 @@
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "NRF24L01P.h"
-#include "pedometer.h"
-#include "slice-and-play.h"
+#include "Wifi-Module/NRF24L01P.h"
+#include "Podometer/pedometer.h"
+#include "Speaker/slice-and-play.h"
 
 using namespace std;
 using namespace miosix;

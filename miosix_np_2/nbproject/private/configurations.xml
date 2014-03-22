@@ -410,6 +410,25 @@
       </df>
       <df name="miosix_np_2">
       </df>
+      <df name="Podometer">
+        <in>lis302dl.cpp</in>
+        <in>lis302dl.h</in>
+        <in>pedometer.cpp</in>
+        <in>pedometer.h</in>
+        <in>pod_main.cpp</in>
+        <in>stats.cpp</in>
+        <in>stats.h</in>
+      </df>
+      <df name="Speaker">
+        <in>adpcm.c</in>
+        <in>adpcm.h</in>
+        <in>convert.cpp</in>
+        <in>demo.cpp</in>
+        <in>player.cpp</in>
+        <in>player.h</in>
+        <in>slice-and-play.cpp</in>
+        <in>slice-and-play.h</in>
+      </df>
       <df name="suoni">
         <in>array-sound.h</in>
         <in>cento.h</in>
@@ -450,29 +469,16 @@
         <in>venti.h</in>
         <in>zero.h</in>
       </df>
-      <in>NRF24L01P.cpp</in>
-      <in>NRF24L01P.h</in>
-      <in>adpcm.c</in>
-      <in>adpcm.h</in>
-      <in>convert.cpp</in>
-      <in>demo.cpp</in>
-      <in>exorcizo.cpp</in>
-      <in>lis302dl.cpp</in>
-      <in>lis302dl.h</in>
+      <df name="Wifi-Module">
+        <in>NRF24L01P.cpp</in>
+        <in>NRF24L01P.h</in>
+        <in>exorcizo.cpp</in>
+        <in>mainRx.cpp</in>
+        <in>mainTx.cpp</in>
+        <in>spi.cpp</in>
+        <in>spi.h</in>
+      </df>
       <in>main.cpp</in>
-      <in>mainRx.cpp</in>
-      <in>mainTx.cpp</in>
-      <in>pedometer.cpp</in>
-      <in>pedometer.h</in>
-      <in>player.cpp</in>
-      <in>player.h</in>
-      <in>pod_main.cpp</in>
-      <in>slice-and-play.cpp</in>
-      <in>slice-and-play.h</in>
-      <in>spi.cpp</in>
-      <in>spi.h</in>
-      <in>stats.cpp</in>
-      <in>stats.h</in>
     </df>
   </logicalFolder>
   <projectmakefile>miosix_np_2-Makefile.mk</projectmakefile>
