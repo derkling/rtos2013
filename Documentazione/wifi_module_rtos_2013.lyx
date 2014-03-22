@@ -112,7 +112,7 @@ centering
 
 
 \begin_inset Graphics
-	filename ../../Logo_Politecnico_Milano.png
+	filename Logo_Politecnico_Milano.png
 	scale 40
 
 \end_inset
@@ -218,6 +218,168 @@ Progetto di real time operating systems
 
 \size largest
 Sebastiano Mariani, Fabio Gritti
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Introduzione
+\end_layout
+
+\begin_layout Standard
+Lo scopo del progetto è quello di sviluppare codice che permetta l'integrazione
+ tra la board STM32F4_Discovery e il modulo wi-fi NRF24L01.
+\end_layout
+
+\begin_layout Standard
+Successivamente si è integrata la board con altri moduli così da poter sfruttare
+ la comunicazione wireless implementata.
+\end_layout
+
+\begin_layout Standard
+Nello specifico:
+\end_layout
+
+\begin_layout Standard
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+begin{itemize}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+	
+\backslash
+item 
+\backslash
+textbf{Podometro:}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+		
+\backslash
+begin{itemize}
+\end_layout
+
+\begin_layout Plain Layout
+
+			
+\backslash
+item Permette di inviare il numero di passi rilevati dal podometro ad un
+ 					altra board tramite comunicazione wireless
+\end_layout
+
+\begin_layout Plain Layout
+
+		
+\backslash
+end{itemize}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+	
+\backslash
+item 
+\backslash
+textbf{Suono:} 
+\end_layout
+
+\begin_layout Plain Layout
+
+		
+\backslash
+begin{itemize}
+\end_layout
+
+\begin_layout Plain Layout
+
+			
+\backslash
+item Una volta ricevuti i dati permette di capire, tramite segnale 				acustico,
+ chi ha fatto più passi e chi meno tra le 2 board comunicanti.
+ 				Inoltre permette anche di sapere il numero di passi effettuati
+\end_layout
+
+\begin_layout Plain Layout
+
+		
+\backslash
+end{itemize}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+
+\backslash
+end{itemize}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Funzionamento NRF24L01
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Schema di funzionamento NRF24L01
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \end_body
