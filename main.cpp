@@ -19,8 +19,8 @@ typedef Gpio <GPIOA_BASE,0> button;
 static int out_data = 0; //this is a global variable set by podometer thread (podometer must initialize this variable )
 static int in_data = -1; //this is the data readed from other devices by the 
 
-static Thread *waiting=0;
-static Thread *waiting1=0;
+static Thread *waiting=0; //waiting for module's irq
+static Thread *waiting1=0; //waiting for button's irq 
 
 static pthread_t irq_thread;
 static pthread_t send_thread;
@@ -173,11 +173,11 @@ void __attribute__((used)) EXTI1HandlerImpl()
 }
 
 
-//definitin of button irq handler 
+//definitin of button irq handler in the vector table 
 void __attribute__((naked)) EXTI0_IRQHandler()
 {
     saveContext();
-    asm volatile("bl _Z16EXTI0HandlerImplv");
+    asm volatile("bl _Z16EXTI0HandlerImplv"); //jump to c++ function
     restoreContext();
 }
 
