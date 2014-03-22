@@ -179,4 +179,3 @@ void __attribute__((used)) EXTI1HandlerImpl()
 }
 
 
-

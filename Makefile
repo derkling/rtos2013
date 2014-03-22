@@ -16,14 +16,14 @@ SUBDIRS := miosix
 
 SRC :=\
     main.cpp\
-
-    Wifi-Module/spi.cpp \
+    Wifi-Module/spi.cpp\
     Wifi-Module/NRF24L01P.cpp\
     Speaker/adpcm.c \
     Speaker/slice-and-play.cpp \
     Speaker/player.cpp\
     Podometer/lis302dl.cpp \
     Podometer/pedometer.cpp\
+
     
 
 ##

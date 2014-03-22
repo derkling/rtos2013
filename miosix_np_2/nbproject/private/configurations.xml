@@ -470,6 +470,7 @@
         <in>zero.h</in>
       </df>
 <<<<<<< HEAD
+<<<<<<< HEAD
       <in>NRF24L01P.cpp</in>
       <in>NRF24L01P.h</in>
       <in>adpcm.c</in>
@@ -492,6 +493,8 @@
       <in>stats.cpp</in>
       <in>stats.h</in>
 =======
+=======
+>>>>>>> grp62_union
       <df name="Wifi-Module">
         <in>NRF24L01P.cpp</in>
         <in>NRF24L01P.h</in>
@@ -501,8 +504,14 @@
         <in>spi.cpp</in>
         <in>spi.h</in>
       </df>
+      <in>NRF24L01P.cpp</in>
       <in>main.cpp</in>
+<<<<<<< HEAD
 >>>>>>> 214504095126796246f2ad808fa632e16cbe7e89
+=======
+      <in>mainRx.cpp</in>
+      <in>mainTx.cpp</in>
+>>>>>>> grp62_union
     </df>
   </logicalFolder>
   <projectmakefile>miosix_np_2-Makefile.mk</projectmakefile>

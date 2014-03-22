@@ -402,12 +402,10 @@
         </df>
         <in>miosix.h</in>
       </df>
-      <df name="Wifi-Module">
-        <in>NRF24L01P.cpp</in>
-        <in>mainRx.cpp</in>
-        <in>mainTx.cpp</in>
-      </df>
+      <in>NRF24L01P.cpp</in>
       <in>main.cpp</in>
+      <in>mainRx.cpp</in>
+      <in>mainTx.cpp</in>
     </df>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -474,9 +472,9 @@
           </ccTool>
         </makeTool>
       </makefileType>
-      <item path="../Wifi-Module/mainTx.cpp" ex="false" tool="1" flavor2="0">
-      </item>
       <item path="../main.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../mainTx.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="../miosix/arch/arm7_lpc2000/common/arch_settings.h"
             ex="false"
@@ -1590,9 +1588,9 @@
           </ccTool>
         </makeTool>
       </makefileType>
-      <item path="../Wifi-Module/mainTx.cpp" ex="false" tool="1" flavor2="0">
-      </item>
       <item path="../main.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../mainTx.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="../miosix/arch/arm7_lpc2000/common/arch_settings.h"
             ex="false"
@@ -2708,13 +2706,13 @@
           </ccTool>
         </makeTool>
       </makefileType>
-      <item path="../Wifi-Module/NRF24L01P.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="../Wifi-Module/mainRx.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="../Wifi-Module/mainTx.cpp" ex="false" tool="1" flavor2="0">
+      <item path="../NRF24L01P.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="../main.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../mainRx.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../mainTx.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="../miosix/arch/arm7_lpc2000/common/arch_settings.h"
             ex="false"
@@ -3835,9 +3833,9 @@
           </ccTool>
         </makeTool>
       </makefileType>
-      <item path="../Wifi-Module/mainTx.cpp" ex="false" tool="1" flavor2="0">
-      </item>
       <item path="../main.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../mainTx.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="../miosix/arch/arm7_lpc2000/common/arch_settings.h"
             ex="false"
@@ -4953,9 +4951,9 @@
           </ccTool>
         </makeTool>
       </makefileType>
-      <item path="../Wifi-Module/mainTx.cpp" ex="false" tool="1" flavor2="0">
-      </item>
       <item path="../main.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../mainTx.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="../miosix/arch/arm7_lpc2000/common/arch_settings.h"
             ex="false"
@@ -6071,9 +6069,9 @@
           </ccTool>
         </makeTool>
       </makefileType>
-      <item path="../Wifi-Module/mainTx.cpp" ex="false" tool="1" flavor2="0">
-      </item>
       <item path="../main.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../mainTx.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="../miosix/arch/arm7_lpc2000/common/arch_settings.h"
             ex="false"
@@ -7189,9 +7187,9 @@
           </ccTool>
         </makeTool>
       </makefileType>
-      <item path="../Wifi-Module/mainTx.cpp" ex="false" tool="1" flavor2="0">
-      </item>
       <item path="../main.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../mainTx.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="../miosix/arch/arm7_lpc2000/common/arch_settings.h"
             ex="false"
@@ -8305,9 +8303,9 @@
           </ccTool>
         </makeTool>
       </makefileType>
-      <item path="../Wifi-Module/mainTx.cpp" ex="false" tool="1" flavor2="0">
-      </item>
       <item path="../main.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../mainTx.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="../miosix/arch/arm7_lpc2000/common/arch_settings.h"
             ex="false"
@@ -9421,9 +9419,9 @@
           </ccTool>
         </makeTool>
       </makefileType>
-      <item path="../Wifi-Module/mainTx.cpp" ex="false" tool="1" flavor2="0">
-      </item>
       <item path="../main.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../mainTx.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="../miosix/arch/arm7_lpc2000/common/arch_settings.h"
             ex="false"
@@ -10537,9 +10535,9 @@
           </ccTool>
         </makeTool>
       </makefileType>
-      <item path="../Wifi-Module/mainTx.cpp" ex="false" tool="1" flavor2="0">
-      </item>
       <item path="../main.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../mainTx.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="../miosix/arch/arm7_lpc2000/common/arch_settings.h"
             ex="false"
@@ -11653,9 +11651,9 @@
           </ccTool>
         </makeTool>
       </makefileType>
-      <item path="../Wifi-Module/mainTx.cpp" ex="false" tool="1" flavor2="0">
-      </item>
       <item path="../main.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../mainTx.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="../miosix/arch/arm7_lpc2000/common/arch_settings.h"
             ex="false"
@@ -12769,9 +12767,9 @@
           </ccTool>
         </makeTool>
       </makefileType>
-      <item path="../Wifi-Module/mainTx.cpp" ex="false" tool="1" flavor2="0">
-      </item>
       <item path="../main.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../mainTx.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="../miosix/arch/arm7_lpc2000/common/arch_settings.h"
             ex="false"
@@ -13885,9 +13883,9 @@
           </ccTool>
         </makeTool>
       </makefileType>
-      <item path="../Wifi-Module/mainTx.cpp" ex="false" tool="1" flavor2="0">
-      </item>
       <item path="../main.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="../mainTx.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="../miosix/arch/arm7_lpc2000/common/arch_settings.h"
             ex="false"
