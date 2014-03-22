@@ -5,12 +5,15 @@
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "NRF24L01P.h"
-#include "pedometer.h"
-#include "slice-and-play.h"
+#include "Wifi-Module/NRF24L01P.h"
+#include "Podometer/pedometer.h"
+#include "Speaker/slice-and-play.h"
+
 
 using namespace std;
 using namespace miosix;
+
+typedef Gpio <GPIOA_BASE,0> button;
 
 //Exclusive access to out_data is indirect provided by the mutex modality 
 static int out_data = 0; //this is a global variable set by podometer thread (podometer must initialize this variable )
@@ -18,10 +21,12 @@ static int in_data = -1; //this is the data readed from other devices by the
 
 
 static Thread *waiting=0;
+static Thread *waiting1=0;
 
 static pthread_t irq_thread;
 static pthread_t send_thread;
 static pthread_t pedometerThread;
+static pthread_t buttonThread;
 
 
 static pthread_mutex_t modality=PTHREAD_MUTEX_INITIALIZER; //Mutex that prevent misconfiguration trasm/receive
@@ -65,7 +70,7 @@ void *irq_handler(void* arg)
        }
      
      module->resetRXirq(); //reset rx_dr irq 
-     printf("Received %d\n", in_data);     
+     printf("Received %d\n", in_data); //sugar      
      module->flushRx(); //flush the rx to prevent full buffer 
      pthread_mutex_unlock(&modality); //release the mutex
      continue;
@@ -95,6 +100,33 @@ void *send_handler(void* arg)
     }
 }
 
+void *button_handler(void*arg)
+{
+    //configuration of button's irq
+    
+    button::mode(Mode::INPUT_PULL_DOWN);
+    EXTI->IMR |= EXTI_IMR_MR0;
+    EXTI->RTSR |= EXTI_RTSR_TR0;
+    NVIC_EnableIRQ(EXTI0_IRQn);
+    NVIC_SetPriority(EXTI0_IRQn,15); //Low priority
+    
+    for(;;)
+    {
+    FastInterruptDisableLock dLock;
+    waiting1=Thread::IRQgetCurrentThread();
+    while(waiting1)
+    {
+        Thread::IRQwait();
+        FastInterruptEnableLock eLock(dLock);
+        Thread::yield();
+    }
+    
+    ring::instance().play_n_of_step(out_data,100);  
+   }
+
+
+}
+
 
 int main(){
     
@@ -114,11 +146,12 @@ int main(){
     pthread_create(&pedometerThread,NULL,&startPedometer, NULL); //launch podometer's thread 
     pthread_create(&irq_thread,NULL,&irq_handler,NULL); //thread that handle the receiving of a message from other boards 
     pthread_create(&send_thread,NULL,&send_handler,NULL); //thread that handle the transmission of our steps every 500ms 
-    
+    pthread_create(&buttonThread,NULL,&button_handler,NULL);
     //wait the guys! 
     pthread_join(irq_thread,NULL);
     pthread_join(send_thread,NULL);
     pthread_join(pedometerThread,NULL);
+    pthread_join(buttonThread,NULL);
 
 }
 
@@ -145,3 +178,21 @@ void __attribute__((used)) EXTI1HandlerImpl()
 }
 
 
+//definitin of button irq handler 
+void __attribute__((naked)) EXTI0_IRQHandler()
+{
+    saveContext();
+    asm volatile("bl _Z16EXTI0HandlerImplv");
+    restoreContext();
+}
+
+void __attribute__((used)) EXTI0HandlerImpl()
+{
+    EXTI->PR=EXTI_PR_PR0; //viene resettato il registro che permette di uscire dalla chiamata a interrupt 
+    
+    if(waiting1==0) return;
+    waiting1->IRQwakeup(); // risveglia il thread 
+    if(waiting1->IRQgetPriority()>Thread::IRQgetCurrentThread()->IRQgetPriority())
+		Scheduler::IRQfindNextThread();
+    waiting1=0;
+}
