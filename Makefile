@@ -24,6 +24,8 @@ SRC :=\
     Podometer/lis302dl.cpp \
     Podometer/pedometer.cpp\
 
+    
+
 ##
 ## List here additional static libraries with relative path
 ##
