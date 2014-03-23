@@ -178,4 +178,23 @@ void __attribute__((used)) EXTI1HandlerImpl()
     waiting=0;
 }
 
+//definitin of button irq handler in the vector table
+void __attribute__((naked)) EXTI0_IRQHandler()
+{
+    saveContext();
+    asm volatile("bl _Z16EXTI0HandlerImplv"); //jump to c++ function
+    restoreContext();
+}
+
+void __attribute__((used)) EXTI0HandlerImpl()
+{
+    EXTI->PR=EXTI_PR_PR0; //viene resettato il registro che permette di uscire dalla chiamata a interrupt
+    
+    if(waiting1==0) return;
+    waiting1->IRQwakeup(); // risveglia il thread
+    if(waiting1->IRQgetPriority()>Thread::IRQgetCurrentThread()->IRQgetPriority())
+Scheduler::IRQfindNextThread();
+    waiting1=0;
+}
+
 

@@ -7,8 +7,25 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/home/user/Desktop/STM32_wireless-comunication/Makefile</file>
+            <file>file:/home/user/Desktop/STM32_wireless-comunication/Speaker/slice-and-play.cpp</file>
+            <file>file:/home/user/Desktop/STM32_wireless-comunication/Podometer/stats.cpp</file>
+            <file>file:/home/user/Desktop/STM32_wireless-comunication/suoni/array-sound.h</file>
+            <file>file:/home/user/Desktop/STM32_wireless-comunication/Podometer/lis302dl.h</file>
+            <file>file:/home/user/Desktop/STM32_wireless-comunication/Speaker/slice-and-play.h</file>
+            <file>file:/home/user/Desktop/STM32_wireless-comunication/Podometer/pod_main.cpp</file>
+            <file>file:/home/user/Desktop/STM32_wireless-comunication/Speaker/player.h</file>
+            <file>file:/home/user/Desktop/STM32_wireless-comunication/Podometer/lis302dl.cpp</file>
+            <file>file:/home/user/Desktop/STM32_wireless-comunication/Speaker/convert.cpp</file>
+            <file>file:/home/user/Desktop/STM32_wireless-comunication/Podometer/pedometer.h</file>
+            <file>file:/home/user/Desktop/STM32_wireless-comunication/Podometer/pedometer.cpp</file>
             <file>file:/home/user/Desktop/STM32_wireless-comunication/main.cpp</file>
+            <file>file:/home/user/Desktop/STM32_wireless-comunication/Wifi-Module/NRF24L01P.h</file>
+            <file>file:/home/user/Desktop/STM32_wireless-comunication/Wifi-Module/spi.cpp</file>
+            <file>file:/home/user/Desktop/STM32_wireless-comunication/Speaker/demo.cpp</file>
+            <file>file:/home/user/Desktop/STM32_wireless-comunication/suoni/venti.h</file>
+            <file>file:/home/user/Desktop/STM32_wireless-comunication/Makefile</file>
+            <file>file:/home/user/Desktop/STM32_wireless-comunication/Speaker/player.cpp</file>
+            <file>file:/home/user/Desktop/STM32_wireless-comunication/Wifi-Module/NRF24L01P.cpp</file>
         </group>
     </open-files>
 </project-private>
