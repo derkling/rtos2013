@@ -750,28 +750,23 @@ la suddivisione è la seguente:
 \end_layout
 
 \begin_layout Itemize
-
 Wifi-Module
 \end_layout
 
 \begin_layout Itemize
-
 Pedometer
 \end_layout
 
 \begin_layout Itemize
-
 Speaker + suoni (cartella contenente i campioni dei suoni utilizzati)
 \end_layout
 
 \begin_layout Standard
-
 Per una spiegazione detagliata sull'implementazione delle varie funzioni
  si vedano i commenti interni al codice.
 \end_layout
 
 \begin_layout Standard
-
 Per invece una documentazione dettagliata dei due moduli integrati si vedano
  i documenti redatti dagli altri gruppi.
 \end_layout
@@ -1292,6 +1287,187 @@ end{itemize}
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Threads e Sincronizzazione
+\end_layout
+
+\begin_layout Standard
+Per permmettere alla board di interpretare sia il ruolo di ricevitore sia
+ quello di trasmettitore si è optato per una programmazione multithreading,
+ in particolare si è deciso di sviluppare 2 threads:
+\end_layout
+
+\begin_layout Itemize
+send_handler(void* arg): Thread che si occupa di passare in stato di trasmission
+e e di trasmettere ogni secondo
+\end_layout
+
+\begin_layout Itemize
+irq_handler(void* arg): Thread che si occupa della gestione delle interrupt
+ di ricezione e di comunicare agli altri moduli il dato ricevuto
+\end_layout
+
+\begin_layout Subsection
+Trasmissone
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Flow chart thread trasmissione
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+Viene dichiarato un puntatore a carattere cosi da poter scandire byte per
+ byte l'intero rappresentante il numero di passi
+\end_layout
+
+\begin_layout Enumerate
+Entrata in un ciclo infinito
+\end_layout
+
+\begin_layout Enumerate
+Sleep di 1 secondo (il moduro è in stato di ricezione) 
+\end_layout
+
+\begin_layout Enumerate
+Mutex lock sulla variabile globale modality, in questo modo si evitano conflitti
+ con il thread in ricezione
+\end_layout
+
+\begin_layout Enumerate
+Retrive dei dati ricevuti dal podometro(si veda paragrafo su integrazione)
+\end_layout
+
+\begin_layout Enumerate
+Trasmissioni dei dati in modo wireless
+\end_layout
+
+\begin_layout Enumerate
+Ritorno a stato di ricezione (fine della funzione TransmitData() come detto
+ in precedenza)
+\end_layout
+
+\begin_layout Enumerate
+Mutex unlock sulla variabile globale modality
+\end_layout
+
+\begin_layout Enumerate
+Ritorno al punto 3
+\end_layout
+
+\begin_layout Subsection
+Ricezione
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Flow chart thread ricezione
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+Entrata in un ciclo infinito
+\end_layout
+
+\begin_layout Enumerate
+Entrata in un ciclo di attesa, la condizione di uscita è data dall'arrivo
+ di un'interrupt di ricezione
+\end_layout
+
+\begin_layout Enumerate
+Mutex lock sulla variabile globale modality, in questo modo si evitano conflitti
+ con il thread in trasmissione
+\end_layout
+
+\begin_layout Enumerate
+Retrive dei dati ricevuti via wireless
+\end_layout
+
+\begin_layout Enumerate
+Retrive dei dati ricevuti dal podometro
+\end_layout
+
+\begin_layout Enumerate
+Confronto tra i dati per integrazione con il modulo Speaker(si veda paragrafo
+ su integrazione)
+\end_layout
+
+\begin_layout Enumerate
+Reset dell'interrupt
+\end_layout
+
+\begin_layout Enumerate
+Reset del bufffer di riceione per prevenire overflow di dati
+\end_layout
+
+\begin_layout Enumerate
+Mutex unlock sulla variabile globale modality
+\end_layout
+
+\begin_layout Enumerate
+Ritorno al punto 2
+\end_layout
+
+\begin_layout Section
+Integrazione
 \end_layout
 
 \end_body
