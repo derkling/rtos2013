@@ -1,0 +1,462 @@
+\documentclass[11pt,a4paper,oneside]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{textcomp}
+\usepackage{float}
+\usepackage{tabularx}
+\usepackage{frontespizio}
+\usepackage{multirow}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{caption}
+\usepackage{amssymb}
+\usepackage{wrapfig}
+\usepackage{subfig}
+\usepackage{caption}
+\usepackage{longtable}
+\usepackage{verbatim}
+\usepackage{hyperref}
+\hypersetup{%
+    pdfborder = {0 0 0}
+}
+\lstset{basicstyle=\small\ttfamily,keywordstyle=\color{black}\bfseries,language=C++}
+\pagestyle{fancy}
+\lhead{Corna Andrea - Fontana Lorenzo}
+\chead{}
+\rhead{Social Wireless}
+\lfoot{}
+\cfoot{}
+\rfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\begin{document}
+
+\thispagestyle{empty}
+\enlargethispage{60mm}
+\begin{center}
+\Large{\textsc{Politecnico di Milano}}\\
+%\vspace{5mm}
+\large{Scuola di Ingegneria Industriale e dell'Informazione}\\
+%\vspace{5mm}
+\large{Corso di laurea magistrale in Ingegneria Informatica}\\
+\vspace{7mm}
+\begin{figure}[h]
+\begin{center}
+\includegraphics[scale=0.15]{./Immagini/logo-polimi}
+\end{center}
+\end{figure}
+\vspace{2mm}
+
+\begin{large}
+PROJECT REPORTING\\REAL TIME AND OPERATING SYSTEMS
+\end{large}
+\vspace{25mm}
+
+
+\begin{large}
+SOCIAL WIRELESS\\
+\end{large}
+\vspace{20mm}
+
+
+\begin{flushleft}
+\begin{tabular}{l l }
+Docente\\
+Patrick Bellasi
+\end{tabular}
+\end{flushleft}
+\vspace{10mm}
+
+
+\begin{flushright}
+\begin{tabular}{l l }
+Team \\
+Andrea Corna & Matr. 816737\\
+Lorenzo Fontana & Matr. 817822\\
+\end{tabular}
+\end{flushright}
+
+\vspace{43mm}
+{\large{\bf Anno Accademico 2013-2014}}
+\end{center}
+
+\newpage
+
+\tableofcontents
+
+
+\newpage
+
+\listoffigures
+
+\newpage
+
+
+
+\section{Introduction}
+
+\subsection{Goal}
+The project consists in developing a wireless communication system between two STM32F4 boards through a NRF24L01 module using the operative system Miosix. The system will allow to send up to byte of information by calling a  function and passing it a character array. For this reason it can be used in a lot of different way from creating a simple chat between boards to sending information about the number of step made during the day.
+
+\subsection{Main Components}
+The project is composed by three main modules:
+\begin{enumerate}
+%%%%
+\item Class {\itshape spi\textunderscore driver.cpp}: provides a send and a receive function in order to communicate with the NRF24L01 module;
+%%%%
+\item Class {\itshape nRF24L01P.cpp}: provides a set of functions to handle the different configurations of the module and to setup the transmission and the reception mode;
+%%%%
+\item {\itshape wifi\textunderscore module.cpp}: interfaces the requests of sending and receiving information coming from the external systems with the Nrf24l01 driver saving  data in temporary buffers;
+%%%%
+\end{enumerate}
+%%%%Figure schema
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.4]{./Immagini/generalSchema.png}
+\caption{Communication between components}
+\label{Communication between components}
+\end{figure}
+
+\subsection{Used Instruments}
+In order to develop this project, we have used some instruments:
+\begin{itemize}
+%%%%
+\item STM32F4 Discovery: board with 32 bit ARM architecture, kindly provided by STMicroelectronics\copyright. For detailed information you can consult the reference manual\cite{manual-stm32f4}.\\In particular we use:
+\begin{itemize}
+\item Gpio D from 12 to 15 in order to control leds;
+\item Gpio B from 11 to 15 in order to use SPI 2 peripheral;
+\item Gpio A 1 for the IRQ signal.
+
+\end{itemize}
+%%%%
+\item Miosix OS: a c$++$ kernel designed to run on 32bit microcontrollers developed by PhD Student Federico Terraneo\cite{miosix};
+%%%%
+\item NRF24L01P: single chip transceiver produced by Nordic Semiconductor\copyright. For detailed information you can consult the reference manual.\cite{manual nrf24l01p}
+%%%%
+\item Git: system version control, hosting on GitHub\cite{github}. 
+\end{itemize}
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Git Repository}
+The development of the project was tracked with a git repository hosted in GitHub. The link in which you can find it is \url{https://github.com/Fons91/STM32F4_Wifi}
+%%%%FIGURE git 
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.5]{./Immagini/gitRepo.png}
+\caption{History Git Repository}
+\label{History Git Repository}
+\end{figure}
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Spi Driver}
+The first module we have developed was the spi driver which was necessary to  send commands to the NRF24L01.
+The class is composed by:
+\begin{enumerate}
+%%%%
+\item {\itshape spi\textunderscore driver()}: the class constructor which setup the basic configurations in order to use the SPI2 interface of the board.
+%%%% CODE SPI_DRIVER CONSTRUCTOR
+\lstset{numbers=left,numberstyle=\tiny}
+\begin{lstlisting}[frame=single]
+spi_driver::spi_driver() {
+  RCC->APB1ENR |= RCC_APB1ENR_SPI2EN; 
+  SPI2->CR1 = SPI_CR1_BR_2 |                       
+              SPI_CR1_SSM  | 
+              SPI_CR1_SSI  |               
+              SPI_CR1_MSTR |                                  
+              SPI_CR1_SPE;
+}           
+\end{lstlisting}
+%%%%
+\item {\itshape write(int command)}: this function writes the command received as argument into the data register of the spi and sends it to the selected slave;
+%%%% CODE SPI_DRIVER WRITE()
+\lstset{numbers=left,numberstyle=\tiny}
+\begin{lstlisting}[frame=single]
+void spi_driver::write(int command){
+    SPI2->DR = command;
+    while((SPI2->SR & SPI_SR_RXNE)==0); 
+    command=SPI2->DR;
+}
+\end{lstlisting}
+%%%%
+\item {\itshape read()}: this function read the data register of the selected slave thanks to a dummy write; 
+%%%% CODE SPI_DRIVER READ()
+\lstset{numbers=left,numberstyle=\tiny}
+\begin{lstlisting}[frame=single]
+int  spi_driver::read(){
+     SPI2->DR = 0xff;             
+     while((SPI2->SR & SPI_SR_RXNE)==0);
+     return SPI2->DR;  
+}
+\end{lstlisting}
+%%%%
+\end{enumerate}
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{NRF24L01 Module}
+After having developed the spi driver we started to write a set of functions to handle the NRF24L01 module.
+The functions can be classified into two different groups. 
+The first one consists of getter and setter methods which provides the possibility of tuning the different configurations of the module; the second one contains four methods that allow to handle the transmission and reception functionality. Below we will discuss them in the detail.
+
+
+\subsection{Configuration functions}
+All of these functions are based of the following two methods:
+\begin{enumerate}
+\item {\itshape void set\textunderscore register(int addr\textunderscore register, int data\textunderscore register)}:
+sets the register referred by {\itshape addr\textunderscore register} to the value passed as second argument;
+%%%% CODE NRF24L01P SET_REGISTER()
+\lstset{numbers=left,numberstyle=\tiny}
+\begin{lstlisting}[frame=single]
+void nRF24L01P::set_register(int addr_register,
+                                 int data_register){
+  int old_ce =CE::value();    
+  CE_disable(); 
+  CS::low();
+  spi->write(NRF24L01P_CMD_WT_REG |
+       (addr_register & NRF24LO1P_REG_ADDR_BITMASK));
+  spi->write(data_register & NRF24L01P_CMD_NOP);   
+  CS::high();
+  CE_restore(old_ce);
+
+}
+\end{lstlisting}
+%%%%
+\item {\itshape int get\textunderscore register(int reg)}: return the actual value of the register passed as parameter;
+%%%% CODE NRF24L01P SET_REGISTER()
+\lstset{numbers=left,numberstyle=\tiny}
+\begin{lstlisting}[frame=single]
+int  nRF24L01P::get_register(int reg){
+    int command = NRF24L01P_CMD_RD_REG | 
+    	       (reg & NRF24LO1P_REG_ADDR_BITMASK);
+    int result;
+    CS::low();
+    spi->write(command);   
+    result = spi->read();
+    CS::high();
+    return result;   
+}
+\end{lstlisting}
+%%%%
+\end{enumerate}
+
+Thanks to these functions we developed a set of methods to configure frequency, output power, data rate, crc lenght, transfer size. Moreover we can control the finite state machine of the module, representing below.
+%%%%Figure state machine
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.3]{./Immagini/stateMachineModule.png}
+\caption{State Machine NRF24L01P Module}
+\label{State Machine NRF24L01P Module}
+\end{figure}
+
+
+\subsection{Trasmission and Reception functions}
+The first two functions, {\itshape set\textunderscore receive\textunderscore mode()} and {\itshape set\textunderscore transmit\textunderscore mode()}, handle the transitions between the different configurations of the finite state machine which represents the NRF24L01P module. The second set of functions, which contains {\itshape transmit(int count, char* data)} and {\itshape receive(int count, char* data)}, implement the functionality to send and receive data, ensuring that the module is in the correct state.
+
+\newpage
+\section{Threads and Synchronisation}
+The core logic of the project can be found in the {\itshape wifi\textunderscore module.cpp} file. Here we have two functions, which run in two different threads:
+
+\begin{itemize}
+%%%%
+\item {\itshape wifi\textunderscore receive()}: thanks to an interrupt raised by the module after having received a packet, copies these information from data register of the nrf24l01p into buffer\textunderscore receive.
+%%%%
+\item {\itshape wifi\textunderscore trasmit()}: after controlling if there are something to transmit, it sends all information contain in the buffer\textunderscore transmit and sleep for one minute.
+%%%%
+\end{itemize}
+%%%%Figure threads
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.4]{./Immagini/threads.png}
+\caption{Transmit and receive threads}
+\label{Transmit and receive threads}
+\end{figure}
+
+The two buffer could be accessed from the others with these two functions:
+
+\begin{itemize}
+%%%%
+\item {\itshape send(char* payload)}: copies the data contained in payload in the buffer\textunderscore transmit and notifies the transmission thread.
+%%%% CODE WIFI_MODULE SEND
+\lstset{numbers=left,numberstyle=\tiny}
+\begin{lstlisting}[frame=single]
+void send(char* payload){
+    int i=0;
+    pthread_mutex_lock(&buff_tx);
+    if(counter_tx == BUFFER_TRANSMIT_SIZE){
+       counter_tx=0;
+    }
+    for(;i<BUFFER_CELL_SIZE-1;i++){
+        buffer_transmit[i+counter_tx] = payload[i];
+    }
+    buffer_transmit[i+counter_tx]='\0';
+    counter_tx = counter_tx + BUFFER_CELL_SIZE;
+    pthread_cond_broadcast(&cond);
+    pthread_mutex_unlock(&buff_tx);
+}
+\end{lstlisting}
+%%%%
+\item {\itshape receive(char* payload)}: read from the receive\textunderscore buffer all the information that have been stored by the receive thread.
+%%%% CODE WIFI_MODULE RECEIVE
+\lstset{numbers=left,numberstyle=\tiny}
+\begin{lstlisting}[frame=single]
+void receive(char *payload){
+ pthread_mutex_lock(&buff_rx);
+ if(counter_rx == 0){
+   pthread_mutex_unlock(&buff_rx);
+   return;
+ }
+ for(int i=0;i<counter_rx/BUFFER_CELL_SIZE;i++){
+   for(int j=0;j<BUFFER_CELL_SIZE;j++){
+       payload[j] = 
+           buffer_receive[j+BUFFER_CELL_SIZE*i];
+       buffer_receive[j+BUFFER_CELL_SIZE*i] = 0;
+   }
+ }
+ counter_rx=0;
+ pthread_mutex_unlock(&buff_rx);
+}
+\end{lstlisting}
+%%%%
+\end{itemize}
+
+Since buffers and spi are shared by different threads, we have used some mutex in order to avoid simultaneous accesses to these:
+%%%% CODE WIFI_MODULE MUTEX
+\lstset{numbers=left,numberstyle=\tiny}
+\begin{lstlisting}[frame=single]
+static pthread_mutex_t buff_tx=PTHREAD_MUTEX_INITIALIZER;
+static pthread_mutex_t buff_rx=PTHREAD_MUTEX_INITIALIZER;
+static pthread_mutex_t spi=PTHREAD_MUTEX_INITIALIZER;
+static pthread_cond_t cond=PTHREAD_COND_INITIALIZER;
+\end{lstlisting}
+
+where the condition is used to notify to transmit thread that something to send is present in the buffer.
+\\
+Finally we have implemented an {\itshape init()} function that sets all the gpio used for the module and starts and creates the two thread mentioned before.
+%%%% CODE INIT
+\lstset{numbers=left,numberstyle=\tiny}
+\begin{lstlisting}[frame=single]
+void init(){
+ orangeLed::mode(Mode::OUTPUT);
+ redLed::mode(Mode::OUTPUT);
+ blueLed::mode(Mode::OUTPUT);
+ greenLed::mode(Mode::OUTPUT);
+ wifi = new nRF24L01P();
+ wifi->power_up();
+ wifi->set_receive_mode();
+ configureModuleInterrupt();
+ blueLed::high();
+pthread_create(&transmit_thread,NULL,&wifi_transmit,NULL);
+ pthread_create(&receive_thread,NULL,&wifi_receive,NULL);
+
+}
+\end{lstlisting}
+
+\subsection{Interrupt Implementation}
+In order to be notified when a packet is received by module, we have implemented an interrupt routine which wakes up the receive thread. There are two main functions:
+\begin{itemize}
+%%%% CODE WAI FOR MODULE
+\item {\itshape waitForModule()}: this function put in wait the current thread.
+\lstset{numbers=left,numberstyle=\tiny}
+\begin{lstlisting}[frame=single]
+void waitForModule(){
+    FastInterruptDisableLock dLock; 
+    waiting=Thread::IRQgetCurrentThread();
+    while(waiting){
+        Thread::IRQwait(); 
+        FastInterruptEnableLock eLock(dLock); 
+        Thread::yield(); 
+    }
+}
+\end{lstlisting}
+%%%%
+\item {\itshape EXTI1HandlerImpl()}: this function is the routine interrupt function; in it we control if there is a thread to wake up and if his priority is bigger than the current one. In this case the scheduler is called in order to obtain a context switch.
+%%%% CODE IRQ IMPLEMENTATION
+\lstset{numbers=left,numberstyle=\tiny}
+\begin{lstlisting}[frame=single]
+void __attribute__((used))EXTI1HandlerImpl(){
+    EXTI->PR=EXTI_PR_PR1;
+    if(waiting==0) return;
+    waiting->IRQwakeup(); 
+    if(waiting->IRQgetPriority()>
+     Thread::IRQgetCurrentThread()->IRQgetPriority())
+        Scheduler::IRQfindNextThread();
+    waiting=0;
+}
+\end{lstlisting}
+%%%%
+\end{itemize}
+
+
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Integration}
+The last phase of the project was the integration with other group code, in particular with the pedometer and audio module.
+The integration provides two functions:
+%%%%
+\begin{itemize}
+%%%%
+\item If you want to know how many steps you have done until this moment, you can hear this information pressing the blue button. This is is implemented by the code below.
+%%%%CODE THREAD INFORMATION
+\lstset{numbers=left,numberstyle=\tiny}
+\begin{lstlisting}[frame=single]
+void *steps_thread(void *arg){
+  int steps;
+  configureButtonInterrupt();
+  for(;;){
+      waitForButton();
+      steps = Pedometer::instance().getSteps();
+      if(steps != 0){
+         ring::instance().play_n_of_step(steps,100);
+      }
+      usleep(100000);      
+  }
+}
+\end{lstlisting}
+%%%%
+\item Sends information about the number of steps done to other boards and compares their information with yours, playing different music if you have done better the others or not.
+\end{itemize} 
+To do it, we have created a simple main where all threads are started and after we keep update the information about number of steps.
+%%%%CODE MAIN FUNCTION
+\lstset{numbers=left,numberstyle=\tiny}
+\begin{lstlisting}[frame=single]
+int main()
+{
+    int steps;
+    init();
+    char stepsCod[32];
+		
+    pthread_t stepsThread;
+    Thread *pedometer_t;
+    pedometer_t = Thread::create(pedometerTask, 2048, 2, 
+                        NULL, Thread::JOINABLE);
+    pthread_create(&stepsThread,NULL,&steps_thread,NULL);
+    while(1){
+        usleep(500000);
+        steps = Pedometer::instance().getSteps();
+        if(steps != 0){
+            sprintf(stepsCod, "%d", steps);
+            send(stepsCod);
+        }
+    }
+}
+\end{lstlisting}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\begin{thebibliography}{99}
+
+	\bibitem{manual-stm32f4} stm microcontroller catalog web site,\\http://www.st.com/web/en/catalog/mmc/SC1169/SS1577/LN11
+	\bibitem{stm} st official web site, http://www.st.com/
+	\bibitem{miosix} Miosix official site, http://www.miosix.org/
+	\bibitem{manual nrf24l01p} Nordic Semiconductor official site, http://www.nordicsemi.com/kor/Products/2.4GHz-RF/nRF24L01P
+	\bibitem{git} Git official site, http://www.git-scm.com/
+	\bibitem{social-wireless} Documentazione progetto Social-Wireless
+	\bibitem{github} GitHub Official Site, http://www.github.com
+\end{thebibliography}
+ 
+\end{document}
