@@ -1,0 +1,90 @@
+\hypertarget{classspi__driver}{\section{spi\+\_\+driver Class Reference}
+\label{classspi__driver}\index{spi\+\_\+driver@{spi\+\_\+driver}}
+}
+
+
+This is the header file for the class \hyperlink{classspi__driver}{spi\+\_\+driver}.  
+
+
+
+
+{\ttfamily \#include $<$spi\+\_\+driver.\+h$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classspi__driver_aa2c69701e09a028d45dbfe4adb7c7e22}{spi\+\_\+driver} ()
+\item 
+\hypertarget{classspi__driver_a37a0cb85e0e049248b6dba1421c8d3ff}{{\bfseries spi\+\_\+driver} (const \hyperlink{classspi__driver}{spi\+\_\+driver} \&orig)}\label{classspi__driver_a37a0cb85e0e049248b6dba1421c8d3ff}
+
+\item 
+virtual \hyperlink{classspi__driver_a323ecbd0d8679efd3db99fbfd6486b44}{$\sim$spi\+\_\+driver} ()
+\item 
+void \hyperlink{classspi__driver_a146fb9b7ac218dae7a26fc5173aaf060}{write} (int command)
+\item 
+int \hyperlink{classspi__driver_aea08ab5aa1bff0169a0334241ddf2da0}{read} ()
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+This is the header file for the class \hyperlink{classspi__driver}{spi\+\_\+driver}. 
+
+File\+: \hyperlink{spi__driver_8h_source}{spi\+\_\+driver.\+h} \begin{DoxyAuthor}{Author}
+Andrea Corna 
+
+Lorenzo Fontana 
+\end{DoxyAuthor}
+\begin{DoxyVersion}{Version}
+1.\+0 
+\end{DoxyVersion}
+\begin{DoxyDate}{Date}
+03/01/2014 
+\end{DoxyDate}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classspi__driver_aa2c69701e09a028d45dbfe4adb7c7e22}{\index{spi\+\_\+driver@{spi\+\_\+driver}!spi\+\_\+driver@{spi\+\_\+driver}}
+\index{spi\+\_\+driver@{spi\+\_\+driver}!spi\+\_\+driver@{spi\+\_\+driver}}
+\subsubsection[{spi\+\_\+driver}]{\setlength{\rightskip}{0pt plus 5cm}spi\+\_\+driver\+::spi\+\_\+driver (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classspi__driver_aa2c69701e09a028d45dbfe4adb7c7e22}
+Default construct \hypertarget{classspi__driver_a323ecbd0d8679efd3db99fbfd6486b44}{\index{spi\+\_\+driver@{spi\+\_\+driver}!````~spi\+\_\+driver@{$\sim$spi\+\_\+driver}}
+\index{````~spi\+\_\+driver@{$\sim$spi\+\_\+driver}!spi\+\_\+driver@{spi\+\_\+driver}}
+\subsubsection[{$\sim$spi\+\_\+driver}]{\setlength{\rightskip}{0pt plus 5cm}spi\+\_\+driver\+::$\sim$spi\+\_\+driver (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classspi__driver_a323ecbd0d8679efd3db99fbfd6486b44}
+Destructor 
+
+\subsection{Member Function Documentation}
+\hypertarget{classspi__driver_aea08ab5aa1bff0169a0334241ddf2da0}{\index{spi\+\_\+driver@{spi\+\_\+driver}!read@{read}}
+\index{read@{read}!spi\+\_\+driver@{spi\+\_\+driver}}
+\subsubsection[{read}]{\setlength{\rightskip}{0pt plus 5cm}int spi\+\_\+driver\+::read (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classspi__driver_aea08ab5aa1bff0169a0334241ddf2da0}
+This method uses a dummy write in order to catch the slave's status register \begin{DoxyReturn}{Returns}
+status register integer coding 
+\end{DoxyReturn}
+\hypertarget{classspi__driver_a146fb9b7ac218dae7a26fc5173aaf060}{\index{spi\+\_\+driver@{spi\+\_\+driver}!write@{write}}
+\index{write@{write}!spi\+\_\+driver@{spi\+\_\+driver}}
+\subsubsection[{write}]{\setlength{\rightskip}{0pt plus 5cm}void spi\+\_\+driver\+::write (
+\begin{DoxyParamCaption}
+\item[{int}]{command}
+\end{DoxyParamCaption}
+)}}\label{classspi__driver_a146fb9b7ac218dae7a26fc5173aaf060}
+Method to write a command with the spi 
+\begin{DoxyParams}{Parameters}
+{\em command} & -\/ command's integer coding \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+rtos2013/nrf24l01p/spi\+\_\+driver.\+h\item 
+rtos2013/nrf24l01p/spi\+\_\+driver.\+cpp\end{DoxyCompactItemize}

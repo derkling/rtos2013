@@ -1,0 +1,101 @@
+\hypertarget{wifi__module_8h}{\section{rtos2013/nrf24l01p/wifi\+\_\+module.h File Reference}
+\label{wifi__module_8h}\index{rtos2013/nrf24l01p/wifi\+\_\+module.\+h@{rtos2013/nrf24l01p/wifi\+\_\+module.\+h}}
+}
+
+
+This is the header file for the file wifi\+\_\+module.\+cpp.  
+
+
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{wifi__module_8h_a109ee7a32522677361c97e7d901b3b57}{send} (char $\ast$payload)
+\item 
+void $\ast$ \hyperlink{wifi__module_8h_aef4acce00c99b0ef5cd99e5c8ab320d8}{wifi\+\_\+receive} (void $\ast$arg)
+\item 
+void $\ast$ \hyperlink{wifi__module_8h_af325b19e4cf08cbd6b8e61044a4ee871}{wifi\+\_\+transmit} (void $\ast$arg)
+\item 
+void \hyperlink{wifi__module_8h_a8d21e82a9f9f0c9b1d6a0972300bfa1c}{receive} (char $\ast$payload)
+\item 
+void \hyperlink{wifi__module_8h_a02fd73d861ef2e4aabb38c0c9ff82947}{init} ()
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+This is the header file for the file wifi\+\_\+module.\+cpp. 
+
+File\+: \hyperlink{wifi__module_8h}{wifi\+\_\+module.\+h} \begin{DoxyAuthor}{Author}
+Andrea Corna 
+
+Lorenzo Fontana 
+\end{DoxyAuthor}
+\begin{DoxyVersion}{Version}
+1.\+0 
+\end{DoxyVersion}
+\begin{DoxyDate}{Date}
+03/01/2014 
+\end{DoxyDate}
+
+
+\subsection{Function Documentation}
+\hypertarget{wifi__module_8h_a02fd73d861ef2e4aabb38c0c9ff82947}{\index{wifi\+\_\+module.\+h@{wifi\+\_\+module.\+h}!init@{init}}
+\index{init@{init}!wifi\+\_\+module.\+h@{wifi\+\_\+module.\+h}}
+\subsubsection[{init}]{\setlength{\rightskip}{0pt plus 5cm}void init (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{wifi__module_8h_a02fd73d861ef2e4aabb38c0c9ff82947}
+Function which setup G\+P\+I\+O led to debug, powers up the wireless module and set it into the recive mode. \hypertarget{wifi__module_8h_a8d21e82a9f9f0c9b1d6a0972300bfa1c}{\index{wifi\+\_\+module.\+h@{wifi\+\_\+module.\+h}!receive@{receive}}
+\index{receive@{receive}!wifi\+\_\+module.\+h@{wifi\+\_\+module.\+h}}
+\subsubsection[{receive}]{\setlength{\rightskip}{0pt plus 5cm}void receive (
+\begin{DoxyParamCaption}
+\item[{char $\ast$}]{payload}
+\end{DoxyParamCaption}
+)}}\label{wifi__module_8h_a8d21e82a9f9f0c9b1d6a0972300bfa1c}
+Function in order to receive data from module's buffer. 
+\begin{DoxyParams}{Parameters}
+{\em payload} & -\/ char array with size equals to 960 \\
+\hline
+\end{DoxyParams}
+\hypertarget{wifi__module_8h_a109ee7a32522677361c97e7d901b3b57}{\index{wifi\+\_\+module.\+h@{wifi\+\_\+module.\+h}!send@{send}}
+\index{send@{send}!wifi\+\_\+module.\+h@{wifi\+\_\+module.\+h}}
+\subsubsection[{send}]{\setlength{\rightskip}{0pt plus 5cm}void send (
+\begin{DoxyParamCaption}
+\item[{char $\ast$}]{payload}
+\end{DoxyParamCaption}
+)}}\label{wifi__module_8h_a109ee7a32522677361c97e7d901b3b57}
+Method created in order to send data with the wireless module. Max lenght of payload should be 32 bytes the other ones will be truncated. 
+\begin{DoxyParams}{Parameters}
+{\em payload} & -\/ payload to be sent \\
+\hline
+\end{DoxyParams}
+\hypertarget{wifi__module_8h_aef4acce00c99b0ef5cd99e5c8ab320d8}{\index{wifi\+\_\+module.\+h@{wifi\+\_\+module.\+h}!wifi\+\_\+receive@{wifi\+\_\+receive}}
+\index{wifi\+\_\+receive@{wifi\+\_\+receive}!wifi\+\_\+module.\+h@{wifi\+\_\+module.\+h}}
+\subsubsection[{wifi\+\_\+receive}]{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ wifi\+\_\+receive (
+\begin{DoxyParamCaption}
+\item[{void $\ast$}]{arg}
+\end{DoxyParamCaption}
+)}}\label{wifi__module_8h_aef4acce00c99b0ef5cd99e5c8ab320d8}
+Function executed by a thread in order to receive data from other boards. 
+\begin{DoxyParams}{Parameters}
+{\em arg} & -\/ useless parameter \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}
+\hypertarget{wifi__module_8h_af325b19e4cf08cbd6b8e61044a4ee871}{\index{wifi\+\_\+module.\+h@{wifi\+\_\+module.\+h}!wifi\+\_\+transmit@{wifi\+\_\+transmit}}
+\index{wifi\+\_\+transmit@{wifi\+\_\+transmit}!wifi\+\_\+module.\+h@{wifi\+\_\+module.\+h}}
+\subsubsection[{wifi\+\_\+transmit}]{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ wifi\+\_\+transmit (
+\begin{DoxyParamCaption}
+\item[{void $\ast$}]{arg}
+\end{DoxyParamCaption}
+)}}\label{wifi__module_8h_af325b19e4cf08cbd6b8e61044a4ee871}
+Function excutes by a thread in order to send data to other boards. 
+\begin{DoxyParams}{Parameters}
+{\em arg} & -\/ useless parameter \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+
+\end{DoxyReturn}

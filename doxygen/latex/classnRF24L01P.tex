@@ -1,0 +1,321 @@
+\hypertarget{classnRF24L01P}{\section{n\+R\+F24\+L01\+P Class Reference}
+\label{classnRF24L01P}\index{n\+R\+F24\+L01\+P@{n\+R\+F24\+L01\+P}}
+}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classnRF24L01P_a108264099d7fcbd79784e349d38ea74b}{n\+R\+F24\+L01\+P} ()
+\item 
+\hypertarget{classnRF24L01P_a4fc07a604cfc8248bd603dca58cec6c9}{{\bfseries n\+R\+F24\+L01\+P} (const \hyperlink{classnRF24L01P}{n\+R\+F24\+L01\+P} \&orig)}\label{classnRF24L01P_a4fc07a604cfc8248bd603dca58cec6c9}
+
+\item 
+virtual \hyperlink{classnRF24L01P_a18e685e841a2913134c831d8bb47f65c}{$\sim$n\+R\+F24\+L01\+P} ()
+\item 
+void \hyperlink{classnRF24L01P_a332330503d3db37c1c587e4ffc15c8a4}{power\+\_\+up} ()
+\item 
+void \hyperlink{classnRF24L01P_a44931f1ceb0e36589f61231d81d1c6cc}{power\+\_\+down} ()
+\item 
+void \hyperlink{classnRF24L01P_a008b0f101fcf7805444b7301797ec0cb}{set\+\_\+transmit\+\_\+mode} ()
+\item 
+void \hyperlink{classnRF24L01P_abd38cb7afd495a6a688eca0b09da681c}{set\+\_\+receive\+\_\+mode} ()
+\item 
+void \hyperlink{classnRF24L01P_a6eb8c98ca0a1623d59a54a86128ba8c2}{set\+\_\+crc\+\_\+width} (int width)
+\item 
+void \hyperlink{classnRF24L01P_ac98a4af9b12f59460ac7825df8d527ea}{set\+\_\+frequency} (int frequency)
+\item 
+void \hyperlink{classnRF24L01P_af0ffe56f76410aba9f6de58c03905d20}{set\+\_\+power\+\_\+output} (int power)
+\item 
+void \hyperlink{classnRF24L01P_ad40540239b3323a652b76584750fc1a4}{set\+\_\+air\+\_\+data\+\_\+rate} (int rate)
+\item 
+void \hyperlink{classnRF24L01P_abe98863bd13940a3c1a3609ec2892bfd}{set\+\_\+tx\+\_\+num\+\_\+bit} (int number)
+\item 
+void \hyperlink{classnRF24L01P_aa26c3a434e07f84c17fa4a85a6480dc0}{set\+\_\+transfer\+\_\+size} (int size)
+\item 
+int \hyperlink{classnRF24L01P_af9e82453635e4bfd5fdec9547c2eceaa}{get\+\_\+frequency} ()
+\item 
+int \hyperlink{classnRF24L01P_a96fdcb9be4d10d74693d7e368b8a0905}{get\+\_\+air\+\_\+data\+\_\+rate} ()
+\item 
+int \hyperlink{classnRF24L01P_addc00e66d2e39267db4867d1aec22b20}{get\+\_\+output\+\_\+power} ()
+\item 
+int \hyperlink{classnRF24L01P_ae30efc5f2832d8fee2e8ae9de336805b}{get\+\_\+crc\+\_\+width} ()
+\item 
+int \hyperlink{classnRF24L01P_ae7923050ab9dfc6b3cef7b729e63c0bd}{get\+\_\+register\+\_\+status} ()
+\item 
+int \hyperlink{classnRF24L01P_a7d5f282bc872e34b739b1ec9e49e076c}{get\+\_\+rpd\+\_\+status} ()
+\item 
+void \hyperlink{classnRF24L01P_a6488b9b862324ae4f7f190cb9e5f7324}{reset\+\_\+interrupt} ()
+\item 
+bool \hyperlink{classnRF24L01P_a80ef590da55e5a25c57e2ac6ddac5c10}{packet\+\_\+in\+\_\+pipe0} ()
+\item 
+void \hyperlink{classnRF24L01P_a802b2d488d690ee3e78fbcac968207a2}{disable\+\_\+auto\+\_\+ack} ()
+\item 
+void \hyperlink{classnRF24L01P_a05995cc72483f1378bf61edea66947bc}{disable\+\_\+auto\+\_\+retransmit} ()
+\item 
+void \hyperlink{classnRF24L01P_a496fb2bc103ebcd102ea12a9e6991e7b}{disable\+\_\+tx\+\_\+interrupt} ()
+\item 
+int \hyperlink{classnRF24L01P_a6a6b07d5907dc332ce45005649a6b068}{transmit} (int count, char $\ast$data)
+\item 
+int \hyperlink{classnRF24L01P_af4c3c5a81358c04afba1c6c45cb423ec}{receive} (char $\ast$data, int count)
+\end{DoxyCompactItemize}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classnRF24L01P_a108264099d7fcbd79784e349d38ea74b}{\index{n\+R\+F24\+L01\+P@{n\+R\+F24\+L01\+P}!n\+R\+F24\+L01\+P@{n\+R\+F24\+L01\+P}}
+\index{n\+R\+F24\+L01\+P@{n\+R\+F24\+L01\+P}!n\+R\+F24\+L01\+P@{n\+R\+F24\+L01\+P}}
+\subsubsection[{n\+R\+F24\+L01\+P}]{\setlength{\rightskip}{0pt plus 5cm}n\+R\+F24\+L01\+P\+::n\+R\+F24\+L01\+P (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classnRF24L01P_a108264099d7fcbd79784e349d38ea74b}
+Default constructor. In this the module is configured with default options \hypertarget{classnRF24L01P_a18e685e841a2913134c831d8bb47f65c}{\index{n\+R\+F24\+L01\+P@{n\+R\+F24\+L01\+P}!````~n\+R\+F24\+L01\+P@{$\sim$n\+R\+F24\+L01\+P}}
+\index{````~n\+R\+F24\+L01\+P@{$\sim$n\+R\+F24\+L01\+P}!n\+R\+F24\+L01\+P@{n\+R\+F24\+L01\+P}}
+\subsubsection[{$\sim$n\+R\+F24\+L01\+P}]{\setlength{\rightskip}{0pt plus 5cm}n\+R\+F24\+L01\+P\+::$\sim$n\+R\+F24\+L01\+P (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{classnRF24L01P_a18e685e841a2913134c831d8bb47f65c}
+Destructor 
+
+\subsection{Member Function Documentation}
+\hypertarget{classnRF24L01P_a802b2d488d690ee3e78fbcac968207a2}{\index{n\+R\+F24\+L01\+P@{n\+R\+F24\+L01\+P}!disable\+\_\+auto\+\_\+ack@{disable\+\_\+auto\+\_\+ack}}
+\index{disable\+\_\+auto\+\_\+ack@{disable\+\_\+auto\+\_\+ack}!n\+R\+F24\+L01\+P@{n\+R\+F24\+L01\+P}}
+\subsubsection[{disable\+\_\+auto\+\_\+ack}]{\setlength{\rightskip}{0pt plus 5cm}void n\+R\+F24\+L01\+P\+::disable\+\_\+auto\+\_\+ack (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classnRF24L01P_a802b2d488d690ee3e78fbcac968207a2}
+The function enables module to generate automatically transmission acknolegment. \hypertarget{classnRF24L01P_a05995cc72483f1378bf61edea66947bc}{\index{n\+R\+F24\+L01\+P@{n\+R\+F24\+L01\+P}!disable\+\_\+auto\+\_\+retransmit@{disable\+\_\+auto\+\_\+retransmit}}
+\index{disable\+\_\+auto\+\_\+retransmit@{disable\+\_\+auto\+\_\+retransmit}!n\+R\+F24\+L01\+P@{n\+R\+F24\+L01\+P}}
+\subsubsection[{disable\+\_\+auto\+\_\+retransmit}]{\setlength{\rightskip}{0pt plus 5cm}void n\+R\+F24\+L01\+P\+::disable\+\_\+auto\+\_\+retransmit (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classnRF24L01P_a05995cc72483f1378bf61edea66947bc}
+The function allowes module to transmit a packet only once time. \hypertarget{classnRF24L01P_a496fb2bc103ebcd102ea12a9e6991e7b}{\index{n\+R\+F24\+L01\+P@{n\+R\+F24\+L01\+P}!disable\+\_\+tx\+\_\+interrupt@{disable\+\_\+tx\+\_\+interrupt}}
+\index{disable\+\_\+tx\+\_\+interrupt@{disable\+\_\+tx\+\_\+interrupt}!n\+R\+F24\+L01\+P@{n\+R\+F24\+L01\+P}}
+\subsubsection[{disable\+\_\+tx\+\_\+interrupt}]{\setlength{\rightskip}{0pt plus 5cm}void n\+R\+F24\+L01\+P\+::disable\+\_\+tx\+\_\+interrupt (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classnRF24L01P_a496fb2bc103ebcd102ea12a9e6991e7b}
+The function deactives the tx interrupt generated by module \hypertarget{classnRF24L01P_a96fdcb9be4d10d74693d7e368b8a0905}{\index{n\+R\+F24\+L01\+P@{n\+R\+F24\+L01\+P}!get\+\_\+air\+\_\+data\+\_\+rate@{get\+\_\+air\+\_\+data\+\_\+rate}}
+\index{get\+\_\+air\+\_\+data\+\_\+rate@{get\+\_\+air\+\_\+data\+\_\+rate}!n\+R\+F24\+L01\+P@{n\+R\+F24\+L01\+P}}
+\subsubsection[{get\+\_\+air\+\_\+data\+\_\+rate}]{\setlength{\rightskip}{0pt plus 5cm}int n\+R\+F24\+L01\+P\+::get\+\_\+air\+\_\+data\+\_\+rate (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classnRF24L01P_a96fdcb9be4d10d74693d7e368b8a0905}
+The function returns the data rate value configured in the module. \begin{DoxyReturn}{Returns}
+250 if it's 250 K\+B\+P\+S, 1000 if it's 1 M\+B\+P\+S, 2000 if it's 2 M\+B\+P\+S 
+\end{DoxyReturn}
+\hypertarget{classnRF24L01P_ae30efc5f2832d8fee2e8ae9de336805b}{\index{n\+R\+F24\+L01\+P@{n\+R\+F24\+L01\+P}!get\+\_\+crc\+\_\+width@{get\+\_\+crc\+\_\+width}}
+\index{get\+\_\+crc\+\_\+width@{get\+\_\+crc\+\_\+width}!n\+R\+F24\+L01\+P@{n\+R\+F24\+L01\+P}}
+\subsubsection[{get\+\_\+crc\+\_\+width}]{\setlength{\rightskip}{0pt plus 5cm}int n\+R\+F24\+L01\+P\+::get\+\_\+crc\+\_\+width (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classnRF24L01P_ae30efc5f2832d8fee2e8ae9de336805b}
+The function returns the crc width value configured in the module \begin{DoxyReturn}{Returns}
+0 if C\+R\+C = 0 , 8 if C\+R\+C is 8 bits, 16 if C\+R\+C is 16 bits 
+\end{DoxyReturn}
+\hypertarget{classnRF24L01P_af9e82453635e4bfd5fdec9547c2eceaa}{\index{n\+R\+F24\+L01\+P@{n\+R\+F24\+L01\+P}!get\+\_\+frequency@{get\+\_\+frequency}}
+\index{get\+\_\+frequency@{get\+\_\+frequency}!n\+R\+F24\+L01\+P@{n\+R\+F24\+L01\+P}}
+\subsubsection[{get\+\_\+frequency}]{\setlength{\rightskip}{0pt plus 5cm}int n\+R\+F24\+L01\+P\+::get\+\_\+frequency (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classnRF24L01P_af9e82453635e4bfd5fdec9547c2eceaa}
+The function returns the frequency value configured in the module \begin{DoxyReturn}{Returns}
+a value between 2400 and 2525 M\+Hz 
+\end{DoxyReturn}
+\hypertarget{classnRF24L01P_addc00e66d2e39267db4867d1aec22b20}{\index{n\+R\+F24\+L01\+P@{n\+R\+F24\+L01\+P}!get\+\_\+output\+\_\+power@{get\+\_\+output\+\_\+power}}
+\index{get\+\_\+output\+\_\+power@{get\+\_\+output\+\_\+power}!n\+R\+F24\+L01\+P@{n\+R\+F24\+L01\+P}}
+\subsubsection[{get\+\_\+output\+\_\+power}]{\setlength{\rightskip}{0pt plus 5cm}int n\+R\+F24\+L01\+P\+::get\+\_\+output\+\_\+power (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classnRF24L01P_addc00e66d2e39267db4867d1aec22b20}
+The function returns the output power value configured in the module \begin{DoxyReturn}{Returns}
+0 if it's 0 d\+B, -\/6 if it's -\/6 d\+B, -\/12 if it's -\/12 d\+B,, -\/18 if it's -\/18 d\+B 
+\end{DoxyReturn}
+\hypertarget{classnRF24L01P_ae7923050ab9dfc6b3cef7b729e63c0bd}{\index{n\+R\+F24\+L01\+P@{n\+R\+F24\+L01\+P}!get\+\_\+register\+\_\+status@{get\+\_\+register\+\_\+status}}
+\index{get\+\_\+register\+\_\+status@{get\+\_\+register\+\_\+status}!n\+R\+F24\+L01\+P@{n\+R\+F24\+L01\+P}}
+\subsubsection[{get\+\_\+register\+\_\+status}]{\setlength{\rightskip}{0pt plus 5cm}int n\+R\+F24\+L01\+P\+::get\+\_\+register\+\_\+status (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classnRF24L01P_ae7923050ab9dfc6b3cef7b729e63c0bd}
+Function to get the status register \begin{DoxyReturn}{Returns}
+the value of the status register 
+\end{DoxyReturn}
+\hypertarget{classnRF24L01P_a7d5f282bc872e34b739b1ec9e49e076c}{\index{n\+R\+F24\+L01\+P@{n\+R\+F24\+L01\+P}!get\+\_\+rpd\+\_\+status@{get\+\_\+rpd\+\_\+status}}
+\index{get\+\_\+rpd\+\_\+status@{get\+\_\+rpd\+\_\+status}!n\+R\+F24\+L01\+P@{n\+R\+F24\+L01\+P}}
+\subsubsection[{get\+\_\+rpd\+\_\+status}]{\setlength{\rightskip}{0pt plus 5cm}int n\+R\+F24\+L01\+P\+::get\+\_\+rpd\+\_\+status (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classnRF24L01P_a7d5f282bc872e34b739b1ec9e49e076c}
+The function returns the rpd bit \begin{DoxyReturn}{Returns}
+-\/ rpd bit value 
+\end{DoxyReturn}
+\hypertarget{classnRF24L01P_a80ef590da55e5a25c57e2ac6ddac5c10}{\index{n\+R\+F24\+L01\+P@{n\+R\+F24\+L01\+P}!packet\+\_\+in\+\_\+pipe0@{packet\+\_\+in\+\_\+pipe0}}
+\index{packet\+\_\+in\+\_\+pipe0@{packet\+\_\+in\+\_\+pipe0}!n\+R\+F24\+L01\+P@{n\+R\+F24\+L01\+P}}
+\subsubsection[{packet\+\_\+in\+\_\+pipe0}]{\setlength{\rightskip}{0pt plus 5cm}bool n\+R\+F24\+L01\+P\+::packet\+\_\+in\+\_\+pipe0 (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classnRF24L01P_a80ef590da55e5a25c57e2ac6ddac5c10}
+The function checks if there are some packets in the pipe 0 of the rx module buffer. \begin{DoxyReturn}{Returns}
+true if there is at least one packet, otherwise false 
+\end{DoxyReturn}
+\hypertarget{classnRF24L01P_a44931f1ceb0e36589f61231d81d1c6cc}{\index{n\+R\+F24\+L01\+P@{n\+R\+F24\+L01\+P}!power\+\_\+down@{power\+\_\+down}}
+\index{power\+\_\+down@{power\+\_\+down}!n\+R\+F24\+L01\+P@{n\+R\+F24\+L01\+P}}
+\subsubsection[{power\+\_\+down}]{\setlength{\rightskip}{0pt plus 5cm}void n\+R\+F24\+L01\+P\+::power\+\_\+down (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classnRF24L01P_a44931f1ceb0e36589f61231d81d1c6cc}
+The function powers down the module \hypertarget{classnRF24L01P_a332330503d3db37c1c587e4ffc15c8a4}{\index{n\+R\+F24\+L01\+P@{n\+R\+F24\+L01\+P}!power\+\_\+up@{power\+\_\+up}}
+\index{power\+\_\+up@{power\+\_\+up}!n\+R\+F24\+L01\+P@{n\+R\+F24\+L01\+P}}
+\subsubsection[{power\+\_\+up}]{\setlength{\rightskip}{0pt plus 5cm}void n\+R\+F24\+L01\+P\+::power\+\_\+up (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classnRF24L01P_a332330503d3db37c1c587e4ffc15c8a4}
+The function powers up the module and flushes tx queue
+
+power up the module \hypertarget{classnRF24L01P_af4c3c5a81358c04afba1c6c45cb423ec}{\index{n\+R\+F24\+L01\+P@{n\+R\+F24\+L01\+P}!receive@{receive}}
+\index{receive@{receive}!n\+R\+F24\+L01\+P@{n\+R\+F24\+L01\+P}}
+\subsubsection[{receive}]{\setlength{\rightskip}{0pt plus 5cm}int n\+R\+F24\+L01\+P\+::receive (
+\begin{DoxyParamCaption}
+\item[{char $\ast$}]{data, }
+\item[{int}]{count}
+\end{DoxyParamCaption}
+)}}\label{classnRF24L01P_af4c3c5a81358c04afba1c6c45cb423ec}
+The function allowes to receive data from the \hyperlink{classnRF24L01P}{n\+R\+F24\+L01\+P} module 
+\begin{DoxyParams}{Parameters}
+{\em data} & variable where to store information received by module \\
+\hline
+{\em count} & number of characters we want to read \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+-\/1 if the module isn't in receive mode, 0 if count is $<$= 0, otherwise the number of chacarters read. 
+\end{DoxyReturn}
+\hypertarget{classnRF24L01P_a6488b9b862324ae4f7f190cb9e5f7324}{\index{n\+R\+F24\+L01\+P@{n\+R\+F24\+L01\+P}!reset\+\_\+interrupt@{reset\+\_\+interrupt}}
+\index{reset\+\_\+interrupt@{reset\+\_\+interrupt}!n\+R\+F24\+L01\+P@{n\+R\+F24\+L01\+P}}
+\subsubsection[{reset\+\_\+interrupt}]{\setlength{\rightskip}{0pt plus 5cm}void n\+R\+F24\+L01\+P\+::reset\+\_\+interrupt (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classnRF24L01P_a6488b9b862324ae4f7f190cb9e5f7324}
+T\+He function resets the rx interrupt bit \hypertarget{classnRF24L01P_ad40540239b3323a652b76584750fc1a4}{\index{n\+R\+F24\+L01\+P@{n\+R\+F24\+L01\+P}!set\+\_\+air\+\_\+data\+\_\+rate@{set\+\_\+air\+\_\+data\+\_\+rate}}
+\index{set\+\_\+air\+\_\+data\+\_\+rate@{set\+\_\+air\+\_\+data\+\_\+rate}!n\+R\+F24\+L01\+P@{n\+R\+F24\+L01\+P}}
+\subsubsection[{set\+\_\+air\+\_\+data\+\_\+rate}]{\setlength{\rightskip}{0pt plus 5cm}void n\+R\+F24\+L01\+P\+::set\+\_\+air\+\_\+data\+\_\+rate (
+\begin{DoxyParamCaption}
+\item[{int}]{rate}
+\end{DoxyParamCaption}
+)}}\label{classnRF24L01P_ad40540239b3323a652b76584750fc1a4}
+The function sets the data rate 
+\begin{DoxyParams}{Parameters}
+{\em rate} & -\/ value 250, 1000 or 2000 \\
+\hline
+\end{DoxyParams}
+\hypertarget{classnRF24L01P_a6eb8c98ca0a1623d59a54a86128ba8c2}{\index{n\+R\+F24\+L01\+P@{n\+R\+F24\+L01\+P}!set\+\_\+crc\+\_\+width@{set\+\_\+crc\+\_\+width}}
+\index{set\+\_\+crc\+\_\+width@{set\+\_\+crc\+\_\+width}!n\+R\+F24\+L01\+P@{n\+R\+F24\+L01\+P}}
+\subsubsection[{set\+\_\+crc\+\_\+width}]{\setlength{\rightskip}{0pt plus 5cm}void n\+R\+F24\+L01\+P\+::set\+\_\+crc\+\_\+width (
+\begin{DoxyParamCaption}
+\item[{int}]{width}
+\end{DoxyParamCaption}
+)}}\label{classnRF24L01P_a6eb8c98ca0a1623d59a54a86128ba8c2}
+The function configures the crc width 
+\begin{DoxyParams}{Parameters}
+{\em width} & -\/ width of the crc. Correct Values\+: 0, 8 or 16 \\
+\hline
+\end{DoxyParams}
+\hypertarget{classnRF24L01P_ac98a4af9b12f59460ac7825df8d527ea}{\index{n\+R\+F24\+L01\+P@{n\+R\+F24\+L01\+P}!set\+\_\+frequency@{set\+\_\+frequency}}
+\index{set\+\_\+frequency@{set\+\_\+frequency}!n\+R\+F24\+L01\+P@{n\+R\+F24\+L01\+P}}
+\subsubsection[{set\+\_\+frequency}]{\setlength{\rightskip}{0pt plus 5cm}void n\+R\+F24\+L01\+P\+::set\+\_\+frequency (
+\begin{DoxyParamCaption}
+\item[{int}]{frequency}
+\end{DoxyParamCaption}
+)}}\label{classnRF24L01P_ac98a4af9b12f59460ac7825df8d527ea}
+The function sets the frequency of the channel used by the module 
+\begin{DoxyParams}{Parameters}
+{\em frequency} & -\/ frequency value, between 2400 and 2525 \\
+\hline
+\end{DoxyParams}
+\hypertarget{classnRF24L01P_af0ffe56f76410aba9f6de58c03905d20}{\index{n\+R\+F24\+L01\+P@{n\+R\+F24\+L01\+P}!set\+\_\+power\+\_\+output@{set\+\_\+power\+\_\+output}}
+\index{set\+\_\+power\+\_\+output@{set\+\_\+power\+\_\+output}!n\+R\+F24\+L01\+P@{n\+R\+F24\+L01\+P}}
+\subsubsection[{set\+\_\+power\+\_\+output}]{\setlength{\rightskip}{0pt plus 5cm}void n\+R\+F24\+L01\+P\+::set\+\_\+power\+\_\+output (
+\begin{DoxyParamCaption}
+\item[{int}]{power}
+\end{DoxyParamCaption}
+)}}\label{classnRF24L01P_af0ffe56f76410aba9f6de58c03905d20}
+The function sets the signal power output 
+\begin{DoxyParams}{Parameters}
+{\em power} & -\/ value 0, -\/6, -\/12, -\/18 \\
+\hline
+\end{DoxyParams}
+\hypertarget{classnRF24L01P_abd38cb7afd495a6a688eca0b09da681c}{\index{n\+R\+F24\+L01\+P@{n\+R\+F24\+L01\+P}!set\+\_\+receive\+\_\+mode@{set\+\_\+receive\+\_\+mode}}
+\index{set\+\_\+receive\+\_\+mode@{set\+\_\+receive\+\_\+mode}!n\+R\+F24\+L01\+P@{n\+R\+F24\+L01\+P}}
+\subsubsection[{set\+\_\+receive\+\_\+mode}]{\setlength{\rightskip}{0pt plus 5cm}void n\+R\+F24\+L01\+P\+::set\+\_\+receive\+\_\+mode (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classnRF24L01P_abd38cb7afd495a6a688eca0b09da681c}
+The function sets the module into receive mode \hypertarget{classnRF24L01P_aa26c3a434e07f84c17fa4a85a6480dc0}{\index{n\+R\+F24\+L01\+P@{n\+R\+F24\+L01\+P}!set\+\_\+transfer\+\_\+size@{set\+\_\+transfer\+\_\+size}}
+\index{set\+\_\+transfer\+\_\+size@{set\+\_\+transfer\+\_\+size}!n\+R\+F24\+L01\+P@{n\+R\+F24\+L01\+P}}
+\subsubsection[{set\+\_\+transfer\+\_\+size}]{\setlength{\rightskip}{0pt plus 5cm}void n\+R\+F24\+L01\+P\+::set\+\_\+transfer\+\_\+size (
+\begin{DoxyParamCaption}
+\item[{int}]{size}
+\end{DoxyParamCaption}
+)}}\label{classnRF24L01P_aa26c3a434e07f84c17fa4a85a6480dc0}
+The function sets the dimension of the payload to be sent to other boards 
+\begin{DoxyParams}{Parameters}
+{\em size} & -\/ dimension of the payload, value between 0 and 32 \\
+\hline
+\end{DoxyParams}
+\hypertarget{classnRF24L01P_a008b0f101fcf7805444b7301797ec0cb}{\index{n\+R\+F24\+L01\+P@{n\+R\+F24\+L01\+P}!set\+\_\+transmit\+\_\+mode@{set\+\_\+transmit\+\_\+mode}}
+\index{set\+\_\+transmit\+\_\+mode@{set\+\_\+transmit\+\_\+mode}!n\+R\+F24\+L01\+P@{n\+R\+F24\+L01\+P}}
+\subsubsection[{set\+\_\+transmit\+\_\+mode}]{\setlength{\rightskip}{0pt plus 5cm}void n\+R\+F24\+L01\+P\+::set\+\_\+transmit\+\_\+mode (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classnRF24L01P_a008b0f101fcf7805444b7301797ec0cb}
+The function sets the module into transmit mode \hypertarget{classnRF24L01P_abe98863bd13940a3c1a3609ec2892bfd}{\index{n\+R\+F24\+L01\+P@{n\+R\+F24\+L01\+P}!set\+\_\+tx\+\_\+num\+\_\+bit@{set\+\_\+tx\+\_\+num\+\_\+bit}}
+\index{set\+\_\+tx\+\_\+num\+\_\+bit@{set\+\_\+tx\+\_\+num\+\_\+bit}!n\+R\+F24\+L01\+P@{n\+R\+F24\+L01\+P}}
+\subsubsection[{set\+\_\+tx\+\_\+num\+\_\+bit}]{\setlength{\rightskip}{0pt plus 5cm}void n\+R\+F24\+L01\+P\+::set\+\_\+tx\+\_\+num\+\_\+bit (
+\begin{DoxyParamCaption}
+\item[{int}]{number}
+\end{DoxyParamCaption}
+)}}\label{classnRF24L01P_abe98863bd13940a3c1a3609ec2892bfd}
+The function sets the address field width 
+\begin{DoxyParams}{Parameters}
+{\em number} & -\/ possible values 3, 4 or 5 \\
+\hline
+\end{DoxyParams}
+\hypertarget{classnRF24L01P_a6a6b07d5907dc332ce45005649a6b068}{\index{n\+R\+F24\+L01\+P@{n\+R\+F24\+L01\+P}!transmit@{transmit}}
+\index{transmit@{transmit}!n\+R\+F24\+L01\+P@{n\+R\+F24\+L01\+P}}
+\subsubsection[{transmit}]{\setlength{\rightskip}{0pt plus 5cm}int n\+R\+F24\+L01\+P\+::transmit (
+\begin{DoxyParamCaption}
+\item[{int}]{count, }
+\item[{char $\ast$}]{data}
+\end{DoxyParamCaption}
+)}}\label{classnRF24L01P_a6a6b07d5907dc332ce45005649a6b068}
+function allowes to transmit a data with the \hyperlink{classnRF24L01P}{n\+R\+F24\+L01\+P} module 
+\begin{DoxyParams}{Parameters}
+{\em count} & dimension of data \\
+\hline
+{\em data} & data to send \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+number of bits sent 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+rtos2013/nrf24l01p/n\+R\+F24\+L01\+P.\+h\item 
+rtos2013/nrf24l01p/n\+R\+F24\+L01\+P.\+cpp\end{DoxyCompactItemize}
