@@ -1,0 +1,358 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                                   %
+%                             Report                                %
+%                                                                   %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[a4paper,12pt,oneside]{report}
+\usepackage[english]{babel}
+
+\topmargin 0cm 
+\headsep 1cm 
+\headheight 0.6cm
+\textwidth 14.6cm
+\textheight 21.8cm
+\evensidemargin 1cm 
+\oddsidemargin 1cm
+ 
+ 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                             Package                               %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Symbols
+\usepackage{amsmath}                       
+\usepackage{textcomp}                      
+\usepackage[mathscr]{euscript}
+
+% Figure
+\usepackage{epsfig}
+\usepackage{graphicx}
+\usepackage{subfigure}
+
+% Headers
+\usepackage{fancyhdr}
+
+% Encoding characters
+\usepackage[ansinew]{inputenc}
+\usepackage[OT1]{fontenc}
+
+% Captions
+\usepackage[footnotesize,hang,bf]{caption2}
+
+% Link
+\usepackage[pdftex]{hyperref} 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                            Style                                  %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Link in pdf
+\hypersetup{%
+    bookmarks=true,%
+    colorlinks=false,%
+    citebordercolor={0 1 0},%
+    linkbordercolor={1 0 0},%
+    urlbordercolor={0 1 0},%
+}       
+
+
+% Style
+\fancyhead[L]{\chaptername \thechapter}
+\fancyhead[LO]{\thesection} \fancyhead[RO]{\sectionmark}
+\lhead{\slshape Ch. \thechapter}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%              Configuration and new command                        %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% New lenght setting
+\newlength{\defbaselineskip}
+\setlength{\defbaselineskip}{\baselineskip}
+
+% Set \baselineskip as a multiple of \defbaselineskip
+\newcommand{\setlinespacing}[1]%
+           {\setlength{\baselineskip}{#1 \defbaselineskip}}
+
+% Style of captions images
+\renewcommand{\captionfont}{%
+	\normalfont \sffamily \slshape \footnotesize
+}
+
+% Section instead of Chapter
+\addto\captionsitalian{\renewcommand{\chaptername}{Section}}
+
+% Image insert
+\newcommand{\imageinsert}[3]{
+\begin{center}
+\includegraphics[width=#3\columnwidth]{images/#1}
+\captionof{figure}{#2}
+\end{center}}
+
+% Log source code
+\newenvironment{logs}{\begin{flushleft}\begin{ttfamily}\scriptsize\setlinespacing{1}}{\end{ttfamily}\end{flushleft}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                         Document                                  %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{document}
+
+\thispagestyle{empty}
+\enlargethispage{60mm}
+\begin{center}
+\Large{\textsc{Politecnico di Milano}}\\
+\large{V Faculty of Engineering}\\
+\large{MSc in Computer Engigneering}\\
+\large{School of Industrial Engineering and Information Engineering}\\
+\vspace{30mm}
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=50mm]{images/logo_poli.png}
+\end{center}
+\end{figure}
+\vspace{15mm}
+
+\begin{LARGE}
+\textbf{PROJECT RTOS}
+\end{LARGE}
+\vspace{30mm}
+
+\begin{flushright}
+\begin{tabular}{l l }
+Report of RTOS: & \\
+Omar Scotti & Matr. 798854 \\
+Diego Rondelli & Matr. 817108\\
+\end{tabular}
+\end{flushright}
+\vspace{30mm}
+{\large{Academic Year 2013-2014}}
+\end{center}
+
+\clearpage
+\newpage
+
+\setlinespacing{1.5}
+
+\pagenumbering{Roman}
+
+\tableofcontents
+\newpage
+\clearpage
+
+\listoffigures
+\clearpage
+
+\pagestyle{fancy} 
+\headsep=40pt 
+\lhead{} 
+\rhead{\slshape \leftmark} 
+\cfoot{\thepage}
+
+\include{abstract}
+\pagenumbering{arabic}
+
+\chapter{\textit{Introduction}}
+
+The aim of the project is to prototipe a step counter using prototyping tools, 
+as is normaly done for real commercial products.\\
+For the project we used a developement board, the STM32F4 Discovery, 
+and a real time operative system for embedded system, Miosix, that is developed
+at Politecnico di Milano.\\
+The project is also been extended with the work of other two groups; this work
+of integration bring to the product social wireless and audio feedback functions.
+
+\newpage{}
+
+
+\chapter{\textit{Tools}}
+
+
+\section{Board}
+
+For the project developement we used STM32F4 Discovery, made by STMicroelectronics, 
+provides integrated hardware pheripheral and a great number of customizable GPIO.\\
+To develope the step counter we used:
+\begin{itemize}
+\item Microcontroller STM32F407VGT6 based on ARM Cortex
+M4F architecture; it have 192KB of RAM memory, 1MB of flash memory ed work
+at a frequency of 168MHz.
+\item ST LIS302DL 3-axis accelerometer with a variable range between \textpm{}2g/\textpm{}8g,
+made with MEMS technology.
+\item BUS SPI for the comunication between microcontroller and accelerometer.
+\end{itemize}
+
+
+\subsection{Accelerometer ST LIS302DL}
+
+To reveal a step we need to know the user's movement.\\
+To do this we used the accelerometer ST LIS302DL, embedded on the board.\\
+The accelerometer uses SPI BUS to interface with the microcontroller.\\
+\imageinsert{accellerometer.jpg}{Accellerometer}{0.8}
+The accelerometer is made with MEMS technology and have different registers, configurable by the user,
+to adapt the functions of the peripheral for the application in wich it will be used; 
+the main customizable features allow to:
+\begin{itemize}
+\item enable or disable an axe
+\item change the maximum readed acceleration from \textpm{}2g to \textpm{}8g;
+Increasing the maximum readed acceleration reduces the sensibility; vice versa, reducing the 
+maximum acceleration increases the sensibility.
+\end{itemize}
+
+
+\subsection{SPI BUS}
+
+SPI BUS allows the comunication between microcontroller and accelerometer.
+SPI is managed by microcontroller with two internal register,
+SPI\_CTRLREG1 and SPI\_CTRLREG2; there is also a third register,
+SPI\_SR, that shows the SPI status.\\
+Editing this registers the behaviour of the SPI can be adapted to interface with the peripherals connected to it.\\
+To ensure the communication between the micro controller and the accelerometer we needed to develop a custom driver
+for the SPI. This driver provides two main functionality:
+\begin{itemize}
+\item read from an address
+\item write at an address
+\end{itemize}
+The read is made by three phases:
+\begin{enumerate}
+\item An 8-bit burst in sent on SPI; the first bit
+identify a multiple operation (in this case the peripheral auto-increment the read address), the second bit identify a read operation,
+and the remaining six bits contain the address were the read have to be performed.
+\item An 8-bit burst with only 0 is sent on SPI;
+In this way we can control the signal on the SPI during the operation.
+\item The received burst is saved into the buffer provided by the function caller.
+\end{enumerate}
+Write is made by three phases:
+\begin{enumerate}
+\item An 8-bit burst in sent on SPI; the first bit
+identify a multiple operation (in this case the peripheral auto-increment the read address), the second bit identify a write operation,
+and the remaining six bits contain the address were the write have to be performed.
+\item The 8-bit burst that have to be written is sent on SPI
+\item The burst sent by the peripheral is read to ensure that the operation went good.
+\end{enumerate}
+
+\section{Miosix}
+
+Miosix is a real time operative system released under GNU
+Public License, developed at Politecnico di Milano.\\
+It offers full compatibility with the board and has full support to 
+a C/C++ and Miosix library; this functions facilitated the modular development of the project
+and the integration with other groups.
+
+
+\section{GIT}
+
+The synchronisation between the group members is made using Git,
+a distributed version control System, released under GPL licence.\\
+To ensure synchronisation between team members and to show the state of the project to 
+the tutors we used github, an on-line repository.\\
+The branch were the code is published on the tutors' repository is grp13.
+
+\newpage{}
+
+\chapter{\textit{Code}}
+
+
+\section{Task Division}
+
+Thanks to the functionality offered  by Miosix we were able to develop two thread to manage the task of the project.\\
+The found task are:
+\begin{enumerate}
+\item Pedometer, that reads accelerometer data and identifies user steps .
+\item Statistics, that executes computations to calculate distance travelled and activity time 
+(divided by walk, run and stop time).
+\end{enumerate}
+Task division reflects the thread division of the project;
+there is also a third thread (main thread) that only creates the other two.\\
+In the image below you can see the C++ classes of the project.
+\imageinsert{classDiagram.jpg}{Class Diagram}{0.5}
+
+\section{Pedometer}
+
+The task pedometer uses classes LIS302DL, Pedometer and Utility;
+The class LIS302DL is responsible for receiving data from the SPI and configuring the accelerometer for operation. \\
+Once received, these data are processed by the class Pedometer,
+which is also concerned to filter the data and to check whether
+the received data correspond to a step. \\
+This type of operation is made by the private method stepCounter()
+in which is performed the recognition algorithm.
+\begin {enumerate}
+\item The values read from the accelerometer along x, y and z are filtered,
+calculating a delta as the average of the last four values minus
+the average of the last sixteen values;
+\item Now we have to calculate the acceleration as the root of the sum of squares of the
+three delta, previously defined
+\item Sets the LIMIT, to support the dynamic threshold, so
+there is the possibility to distinguish between a situation of walking
+and a situation of running
+\item We now have two situations of movement, the first one in which the LIMIT
+is exceeded and the second one, that is the pause situation, in which it returns to below the LIMIT.
+This allows to distinguish the peak acceleration from possible
+noise
+\item There is also an additional check to verify that the slope of
+the board has not undergone remarkable changes during the step, this is 
+to avoid to calculate some oscillations or some movements of the pedometer 
+as steps.
+\item The step is calculated only in the case where the acceleration is sufficiently high
+and the variables x, y and z are within a certain range
+\end{enumerate}
+\imageinsert{pedometer.jpg}{Pedometer Alghoritm}{0.5}
+
+\section{Statistics}
+
+Statistics task uses Statistics class to compute the statistics 
+of the training and Utility class to debugging purpose.\\
+At first oldSteps is initialized to 0; every two seconds the task reads the actual step count and compute the steps in last 2 seconds.\\
+With this value is possible to make an estimation of the average speed in last two seconds, according to the value in the table.
+
+\imageinsert{statistics.jpg}{Average speed based on number of steps in last 2 seconds}{0.5}
+
+With the average speed is possible to distinguish walk from run, to increment time counter (divided by walk, run and stop time) and travelled distance.
+
+
+\section{Synchronization}
+
+The two thread works on different variables, so it's not necessary use synchronisation 
+mechanism. It's necessary sleep the thread to ensure the correct sampling frequency.\\
+Pedometer thread samples accelerometer data at 50Hz, statistics thread samples steps travelled by the user at 0.5Hz. 
+
+\section{Code Size}
+
+In the picture below it's shown the synthetic size of Miosix only, Miosix and the pedometer project and Miosix with the full integrated project.\\
+
+\imageinsert{binaryElf.jpg}{Binary size of the project}{0.7}
+
+The big difference between ElfPedometer and ElfComplete .text part is caused by the audio track saved into the flash memory.
+
+In the picture below it's shown the detailed size of Pedometer project with Miosix
+
+\imageinsert{elf.jpg}{Detailed size of code}{0.7}
+
+
+\chapter{\textit{Integration}}
+
+
+We extended our project with other two modules, audio feedback and social wireless.\\
+The integration is done performing a merge into branch grp63 with the work of grp13, grp31 and grp63.
+
+
+\section{Audio Feedback}
+
+To integrate with audio feedback is used the function play\_n\_of\_steps(), called every 50 steps.\\
+It is also used the functions victory\_Song() and looser\_Song(); this two functions are called based on the result of the comparison with steps read from another pedometer.\\
+All this three function are executed on a new thread to ensure the correct sampling frequency of the pedometer module. 
+
+
+\section{Social Wireless}
+
+For the integration with social wireless module we expose two functions:
+\begin{itemize}
+\item int getSteps()
+\item void compareSteps(int otherSteps)
+\end{itemize}
+getSteps() returns actual travelled steps.\\
+compareSteps(int otherSteps) has as input the steps number that have to be compared with user's steps and plays a winner or looser sound based on the result of the comparison.\\
+Social wireless module uses the function getSteps to read the information that is broadcast, and compareSteps when an information from another board is read.
+\end{document}
