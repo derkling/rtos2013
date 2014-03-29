@@ -729,6 +729,13 @@ Per rendere più semplice il codice questo è stato pensato affinchè si evitass
  ma sono in trasmissione ) .
 \end_layout
 
+\begin_layout Standard
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
 \begin_layout Section
 Descrizione Classi
 \end_layout
@@ -1269,6 +1276,13 @@ end{itemize}
 
 \end_layout
 
+\begin_layout Standard
+\begin_inset Newpage newpage
+\end_inset
+
+
+\end_layout
+
 \begin_layout Section
 Threads e Sincronizzazione
 \end_layout
@@ -1436,6 +1450,13 @@ Schema generale
 
 \end_layout
 
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Newpage newpage
 \end_inset
 
 
