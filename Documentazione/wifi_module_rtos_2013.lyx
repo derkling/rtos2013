@@ -147,52 +147,7 @@ centering
 
 \series bold
 \size giant
-INTEGRAZIONE MODULO
-\begin_inset space ~
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset space ~
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\align center
-
-\series bold
-\size giant
-WI-FI CON
-\begin_inset space ~
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset space ~
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\align center
-
-\series bold
-\size giant
-STM32_DISCOVERY
-\end_layout
-
-\begin_layout Standard
-\begin_inset space ~
-\end_inset
-
-
+SOCIAL WIRELESS - STM32F4
 \end_layout
 
 \begin_layout Standard
@@ -251,14 +206,17 @@ Introduzione
 \end_layout
 
 \begin_layout Standard
-Lo scopo del progetto è quello di sviluppare codice che permetta l'integrazione
- tra la board STM32F4_Discovery e il modulo wi-fi NRF24L01, e successivamente
- integrare la board con altri moduli così da poter sfruttare la comunicazione
- wireless implementata.
+Lo scopo principale del progetto è quello di sviluppare un driver che permetta
+ di utilizzare il transceiver wi-fi NRF24L01P dalla board STM32F4_Discovery.
+ Una volta sviluppato tale modulo è prevista l'integrazione con i lavori
+ svolti dai colleghi per permettere l'utilizzo nel contesto voluto dalla
+ traccia.
+ ( comunicazione bidirezionale dei passi fatti e feedback audio tra due
+ dispostivi che si trovano nelle vicinanze )
 \end_layout
 
 \begin_layout Standard
-Nello specifico:
+I moduli integrati all'interno del nostro lavoro sono:
 \end_layout
 
 \begin_layout Standard
@@ -270,6 +228,45 @@ status open
 
 \backslash
 begin{itemize}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+    
+\backslash
+item 
+\backslash
+textbf{Wifi:}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+		
+\backslash
+begin{itemize}
+\end_layout
+
+\begin_layout Plain Layout
+
+			
+\backslash
+item  Thread che permette la comunicazione wifi tra due dispostivi vicini
+ 
+\end_layout
+
+\begin_layout Plain Layout
+
+		
+\backslash
+end{itemize}
 \end_layout
 
 \begin_layout Plain Layout
@@ -300,8 +297,12 @@ begin{itemize}
 
 			
 \backslash
-item Permette di inviare il numero di passi rilevati dal podometro ad un
- 					altra board tramite comunicazione wireless
+item  Thread che si occupa di rilevare
+\end_layout
+
+\begin_layout Plain Layout
+
+				   e contare i passi fatti
 \end_layout
 
 \begin_layout Plain Layout
@@ -335,9 +336,18 @@ begin{itemize}
 
 			
 \backslash
-item Una volta ricevuti i dati permette di capire, tramite segnale 				acustico,
- chi ha fatto più passi e chi meno tra le 2 board comunicanti.
- 				Inoltre permette anche di sapere il numero di passi effettuati
+item Libreria che permette di avere feedback audio
+\end_layout
+
+\begin_layout Plain Layout
+
+				  circa la vittoria o la sconfitta in base al numero di passi effettuati
+ ed 
+\end_layout
+
+\begin_layout Plain Layout
+
+				  una indicazione del numero di passi fatti fino a quel momento
 \end_layout
 
 \begin_layout Plain Layout
@@ -363,14 +373,8 @@ end{itemize}
 
 \end_layout
 
-\begin_layout Standard
-Sulla board è installato il sistema operativo miosix, il quale fornisce
- strumenti indispensabili come il bootloader e un environment di esecuzione
- per il C++.
-\end_layout
-
 \begin_layout Section
-Assunzioni e Strumenti utilizzati
+Note e Strumenti utilizzati
 \end_layout
 
 \begin_layout Standard
@@ -394,7 +398,7 @@ begin{itemize}
 \backslash
 item 
 \backslash
-textbf{Assunzioni:}
+textbf{Note:}
 \end_layout
 
 \begin_layout Plain Layout
@@ -412,8 +416,10 @@ begin{itemize}
 
 			
 \backslash
-item Entrabe le board possono sia ricevere che trasmettere, si è raggiunto
- questo obiettivo grazie all'uso di thread e la loro sincronizzazione
+item  Nel contesto dell'applicazione vengono trasmessi solo il numero di
+ passi effettuati, ragion per cui si è scelto di fissare il payload in modo
+ statico a 4 byte.
+ 
 \end_layout
 
 \begin_layout Plain Layout
@@ -438,33 +444,9 @@ begin{itemize}
 
 			
 \backslash
-item La trasmissione è stata pensata con un paylaod statico a 4 byte visto
- che l'unica dato possibile da trasmettere è il numero di passi intero
-\end_layout
-
-\begin_layout Plain Layout
-
-		
-\backslash
-end{itemize}
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\begin_layout Plain Layout
-
-		
-\backslash
-begin{itemize}
-\end_layout
-
-\begin_layout Plain Layout
-
-			
-\backslash
-item <<TODO - assunzioni sui metodi di integrazione>
+item Il thread di valutazione statistiche del modulo podometro non è stato
+ attivato dato che per il livello di integrazione fatto risultava superfluo
+ ( è possibile comunque attivarlo senza problemi )
 \end_layout
 
 \begin_layout Plain Layout
@@ -546,7 +528,7 @@ begin{itemize}
 
 			
 \backslash
-item Modulo wifi NRF24L01P prodotto da Nordic Semiconduc- tor©
+item Modulo wifi NRF24L01P prodotto da Nordic Semiconductor©
 \end_layout
 
 \begin_layout Plain Layout
@@ -658,7 +640,13 @@ end{itemize}
 \end_layout
 
 \begin_layout Section
-Funzionamento NRF24L01
+Funzionamento NRF24L01P
+\end_layout
+
+\begin_layout Standard
+Mostriamo in questa sezione l'automa a stati finiti che riassume le varie
+ fasi di lavoro del transceiver wifi, descrivendo successivamente come il
+ nostro codice si comporta rispetto a questo.
 \end_layout
 
 \begin_layout Standard
@@ -671,7 +659,7 @@ status open
 \begin_layout Plain Layout
 \begin_inset Graphics
 	filename img/Automa nRF24L01.png
-	scale 80
+	scale 60
 
 \end_inset
 
@@ -682,7 +670,7 @@ status open
 \begin_inset Caption
 
 \begin_layout Plain Layout
-Schema di funzionamento NRF24L01
+Schema di funzionamento NRF24L01P
 \end_layout
 
 \end_inset
@@ -700,39 +688,45 @@ Schema di funzionamento NRF24L01
 \end_layout
 
 \begin_layout Standard
-Il codice è stato strutturato in base allo schema sovrastante:
+Il codice è stato strutturato in questo modo: 
 \end_layout
 
 \begin_layout Itemize
-Passaggio da stato Power down a stato Standby I tramite funzone powerUp()
+Passaggio da stato Power down a stato Standby I tramite funzione 
+\emph on
+powerUp()
 \end_layout
 
 \begin_layout Itemize
-Passaggio da Stabdby I a RX mode tramite funzione setReceiveMode()
+Passaggio da Stabdby I a RX mode tramite funzione 
+\emph on
+setReceiveMode()
 \end_layout
 
 \begin_layout Itemize
-Passaggio da RX mode a TX mode passando da Standby I tramite funzione TrasmitDat
-a() che al suo interno invoca la funzione setTransmitMode()
+Passaggio da RX mode a TX mode passando da Standby I tramite funzione 
+\emph on
+TrasmitData()
+\emph default
+ che al suo interno invoca la funzione 
+\emph on
+setTransmitMode()
 \end_layout
 
 \begin_layout Itemize
-Passaggio da TX Mode a RX mode affidato sempre alla funzione TrasmitData(),
- la quale quado finisce attua un opportuna manipolazione dei bit al fine
- di riportare lo stato del modulo in RX mode passando da Standby I
+Il passaggio da TX Mode a RX mode viene affidato sempre alla funzione 
+\emph on
+TrasmitData()
+\emph default
+, la quale quando conclude la trasmissione si preoccupa di riportare lo
+ stato del modulo in RX mode passando da StandbyI
 \end_layout
 
 \begin_layout Standard
-Inoltre il codice è stato pensato affinchè si evitasse il passaggio allo
- stato Standby II che, come riportato nel reference manual di NRF24L01,
- risulta essere uno stato indesiderato.
-\end_layout
-
-\begin_layout Standard
-\begin_inset Newpage newpage
-\end_inset
-
-
+Per rendere più semplice il codice questo è stato pensato affinchè si evitasse
+ il passaggio allo stato Standby II che, come riportato nel reference manual
+ di NRF24L01P, risulta essere uno stato ibrido ( Non si ha niente da trasmettere
+ ma sono in trasmissione ) .
 \end_layout
 
 \begin_layout Section
@@ -740,13 +734,13 @@ Descrizione Classi
 \end_layout
 
 \begin_layout Standard
-Le varie classi del progetto sono state suddivise in cartelle, una per modulo,
- per rendere più comprensibile la struttura del progetto e di conseguenza
- renderla più navigabile.
-\end_layout
-
-\begin_layout Standard
-la suddivisione è la seguente:
+In questa sezione viene data una breve overview delle classi create, successivam
+ente verrà spiegato come i thread si sincronizzano per arrivare al risultato
+ descitto nell'introduzione.
+ Le varie classi sono state suddivise in cartelle, una per modulo, per rendere
+ più comprensibile la struttura del progetto e di conseguenza renderla più
+ navigabile.
+ La suddivisione è la seguente:
 \end_layout
 
 \begin_layout Itemize
@@ -761,23 +755,17 @@ Pedometer
 Speaker + suoni (cartella contenente i campioni dei suoni utilizzati)
 \end_layout
 
-\begin_layout Standard
-Per una spiegazione detagliata sull'implementazione delle varie funzioni
- si vedano i commenti interni al codice.
-\end_layout
-
-\begin_layout Standard
-Per invece una documentazione dettagliata dei due moduli integrati si vedano
- i documenti redatti dagli altri gruppi.
-\end_layout
-
 \begin_layout Subsection
 Wifi-Module
 \end_layout
 
 \begin_layout Standard
-Cartella contenente tutte le classi C++ utili al funzionamento del NRF24L01
- più alcuni file utili a scopi di debugging
+Contiene tutte le classi C++ per il funzionamento del transceiver NRF24L01P,
+ più alcuni file utili a scopi di debugging.
+ Nello sviluppo di questo modulo si è cercato di mantenere una linea molto
+ semplice ed intuitiva in modo da permettere ad eventuali sviluppatori futuri
+ di usare la classe con facilità.
+ ( Sono stati inseriti numerosi commenti nei passi più critici ) 
 \end_layout
 
 \begin_layout Standard
@@ -797,7 +785,7 @@ begin{itemize}
 \backslash
 item 
 \backslash
-textbf{NRF24L01:}
+textbf{NRF24L01P:}
 \end_layout
 
 \begin_layout Plain Layout
@@ -812,7 +800,9 @@ begin {itemize}
 			
 \backslash
 item classe contenente le funzioni strettamente legate al setup e alle operazion
-i per permettere la trasmissione dei dati wireless
+i per permettere la trasmissione dei dati wireless.
+ Nel file header sono state definite tutte le macro che permettono un utilizzo
+ user-friendly dei registri e delle istruzioni di configurazione.
 \end_layout
 
 \begin_layout Plain Layout
@@ -832,7 +822,9 @@ end{itemize}
 \backslash
 item 
 \backslash
-textbf{Spi:} classe necessaria per trasmettere i dati al modulo wifi
+textbf{Spi:} implementa un driver minimale per trasmettere i dati al modulo
+ wifi tramite l'interfaccia spi della board.
+ 
 \end_layout
 
 \begin_layout Plain Layout
@@ -930,8 +922,7 @@ begin {itemize}
 
 			
 \backslash
-item file C++ che quando eseguito compie un reset di tutti i registri della
- board.
+item binario che compie un reset di tutti i registri della board.
  Molto utile in fase di debug
 \end_layout
 
@@ -1007,11 +998,6 @@ Pedometer
 \end_layout
 
 \begin_layout Standard
-Modulo sviluppato dal gruppo Piscitello - Tacconelli, serve a tenere rilevare
- i passi efffettuati tramite accellerometro e algoritmo di <TODO nome cinese>>
-\end_layout
-
-\begin_layout Standard
 \begin_inset ERT
 status open
 
@@ -1043,7 +1029,8 @@ begin {itemize}
 			
 \backslash
 item classe contenente le funzioni che permettono il setup iniziale del
- podometro e la lettura dei dati rilevati
+ podometro e la lettura dei dati rilevati.
+ 
 \end_layout
 
 \begin_layout Plain Layout
@@ -1077,8 +1064,8 @@ begin {itemize}
 
 			
 \backslash
-item permette il setup corretto dell'accellerometro per la rivelazione dei
- movimenti sui 3 assi cartesiani
+item Si occupa del setup dell'accellerometro per la rivelazione dei movimenti
+ sui 3 assi cartesiani
 \end_layout
 
 \begin_layout Plain Layout
@@ -1116,8 +1103,8 @@ begin {itemize}
 
 			
 \backslash
-item classe in grado di ricavare statistiche, come il calcolo delle calorie
- consumate, dai dati raccolti 
+item classe in grado di ricavare statistiche, come ad esempio il calcolo
+ delle calorie consumate
 \end_layout
 
 \begin_layout Plain Layout
@@ -1149,13 +1136,6 @@ end{itemize}
 
 \begin_layout Subsection
 Speaker
-\end_layout
-
-\begin_layout Standard
-Modulo sviluppato dal gruppo Mezzanotte - Garetti - <<TODO nome altro tipo
- >>.
- Questo modulo è in grado di emettere avvisi acustici tramite il campionamento
- di appositi suoni.
 \end_layout
 
 \begin_layout Standard
@@ -1223,8 +1203,8 @@ begin {itemize}
 
 			
 \backslash
-item classe che mette a disposizioni le funzioni utili all'integrazione
- del modulo
+item Mette a disposizione le funzioni che permettono di avere feedback audio
+ di vittoria, sconfitta e di speaking del numero di passi fatti.
 \end_layout
 
 \begin_layout Plain Layout
@@ -1259,7 +1239,7 @@ begin {itemize}
 			
 \backslash
 item classe in grado di convertire i file campionati da formato .wav a formato
- .h
+ .h per un eventuale aggiunta di nuovi suoni.
 \end_layout
 
 \begin_layout Plain Layout
@@ -1289,35 +1269,57 @@ end{itemize}
 
 \end_layout
 
-\begin_layout Standard
-\begin_inset Newpage newpage
-\end_inset
-
-
-\end_layout
-
 \begin_layout Section
 Threads e Sincronizzazione
 \end_layout
 
 \begin_layout Standard
-Per permmettere alla board di interpretare sia il ruolo di ricevitore sia
- quello di trasmettitore si è optato per una programmazione multithreading,
- in particolare si è deciso di sviluppare 2 threads:
+In questa ultima parte del documento spieghiamo come sono stati integrati
+ tra di loro i moduli per raggiungere la funzionalità richiesta dal dispositivo
+ in sviluppo.
+ Per implementare lo stato di ricezione/trasmissione pseudo-contemporanea
+ sono stati utilizzati due thread che contendono una mutex ( 'modality'
+ ).
+ Tale mutex si occupa di arbitrare l'accesso al transceiver garantendo la
+ configurazione in mutua esclusione tra ricezione e trasmissione.
+ I due thread utilizzati dal nostro modulo sono: 
 \end_layout
 
 \begin_layout Itemize
-send_handler(void* arg): Thread che si occupa di passare in stato di trasmission
-e e di trasmettere ogni secondo
+
+\emph on
+send_handler(void* arg)
+\emph default
+: Si occupa di passare in stato di trasmissione e di trasmettere ogni secondo
 \end_layout
 
 \begin_layout Itemize
-irq_handler(void* arg): Thread che si occupa della gestione delle interrupt
- di ricezione e di comunicare agli altri moduli il dato ricevuto
+
+\emph on
+irq_handler(void* arg)
+\emph default
+: rimane in attesa di un interrupt di ricezione; quando questo si verifica
+ si occupa di effettuare il confronto tra i dati ricevuti ed il numero di
+ passi corrente rilevati dal podometro e successivamente richiama la corrisponde
+nte funzione dello speaker per informare l'utente della sua vittoria/sconfitta.
+\end_layout
+
+\begin_layout Standard
+Sono stati mascherati gli interrupt di trasmissione ( 
+\emph on
+TX_DS
+\emph default
+ ) e di massimo numero di ritrasmissioni raggiunte ( 
+\emph on
+MAX_RT
+\emph default
+ ) perchè poco utili al fine del progetto.
+ Seguno ora i flow-chart che descrivono dettagliatamente come i thread di
+ trasmissione e ricezione cooperano all'interno del sistema.
 \end_layout
 
 \begin_layout Subsection
-Trasmissone
+Thread Send_handler 
 \end_layout
 
 \begin_layout Standard
@@ -1328,19 +1330,6 @@ sideways false
 status open
 
 \begin_layout Plain Layout
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-
-\backslash
-centering
-\end_layout
-
-\end_inset
-
-
 \begin_inset Graphics
 	filename img/Trasmissione.png
 	scale 70
@@ -1367,51 +1356,8 @@ Flow chart thread trasmissione
 
 \end_layout
 
-\begin_layout Enumerate
-Viene dichiarato un puntatore a carattere cosi da poter scandire byte per
- byte l'intero rappresentante il numero di passi
-\end_layout
-
-\begin_layout Enumerate
-Entrata in un ciclo infinito
-\end_layout
-
-\begin_layout Enumerate
-Sleep di 1 secondo (il moduro è in stato di ricezione) 
-\end_layout
-
-\begin_layout Enumerate
-Mutex lock sulla variabile globale modality, in questo modo si evitano conflitti
- con il thread in ricezione
-\end_layout
-
-\begin_layout Enumerate
-Retrive dei dati ricevuti dal podometro(si veda paragrafo su integrazione)
-\end_layout
-
-\begin_layout Enumerate
-Trasmissioni dei dati in modo wireless
-\end_layout
-
-\begin_layout Enumerate
-Ritorno a stato di ricezione (fine della funzione TransmitData() come detto
- in precedenza)
-\end_layout
-
-\begin_layout Enumerate
-Mutex unlock sulla variabile globale modality
-\end_layout
-
-\begin_layout Enumerate
-Ritorno al punto 3
-\begin_inset Newpage newpage
-\end_inset
-
-
-\end_layout
-
 \begin_layout Subsection
-Ricezione
+Thread Irq_handler
 \end_layout
 
 \begin_layout Standard
@@ -1422,29 +1368,13 @@ sideways false
 status open
 
 \begin_layout Plain Layout
-\begin_inset ERT
-status open
-
-\begin_layout Plain Layout
-
-
-\backslash
-centering
-\end_layout
-
-\end_inset
-
-
 \begin_inset Graphics
 	filename img/Ricezione.png
-	scale 70
+	scale 80
 
 \end_inset
 
 
-\end_layout
-
-\begin_layout Plain Layout
 \begin_inset Caption
 
 \begin_layout Plain Layout
@@ -1465,51 +1395,85 @@ Flow chart thread ricezione
 
 \end_layout
 
-\begin_layout Enumerate
-Entrata in un ciclo infinito
+\begin_layout Subsection
+Bottone 
 \end_layout
 
-\begin_layout Enumerate
-Entrata in un ciclo di attesa, la condizione di uscita è data dall'arrivo
- di un'interrupt di ricezione
+\begin_layout Standard
+Come ultima feature del sistema è stato aggiunto un thread in attesa di
+ un interrupt da parte del bottone ( blu sulla board ).
+ Quando questo si verifica viene richiamata la funzione dello speaker che
+ riproduce il numero di passi fatti fino a quel momento.
 \end_layout
 
-\begin_layout Enumerate
-Mutex lock sulla variabile globale modality, in questo modo si evitano conflitti
- con il thread in trasmissione
+\begin_layout Subsection
+Overview generale 
 \end_layout
 
-\begin_layout Enumerate
-Retrive dei dati ricevuti via wireless
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename img/overview.jpg
+	scale 55
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Schema generale
 \end_layout
 
-\begin_layout Enumerate
-Retrive dei dati ricevuti dal podometro
+\end_inset
+
+
 \end_layout
 
-\begin_layout Enumerate
-Confronto tra i dati per integrazione con il modulo Speaker(si veda paragrafo
- su integrazione)
-\end_layout
+\end_inset
 
-\begin_layout Enumerate
-Reset dell'interrupt
-\end_layout
 
-\begin_layout Enumerate
-Reset del bufffer di riceione per prevenire overflow di dati
-\end_layout
-
-\begin_layout Enumerate
-Mutex unlock sulla variabile globale modality
-\end_layout
-
-\begin_layout Enumerate
-Ritorno al punto 2
 \end_layout
 
 \begin_layout Section
-Integrazione
+Conclusioni
+\end_layout
+
+\begin_layout Standard
+Come già ripetuto più volte si è cercato di mantenere il codice più semplice
+ e pulito possibile rispetto al contesto dell'applicazione sviluppata; l'impleme
+ntazione fatta risulta essere abbastanza riduttiva rispetto alle potenzialità
+ del modulino wifi, sono infatti rimaste inutilizzate feature come : multiceiver
+, payload dinamico, ack e ritrasmissioni automatiche; Non si riteneva tuttavia
+ necessario l'utilizzo di queste per il progetto in questione.
+ Il codice prodotto risulta essere comunque un buon punto di partenza per
+ implementare una generica applicazione che richieda una trasmissione wifi
+ di dati, con delle piccole modifiche alla classe è possibile implementare
+ tutte le funzionalità mancanti senza troppi problemi.
+\end_layout
+
+\begin_layout Section
+Ringraziamenti
+\end_layout
+
+\begin_layout Standard
+Si ringraziano le seguenti persone che hanno sviluppato il codice di speaker
+ e podometro e che hanno reso possibile la creazione del dispositivo descritto
+ in questo documento:
+\end_layout
+
+\begin_layout Itemize
+Andrea Piscitello - Giada Tacconelli ( Podometro )
+\end_layout
+
+\begin_layout Itemize
+Marco Mezzanotte - Filippo Garetti - Tommaso Calcina ( Speaker ) 
 \end_layout
 
 \end_body
