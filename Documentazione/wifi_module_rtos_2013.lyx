@@ -1328,6 +1328,25 @@ sideways false
 status open
 
 \begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+centering
+\end_layout
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename img/Trasmissione.png
+	scale 80
+
+\end_inset
+
 
 \end_layout
 
@@ -1385,6 +1404,10 @@ Mutex unlock sulla variabile globale modality
 
 \begin_layout Enumerate
 Ritorno al punto 3
+\begin_inset Newpage newpage
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsection
@@ -1399,6 +1422,25 @@ sideways false
 status open
 
 \begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+centering
+\end_layout
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename img/Ricezione.png
+	scale 80
+
+\end_inset
+
 
 \end_layout
 
