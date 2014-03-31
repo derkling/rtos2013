@@ -1,0 +1,301 @@
+\hypertarget{classNRF24L01P}{\section{N\-R\-F24\-L01\-P Class Reference}
+\label{classNRF24L01P}\index{N\-R\-F24\-L01\-P@{N\-R\-F24\-L01\-P}}
+}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classNRF24L01P_a3263473af7bb851bfbc1d9ddff986acb}{N\-R\-F24\-L01\-P} ()
+\item 
+\hypertarget{classNRF24L01P_aa59da9b36e8d0c17ae37d35c8dcd9713}{{\bfseries N\-R\-F24\-L01\-P} (const \hyperlink{classNRF24L01P}{N\-R\-F24\-L01\-P} \&orig)}\label{classNRF24L01P_aa59da9b36e8d0c17ae37d35c8dcd9713}
+
+\item 
+void \hyperlink{classNRF24L01P_ade50e41c80bb031a294817918f136c9f}{write\-Register} (int reg\-Address, int reg\-Data)
+\item 
+int \hyperlink{classNRF24L01P_afd284d41d89001711b70e91cee81527f}{read\-Register} (int reg\-Address)
+\item 
+int \hyperlink{classNRF24L01P_a95fbce4202f87a395227eaeaa5f413dc}{read\-Status\-Register} ()
+\item 
+void \hyperlink{classNRF24L01P_abb14117708cbb33c030b10b998aee257}{power\-Up} ()
+\item 
+void \hyperlink{classNRF24L01P_a08417ea2c94af0cb888047c6390b2cdc}{power\-Down} ()
+\item 
+void \hyperlink{classNRF24L01P_adde3da438309f8fc6ba905b0a26fbba0}{set\-Receive\-Mode} ()
+\item 
+void \hyperlink{classNRF24L01P_a194b50ca9c3c12c2662a8885fb1a15b9}{set\-Transmit\-Mode} ()
+\item 
+void \hyperlink{classNRF24L01P_aad66421b7e51793d7cd0af45de55ee67}{set\-Static\-Payload\-Size} (int size)
+\item 
+void \hyperlink{classNRF24L01P_ab5375b44c078e54e5b0ffaf0e4ef1007}{disable\-All\-Auto\-Ack} ()
+\item 
+void \hyperlink{classNRF24L01P_aa1b0b5ef35510be2c4587ca900f65c6a}{mask\-Irq} (int w)
+\item 
+void \hyperlink{classNRF24L01P_a07121aaf4fad55c54d945113491f18d2}{return\-Stand\-By\-I} ()
+\item 
+int \hyperlink{classNRF24L01P_a984025131de281d6252d1b3e18bac616}{receive\-Data\-From\-Rx} ()
+\item 
+int \hyperlink{classNRF24L01P_a1c5c063454693dc6be5c44eab73923ae}{read\-R\-P\-D} ()
+\item 
+void \hyperlink{classNRF24L01P_a9dd2ddd8c8b279818ced54ec7fb091cf}{configure\-Interrupt} ()
+\item 
+void \hyperlink{classNRF24L01P_ab2b3acff178965011b16c89b6ab625e3}{configure\-Width\-Address} (int n\-\_\-byte)
+\item 
+void \hyperlink{classNRF24L01P_a7f54b573bd9f00241ef1c241b289f330}{flush\-Tx} ()
+\item 
+void \hyperlink{classNRF24L01P_a1ba68a46a24e5d8e132d35e45ba16082}{flush\-Rx} ()
+\item 
+void \hyperlink{classNRF24L01P_acbabd86fc54ccfd565ccf0d1b4f1d754}{Trasmit\-Data} (char $\ast$data\-\_\-pointer, int dim)
+\item 
+void \hyperlink{classNRF24L01P_a87120ecdd3d3ddfc6935589692bc240b}{reset\-Module} ()
+\item 
+void \hyperlink{classNRF24L01P_aca10b1fb9a91ddd99c07066d1b34a62f}{show\-Internal} ()
+\item 
+void \hyperlink{classNRF24L01P_a6ea905020ba36e8973c42aecd9930e55}{set\-Rf\-Channel} (int channel)
+\item 
+void \hyperlink{classNRF24L01P_a70ede7c6b284684b32aea609e72a6b85}{set\-Air\-Data\-Rate} (int air\-\_\-rate)
+\item 
+void \hyperlink{classNRF24L01P_aab143224b80600eb692128b3c77a78ca}{reset\-R\-Xirq} ()
+\item 
+void \hyperlink{classNRF24L01P_a0db58e3cbd73d56678adabe171d6e3b2}{reset\-T\-Xirq} ()
+\end{DoxyCompactItemize}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classNRF24L01P_a3263473af7bb851bfbc1d9ddff986acb}{\index{N\-R\-F24\-L01\-P@{N\-R\-F24\-L01\-P}!N\-R\-F24\-L01\-P@{N\-R\-F24\-L01\-P}}
+\index{N\-R\-F24\-L01\-P@{N\-R\-F24\-L01\-P}!NRF24L01P@{N\-R\-F24\-L01\-P}}
+\subsubsection[{N\-R\-F24\-L01\-P}]{\setlength{\rightskip}{0pt plus 5cm}N\-R\-F24\-L01\-P\-::\-N\-R\-F24\-L01\-P (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classNRF24L01P_a3263473af7bb851bfbc1d9ddff986acb}
+Constructor of transceiver 
+
+\subsection{Member Function Documentation}
+\hypertarget{classNRF24L01P_a9dd2ddd8c8b279818ced54ec7fb091cf}{\index{N\-R\-F24\-L01\-P@{N\-R\-F24\-L01\-P}!configure\-Interrupt@{configure\-Interrupt}}
+\index{configure\-Interrupt@{configure\-Interrupt}!NRF24L01P@{N\-R\-F24\-L01\-P}}
+\subsubsection[{configure\-Interrupt}]{\setlength{\rightskip}{0pt plus 5cm}void N\-R\-F24\-L01\-P\-::configure\-Interrupt (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classNRF24L01P_a9dd2ddd8c8b279818ced54ec7fb091cf}
+Configuration of the interrupt in the P\-A1 pin of S\-T\-M32 board \hypertarget{classNRF24L01P_ab2b3acff178965011b16c89b6ab625e3}{\index{N\-R\-F24\-L01\-P@{N\-R\-F24\-L01\-P}!configure\-Width\-Address@{configure\-Width\-Address}}
+\index{configure\-Width\-Address@{configure\-Width\-Address}!NRF24L01P@{N\-R\-F24\-L01\-P}}
+\subsubsection[{configure\-Width\-Address}]{\setlength{\rightskip}{0pt plus 5cm}void N\-R\-F24\-L01\-P\-::configure\-Width\-Address (
+\begin{DoxyParamCaption}
+\item[{int}]{number}
+\end{DoxyParamCaption}
+)}}\label{classNRF24L01P_ab2b3acff178965011b16c89b6ab625e3}
+Configure the width of the T\-X/\-R\-X-\/\-Address If I want 5 bytes the n\-\_\-bit is 3 ( 11 will be in the register ) 4 bytes the n\-\_\-bit is 2 ( 10 ) 3 bytes the n\-\_\-bit is 1 ( 01 ) ( 00 Illegal ) 
+\begin{DoxyParams}{Parameters}
+{\em number} & represent the number of bytes that we want \\
+\hline
+\end{DoxyParams}
+\hypertarget{classNRF24L01P_ab5375b44c078e54e5b0ffaf0e4ef1007}{\index{N\-R\-F24\-L01\-P@{N\-R\-F24\-L01\-P}!disable\-All\-Auto\-Ack@{disable\-All\-Auto\-Ack}}
+\index{disable\-All\-Auto\-Ack@{disable\-All\-Auto\-Ack}!NRF24L01P@{N\-R\-F24\-L01\-P}}
+\subsubsection[{disable\-All\-Auto\-Ack}]{\setlength{\rightskip}{0pt plus 5cm}void N\-R\-F24\-L01\-P\-::disable\-All\-Auto\-Ack (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classNRF24L01P_ab5375b44c078e54e5b0ffaf0e4ef1007}
+Disable all auto-\/ack on all pipe ( this function modify the E\-N\-\_\-\-A\-A register ) \hypertarget{classNRF24L01P_a1ba68a46a24e5d8e132d35e45ba16082}{\index{N\-R\-F24\-L01\-P@{N\-R\-F24\-L01\-P}!flush\-Rx@{flush\-Rx}}
+\index{flush\-Rx@{flush\-Rx}!NRF24L01P@{N\-R\-F24\-L01\-P}}
+\subsubsection[{flush\-Rx}]{\setlength{\rightskip}{0pt plus 5cm}void N\-R\-F24\-L01\-P\-::flush\-Rx (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classNRF24L01P_a1ba68a46a24e5d8e132d35e45ba16082}
+Function that flush the content of R\-X-\/\-B\-U\-F\-F\-E\-R \hypertarget{classNRF24L01P_a7f54b573bd9f00241ef1c241b289f330}{\index{N\-R\-F24\-L01\-P@{N\-R\-F24\-L01\-P}!flush\-Tx@{flush\-Tx}}
+\index{flush\-Tx@{flush\-Tx}!NRF24L01P@{N\-R\-F24\-L01\-P}}
+\subsubsection[{flush\-Tx}]{\setlength{\rightskip}{0pt plus 5cm}void N\-R\-F24\-L01\-P\-::flush\-Tx (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classNRF24L01P_a7f54b573bd9f00241ef1c241b289f330}
+Function that flush the content of T\-X-\/\-B\-U\-F\-F\-E\-R \hypertarget{classNRF24L01P_aa1b0b5ef35510be2c4587ca900f65c6a}{\index{N\-R\-F24\-L01\-P@{N\-R\-F24\-L01\-P}!mask\-Irq@{mask\-Irq}}
+\index{mask\-Irq@{mask\-Irq}!NRF24L01P@{N\-R\-F24\-L01\-P}}
+\subsubsection[{mask\-Irq}]{\setlength{\rightskip}{0pt plus 5cm}void N\-R\-F24\-L01\-P\-::mask\-Irq (
+\begin{DoxyParamCaption}
+\item[{int}]{w}
+\end{DoxyParamCaption}
+)}}\label{classNRF24L01P_aa1b0b5ef35510be2c4587ca900f65c6a}
+Function used to mask the wanted irq 000 no masking 010 mask tx\-\_\-ds 001 mask max\-\_\-rt 100 mask rx\-\_\-dr ( pointless ) ecc... 
+\begin{DoxyParams}{Parameters}
+{\em w} & is the masking option that we want to activate \\
+\hline
+\end{DoxyParams}
+\hypertarget{classNRF24L01P_a08417ea2c94af0cb888047c6390b2cdc}{\index{N\-R\-F24\-L01\-P@{N\-R\-F24\-L01\-P}!power\-Down@{power\-Down}}
+\index{power\-Down@{power\-Down}!NRF24L01P@{N\-R\-F24\-L01\-P}}
+\subsubsection[{power\-Down}]{\setlength{\rightskip}{0pt plus 5cm}void N\-R\-F24\-L01\-P\-::power\-Down (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classNRF24L01P_a08417ea2c94af0cb888047c6390b2cdc}
+Power\-Down the module putting 0 the P\-W\-R\-\_\-\-U\-P bit in C\-O\-N\-F\-I\-G register \hypertarget{classNRF24L01P_abb14117708cbb33c030b10b998aee257}{\index{N\-R\-F24\-L01\-P@{N\-R\-F24\-L01\-P}!power\-Up@{power\-Up}}
+\index{power\-Up@{power\-Up}!NRF24L01P@{N\-R\-F24\-L01\-P}}
+\subsubsection[{power\-Up}]{\setlength{\rightskip}{0pt plus 5cm}void N\-R\-F24\-L01\-P\-::power\-Up (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classNRF24L01P_abb14117708cbb33c030b10b998aee257}
+This function put the transceiver in Stand\-By I mode ( see charts ) configuring the various register and waiting the right time to power on. \hypertarget{classNRF24L01P_afd284d41d89001711b70e91cee81527f}{\index{N\-R\-F24\-L01\-P@{N\-R\-F24\-L01\-P}!read\-Register@{read\-Register}}
+\index{read\-Register@{read\-Register}!NRF24L01P@{N\-R\-F24\-L01\-P}}
+\subsubsection[{read\-Register}]{\setlength{\rightskip}{0pt plus 5cm}int N\-R\-F24\-L01\-P\-::read\-Register (
+\begin{DoxyParamCaption}
+\item[{int}]{reg\-Address}
+\end{DoxyParamCaption}
+)}}\label{classNRF24L01P_afd284d41d89001711b70e91cee81527f}
+This function is used to read a general register in the \hyperlink{classNRF24L01P}{N\-R\-F24\-L01\-P}
+
+
+\begin{DoxyParams}{Parameters}
+{\em reg\-Address,\-:} & the address of the register that you want to read \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\-: the value in the register ( alias its current config ) 
+\end{DoxyReturn}
+\hypertarget{classNRF24L01P_a1c5c063454693dc6be5c44eab73923ae}{\index{N\-R\-F24\-L01\-P@{N\-R\-F24\-L01\-P}!read\-R\-P\-D@{read\-R\-P\-D}}
+\index{read\-R\-P\-D@{read\-R\-P\-D}!NRF24L01P@{N\-R\-F24\-L01\-P}}
+\subsubsection[{read\-R\-P\-D}]{\setlength{\rightskip}{0pt plus 5cm}int N\-R\-F24\-L01\-P\-::read\-R\-P\-D (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classNRF24L01P_a1c5c063454693dc6be5c44eab73923ae}
+This function is used to read the R\-P\-D bit that tells if a valid R\-F signal $>$-\/64dbm is detected. This means that a N\-R\-F24\-L01p is near us. Remember that this feature is available only in receive mode \begin{DoxyReturn}{Returns}
+is the status of R\-P\-D bit in R\-P\-D register 
+\end{DoxyReturn}
+\hypertarget{classNRF24L01P_a95fbce4202f87a395227eaeaa5f413dc}{\index{N\-R\-F24\-L01\-P@{N\-R\-F24\-L01\-P}!read\-Status\-Register@{read\-Status\-Register}}
+\index{read\-Status\-Register@{read\-Status\-Register}!NRF24L01P@{N\-R\-F24\-L01\-P}}
+\subsubsection[{read\-Status\-Register}]{\setlength{\rightskip}{0pt plus 5cm}int N\-R\-F24\-L01\-P\-::read\-Status\-Register (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classNRF24L01P_a95fbce4202f87a395227eaeaa5f413dc}
+Shortcut to read the status register of transceiver the status register is passed via miso after a dummy write on mosi \begin{DoxyReturn}{Returns}
+\-: the value of status register of \hyperlink{classNRF24L01P}{N\-R\-F24\-L01\-P} 
+\end{DoxyReturn}
+\hypertarget{classNRF24L01P_a984025131de281d6252d1b3e18bac616}{\index{N\-R\-F24\-L01\-P@{N\-R\-F24\-L01\-P}!receive\-Data\-From\-Rx@{receive\-Data\-From\-Rx}}
+\index{receive\-Data\-From\-Rx@{receive\-Data\-From\-Rx}!NRF24L01P@{N\-R\-F24\-L01\-P}}
+\subsubsection[{receive\-Data\-From\-Rx}]{\setlength{\rightskip}{0pt plus 5cm}int N\-R\-F24\-L01\-P\-::receive\-Data\-From\-Rx (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classNRF24L01P_a984025131de281d6252d1b3e18bac616}
+used to take data from R\-X\-\_\-\-F\-I\-F\-O\-\_\-\-B\-U\-F\-F\-E\-R through S\-P\-I ( using the command \-\_\-\-N\-R\-F24\-L01\-P\-\_\-\-S\-P\-I\-\_\-\-C\-M\-D\-\_\-\-R\-D\-\_\-\-R\-X\-\_\-\-P\-A\-Y\-L\-O\-A\-D ) \begin{DoxyReturn}{Returns}
+the data read 
+\end{DoxyReturn}
+\hypertarget{classNRF24L01P_a87120ecdd3d3ddfc6935589692bc240b}{\index{N\-R\-F24\-L01\-P@{N\-R\-F24\-L01\-P}!reset\-Module@{reset\-Module}}
+\index{reset\-Module@{reset\-Module}!NRF24L01P@{N\-R\-F24\-L01\-P}}
+\subsubsection[{reset\-Module}]{\setlength{\rightskip}{0pt plus 5cm}void N\-R\-F24\-L01\-P\-::reset\-Module (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classNRF24L01P_a87120ecdd3d3ddfc6935589692bc240b}
+Reset default value to all registers of module function used by exorcizo binary \hypertarget{classNRF24L01P_aab143224b80600eb692128b3c77a78ca}{\index{N\-R\-F24\-L01\-P@{N\-R\-F24\-L01\-P}!reset\-R\-Xirq@{reset\-R\-Xirq}}
+\index{reset\-R\-Xirq@{reset\-R\-Xirq}!NRF24L01P@{N\-R\-F24\-L01\-P}}
+\subsubsection[{reset\-R\-Xirq}]{\setlength{\rightskip}{0pt plus 5cm}void N\-R\-F24\-L01\-P\-::reset\-R\-Xirq (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classNRF24L01P_aab143224b80600eb692128b3c77a78ca}
+This function write '1' to the R\-X\-\_\-\-D\-R bit to clear it ( reset R\-X\-\_\-\-D\-R for next I\-R\-Q ) \hypertarget{classNRF24L01P_a0db58e3cbd73d56678adabe171d6e3b2}{\index{N\-R\-F24\-L01\-P@{N\-R\-F24\-L01\-P}!reset\-T\-Xirq@{reset\-T\-Xirq}}
+\index{reset\-T\-Xirq@{reset\-T\-Xirq}!NRF24L01P@{N\-R\-F24\-L01\-P}}
+\subsubsection[{reset\-T\-Xirq}]{\setlength{\rightskip}{0pt plus 5cm}void N\-R\-F24\-L01\-P\-::reset\-T\-Xirq (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classNRF24L01P_a0db58e3cbd73d56678adabe171d6e3b2}
+This write '1' to the T\-X\-\_\-\-D\-S bit to clear it ( reset T\-X\-\_\-\-D\-S for next I\-R\-Q ) \hypertarget{classNRF24L01P_a07121aaf4fad55c54d945113491f18d2}{\index{N\-R\-F24\-L01\-P@{N\-R\-F24\-L01\-P}!return\-Stand\-By\-I@{return\-Stand\-By\-I}}
+\index{return\-Stand\-By\-I@{return\-Stand\-By\-I}!NRF24L01P@{N\-R\-F24\-L01\-P}}
+\subsubsection[{return\-Stand\-By\-I}]{\setlength{\rightskip}{0pt plus 5cm}void N\-R\-F24\-L01\-P\-::return\-Stand\-By\-I (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classNRF24L01P_a07121aaf4fad55c54d945113491f18d2}
+Explicit function that put the transceiver in Stand\-By\-I mode by pull down the C\-E \hypertarget{classNRF24L01P_a70ede7c6b284684b32aea609e72a6b85}{\index{N\-R\-F24\-L01\-P@{N\-R\-F24\-L01\-P}!set\-Air\-Data\-Rate@{set\-Air\-Data\-Rate}}
+\index{set\-Air\-Data\-Rate@{set\-Air\-Data\-Rate}!NRF24L01P@{N\-R\-F24\-L01\-P}}
+\subsubsection[{set\-Air\-Data\-Rate}]{\setlength{\rightskip}{0pt plus 5cm}void N\-R\-F24\-L01\-P\-::set\-Air\-Data\-Rate (
+\begin{DoxyParamCaption}
+\item[{int}]{air\-\_\-rate}
+\end{DoxyParamCaption}
+)}}\label{classNRF24L01P_a70ede7c6b284684b32aea609e72a6b85}
+Function that set the air data rate in which the transceiver operates writing in the R\-F\-\_\-\-S\-E\-T\-U\-P register
+
+Air\-Data\-Rate air\-\_\-rate 250kbps 38 better receiver sensitivity 1\-Mbps 6 2\-Mbps 14 lower power consumption and low collision 
+\begin{DoxyParams}{Parameters}
+{\em air\-\_\-rate} & is the value to push in the register according to the table \\
+\hline
+\end{DoxyParams}
+\hypertarget{classNRF24L01P_adde3da438309f8fc6ba905b0a26fbba0}{\index{N\-R\-F24\-L01\-P@{N\-R\-F24\-L01\-P}!set\-Receive\-Mode@{set\-Receive\-Mode}}
+\index{set\-Receive\-Mode@{set\-Receive\-Mode}!NRF24L01P@{N\-R\-F24\-L01\-P}}
+\subsubsection[{set\-Receive\-Mode}]{\setlength{\rightskip}{0pt plus 5cm}void N\-R\-F24\-L01\-P\-::set\-Receive\-Mode (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classNRF24L01P_adde3da438309f8fc6ba905b0a26fbba0}
+Function that put the transceiver in receive mode In order to call this function you have to call power\-\_\-up, P\-W\-R\-\_\-\-U\-P M\-U\-S\-T be 1! \hypertarget{classNRF24L01P_a6ea905020ba36e8973c42aecd9930e55}{\index{N\-R\-F24\-L01\-P@{N\-R\-F24\-L01\-P}!set\-Rf\-Channel@{set\-Rf\-Channel}}
+\index{set\-Rf\-Channel@{set\-Rf\-Channel}!NRF24L01P@{N\-R\-F24\-L01\-P}}
+\subsubsection[{set\-Rf\-Channel}]{\setlength{\rightskip}{0pt plus 5cm}void N\-R\-F24\-L01\-P\-::set\-Rf\-Channel (
+\begin{DoxyParamCaption}
+\item[{int}]{offset}
+\end{DoxyParamCaption}
+)}}\label{classNRF24L01P_a6ea905020ba36e8973c42aecd9930e55}
+Function that set the R\-F channel in which the transceiver operates Remember that the R\-F channel is set according to formula\-: F0 = 2400 + R\-F\-\_\-\-C\-H \mbox{[} M\-H\-Z \mbox{]} the frequency are from 2,4 G\-H\-Z to 2,525\-G\-H\-Z, so the offset is between 0 and 125 
+\begin{DoxyParams}{Parameters}
+{\em offset} & is the R\-F\-\_\-\-C\-H to apply at the given formula ( value between 0 and 125 are legal ) \\
+\hline
+\end{DoxyParams}
+\hypertarget{classNRF24L01P_aad66421b7e51793d7cd0af45de55ee67}{\index{N\-R\-F24\-L01\-P@{N\-R\-F24\-L01\-P}!set\-Static\-Payload\-Size@{set\-Static\-Payload\-Size}}
+\index{set\-Static\-Payload\-Size@{set\-Static\-Payload\-Size}!NRF24L01P@{N\-R\-F24\-L01\-P}}
+\subsubsection[{set\-Static\-Payload\-Size}]{\setlength{\rightskip}{0pt plus 5cm}void N\-R\-F24\-L01\-P\-::set\-Static\-Payload\-Size (
+\begin{DoxyParamCaption}
+\item[{int}]{size}
+\end{DoxyParamCaption}
+)}}\label{classNRF24L01P_aad66421b7e51793d7cd0af45de55ee67}
+If you are going to use static payload this function set the value of static payload is used ( R\-X\-\_\-\-P\-W\-\_\-\-P0 register for the pipe0 ) 
+\begin{DoxyParams}{Parameters}
+{\em size} & is the value that you are going to use ( value between 1 and 32 bytes are legal ) \\
+\hline
+\end{DoxyParams}
+\hypertarget{classNRF24L01P_a194b50ca9c3c12c2662a8885fb1a15b9}{\index{N\-R\-F24\-L01\-P@{N\-R\-F24\-L01\-P}!set\-Transmit\-Mode@{set\-Transmit\-Mode}}
+\index{set\-Transmit\-Mode@{set\-Transmit\-Mode}!NRF24L01P@{N\-R\-F24\-L01\-P}}
+\subsubsection[{set\-Transmit\-Mode}]{\setlength{\rightskip}{0pt plus 5cm}void N\-R\-F24\-L01\-P\-::set\-Transmit\-Mode (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classNRF24L01P_a194b50ca9c3c12c2662a8885fb1a15b9}
+This function set the registers in the \hyperlink{classNRF24L01P}{N\-R\-F24\-L01\-P} in order to transmit data in T\-X-\/\-B\-U\-F\-F\-E\-R. at the end of this function the transceiver starts to transmit data. W\-A\-R\-N\-I\-N\-G\-: before call this function a packet in T\-X must be present. \hypertarget{classNRF24L01P_aca10b1fb9a91ddd99c07066d1b34a62f}{\index{N\-R\-F24\-L01\-P@{N\-R\-F24\-L01\-P}!show\-Internal@{show\-Internal}}
+\index{show\-Internal@{show\-Internal}!NRF24L01P@{N\-R\-F24\-L01\-P}}
+\subsubsection[{show\-Internal}]{\setlength{\rightskip}{0pt plus 5cm}void N\-R\-F24\-L01\-P\-::show\-Internal (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classNRF24L01P_aca10b1fb9a91ddd99c07066d1b34a62f}
+This function prints through serial the status of (almost) all registers \hypertarget{classNRF24L01P_acbabd86fc54ccfd565ccf0d1b4f1d754}{\index{N\-R\-F24\-L01\-P@{N\-R\-F24\-L01\-P}!Trasmit\-Data@{Trasmit\-Data}}
+\index{Trasmit\-Data@{Trasmit\-Data}!NRF24L01P@{N\-R\-F24\-L01\-P}}
+\subsubsection[{Trasmit\-Data}]{\setlength{\rightskip}{0pt plus 5cm}void N\-R\-F24\-L01\-P\-::\-Trasmit\-Data (
+\begin{DoxyParamCaption}
+\item[{char $\ast$}]{data, }
+\item[{int}]{dim}
+\end{DoxyParamCaption}
+)}}\label{classNRF24L01P_acbabd86fc54ccfd565ccf0d1b4f1d754}
+Function that push data to T\-X-\/\-B\-U\-F\-F\-E\-R ( using the proper command \-\_\-\-N\-R\-F24\-L01\-P\-\_\-\-S\-P\-I\-\_\-\-C\-M\-D\-\_\-\-W\-R\-\_\-\-T\-X\-\_\-\-P\-A\-Y\-L\-O\-A\-D ) and then transmit by $\ast$ calling \hyperlink{classNRF24L01P_a194b50ca9c3c12c2662a8885fb1a15b9}{set\-Transmit\-Mode()}. Finally it reset the tx irq bit and returns in receive mode. 
+\begin{DoxyParams}{Parameters}
+{\em data} & is a char pointer to the data to send. Data to send is an integer so the pointer scans byte per byte this integer \\
+\hline
+{\em dim} & is the dimension in bytes of the data to send ( in case of our integer is 4 ) \\
+\hline
+\end{DoxyParams}
+\hypertarget{classNRF24L01P_ade50e41c80bb031a294817918f136c9f}{\index{N\-R\-F24\-L01\-P@{N\-R\-F24\-L01\-P}!write\-Register@{write\-Register}}
+\index{write\-Register@{write\-Register}!NRF24L01P@{N\-R\-F24\-L01\-P}}
+\subsubsection[{write\-Register}]{\setlength{\rightskip}{0pt plus 5cm}void N\-R\-F24\-L01\-P\-::write\-Register (
+\begin{DoxyParamCaption}
+\item[{int}]{reg\-Address, }
+\item[{int}]{reg\-Data}
+\end{DoxyParamCaption}
+)}}\label{classNRF24L01P_ade50e41c80bb031a294817918f136c9f}
+Function that permit to write in \hyperlink{classNRF24L01P}{N\-R\-F24\-L01\-P}'s registers through the S\-P\-I driver  is the address of the register in which you want to write( in decimal notation )  is the data ( alias configuration ) that you want to push in the register ( always in decimal notation ) 
+
+The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
+\item 
+N\-R\-F24\-L01\-P.\-h\item 
+N\-R\-F24\-L01\-P.\-cpp\end{DoxyCompactItemize}

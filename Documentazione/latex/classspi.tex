@@ -1,0 +1,52 @@
+\hypertarget{classspi}{\section{spi Class Reference}
+\label{classspi}\index{spi@{spi}}
+}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classspi_a6e9ff69516b7334e683993d8a23e1976}{{\bfseries spi} (const \hyperlink{classspi}{spi} \&orig)}\label{classspi_a6e9ff69516b7334e683993d8a23e1976}
+
+\item 
+void \hyperlink{classspi_a11ad6c6724e4c264488b2048836845a0}{send} (int data)
+\item 
+int \hyperlink{classspi_a5ca88b1e3f5c7413ef2d976ef35a65df}{receive} ()
+\end{DoxyCompactItemize}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classspi_a5ca88b1e3f5c7413ef2d976ef35a65df}{\index{spi@{spi}!receive@{receive}}
+\index{receive@{receive}!spi@{spi}}
+\subsubsection[{receive}]{\setlength{\rightskip}{0pt plus 5cm}int spi\-::receive (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{classspi_a5ca88b1e3f5c7413ef2d976ef35a65df}
+Shortcut to read data from S\-P\-I by a dummy write on S\-P\-I2-\/$>$D\-R \begin{DoxyReturn}{Returns}
+the data from spi 
+\end{DoxyReturn}
+\hypertarget{classspi_a11ad6c6724e4c264488b2048836845a0}{\index{spi@{spi}!send@{send}}
+\index{send@{send}!spi@{spi}}
+\subsubsection[{send}]{\setlength{\rightskip}{0pt plus 5cm}void spi\-::send (
+\begin{DoxyParamCaption}
+\item[{int}]{data\-\_\-byte}
+\end{DoxyParamCaption}
+)}}\label{classspi_a11ad6c6724e4c264488b2048836845a0}
+Send data over spi
+
+When R\-X\-N\-E is set indicates that there are valid received data in the buffer R\-X. It is reset when S\-P\-I\-\_\-\-D\-R register is read.
+
+S\-P\-I\-\_\-\-S\-R\-\_\-\-R\-X\-N\-E = Receive buffer Not Empty ( programmer manual pg 900 ) if R\-X\-N\-E=0 the buffer is empty.
+
+A write on data register (D\-R) writes on the T\-X buffer, A read from data register returns the value in the R\-X buffer
+
+
+\begin{DoxyParams}{Parameters}
+{\em data\-\_\-byte} & data to be send through S\-P\-I \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
+\item 
+spi.\-h\item 
+spi.\-cpp\end{DoxyCompactItemize}
