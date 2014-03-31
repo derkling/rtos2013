@@ -12,9 +12,15 @@ SUBDIRS := miosix
 
 ##
 ## List here your source files (both .s, .c and .cpp)
-##
-SRC :=                                  \
-main.cpp
+#
+SRC :=	pedometer/main.cpp			\
+	pedometer/pedometer.cpp			\
+	pedometer/lis302dl.cpp			\
+	pedometer/stats.cpp			\
+		
+
+
+
 
 ##
 ## List here additional static libraries with relative path
@@ -24,8 +30,8 @@ LIBS :=
 ##
 ## List here additional include directories (in the form -Iinclude_dir)
 ##
-INCLUDE_DIRS :=
-
+INCLUDE_DIRS := -I/home/user/Desktop/rtos2013/rtos2013/miosix/arch/cortexM4_stm32f4/common/CMSIS/ \
+		
 ##############################################################################
 ## You should not need to modify anything below                             ##
 ##############################################################################
